@@ -3,4 +3,7 @@ if (isServer) then {
 } else {
 	armalive_cmd = _this;
 	publicVariableServer "armalive_cmd";
-}
+};
+
+// And, for testing purposes
+diag_log text _this;
