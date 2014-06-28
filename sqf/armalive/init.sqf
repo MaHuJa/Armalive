@@ -1,11 +1,13 @@
-#define COMPILE(func) func = compilefinal preprocessfile "armalive\##func##.sqf"
+#define COMPILE(func) func = compilefinal preprocessFileLineNumbers ("armalive\" + #func + ".sqf")
 
 // First, report a new session starting
-"armalive" callextension format ["newmission1;%1",missionName];
+_str =  format ["newmission1;%1",missionName];
+"armalive" callextension _str;
+diag_log _str;
 
 // Set up for clients to transfer their info
 armalive_cmd = "";
-"armalive_cmd" addPublicVariableEventHandler { "armalive" callextension (_this select 1); };
+"armalive_cmd" addPublicVariableEventHandler { "armalive" callextension (_this select 1); diag_log text (_this select 1); };
 //armalive_send = compilefinal preprocessfile "armalive\armalive_send.sqf";
 COMPILE(armalive_send);
 
@@ -25,5 +27,7 @@ COMPILE(armalive_eh_killed);
 
 // Set eventhandlers
 COMPILE(armalive_infeh);
-player call armalive_infeh;
 
+//player call armalive_infeh;
+// This will also allow kills on AI to be counted. Of course, it needs to be applied to every additional unit ever spawned.
+{ if (local _x) then {_x call armalive_infeh;}; } foreach allunits;
