@@ -1,6 +1,6 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node CREATED="1404615646944" ID="ID_1860185739" MODIFIED="1404616454012" TEXT="Armalive db events">
+<node CREATED="1404615646944" ID="ID_1860185739" MODIFIED="1404619413172" TEXT="Armalive db events">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1404615819252" ID="ID_1609742646" MODIFIED="1404616223491" POSITION="right" TEXT="Event">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
@@ -16,7 +16,7 @@
 </node>
 <node CREATED="1404615670098" ID="ID_1648524875" MODIFIED="1404616553711" TEXT="Killevent">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
-<node CREATED="1404617870819" ID="ID_1178464900" MODIFIED="1404617872351" TEXT="create or replace type teamkilltype as enum (&apos;not&apos;,&apos;teamkill&apos;,&apos;civilian&apos;,&apos;warcrime&apos;);"/>
+<node CREATED="1404617870819" ID="ID_1178464900" MODIFIED="1404618875099" TEXT="create or replace type teamkilltype as enum (&apos;not&apos;,&apos;teamkill&apos;,&apos;civilian&apos;,&apos;potential warcrime&apos;,&apos;definite warcrime&apos;);"/>
 <node CREATED="1404616670099" ID="ID_1163021741" MODIFIED="1404616825279" TEXT="as_infantry">
 <node CREATED="1404616827829" ID="ID_1630400761" MODIFIED="1404616841826" STYLE="bubble" TEXT="killerid, killerpos"/>
 <node CREATED="1404615769742" ID="ID_836915160" MODIFIED="1404616705653" TEXT="inf inf"/>
@@ -36,19 +36,33 @@
 <node CREATED="1404616343388" ID="ID_667735061" MODIFIED="1404616780971" TEXT="roadkill">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1404616558587" ID="ID_5813959" MODIFIED="1404616628040" STYLE="bubble" TEXT="killerid, killerposition"/>
+<node CREATED="1404619072785" ID="ID_206532073" MODIFIED="1404619078778" TEXT="victim in vehicle?">
+<font ITALIC="true" NAME="SansSerif" SIZE="12"/>
+</node>
 </node>
 </node>
 </node>
 <node CREATED="1404615672659" ID="ID_1602668437" MODIFIED="1404616446571" TEXT="Playerevent">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
-<node CREATED="1404616651785" ID="ID_912410362" MODIFIED="1404616662843" STYLE="bubble" TEXT="playerid"/>
-<node CREATED="1404615689018" ID="ID_1290874254" MODIFIED="1404615696318" TEXT="PlayerPersistentValue">
+<node CREATED="1404616651785" ID="ID_912410362" MODIFIED="1404618922164" STYLE="bubble" TEXT="playerid, message"/>
+<node CREATED="1404615689018" ID="ID_1290874254" MODIFIED="1404619232637" TEXT="PlayerPersistentValue">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1404617036085" ID="ID_1334719565" MODIFIED="1404617080164" STYLE="bubble" TEXT="Valuename, value"/>
 <node CREATED="1404615734372" ID="ID_266997413" MODIFIED="1404617082560" TEXT="JTAC xp">
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node CREATED="1404615698912" ID="ID_1561808729" MODIFIED="1404615701637" TEXT="Team damaging">
+<node CREATED="1404615698912" ID="ID_1561808729" MODIFIED="1404619285862" TEXT="TeamDamage">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1404619604041" ID="ID_294563615" MODIFIED="1404619608669" TEXT="Against player">
+<node CREATED="1404619534437" ID="ID_30182307" MODIFIED="1404619611054" STYLE="bubble" TEXT="victimid, victimpos, playerpos"/>
+</node>
+<node CREATED="1404619615709" ID="ID_1955559669" MODIFIED="1404619618392" TEXT="Against vehicle">
+<node CREATED="1404619619197" ID="ID_1467937475" MODIFIED="1404619628111" TEXT="vehicletype, vehiclepos"/>
+</node>
+<node CREATED="1404619640473" ID="ID_383635950" MODIFIED="1404619642786" TEXT="severity"/>
+<node CREATED="1404616351593" ID="ID_1635009820" MODIFIED="1404619580190" TEXT="weapon"/>
+<node CREATED="1404616355517" ID="ID_738816181" MODIFIED="1404619581409" TEXT="roadkill"/>
 <node CREATED="1404616100714" ID="ID_1585692936" MODIFIED="1404616219936">
 <richcontent TYPE="NODE"><html>
   <head>
@@ -59,26 +73,34 @@
       Team <i>killing</i>&#160;is a regular kill marked as TK
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1404616351593" ID="ID_1635009820" MODIFIED="1404616355159" TEXT="weapon"/>
-<node CREATED="1404616355517" ID="ID_738816181" MODIFIED="1404616357204" TEXT="roadkill"/>
+<node CREATED="1404619291338" ID="ID_1791220404" MODIFIED="1404619300553" TEXT="Some griefers like to hurt but not actually kill">
+<font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1404615702717" ID="ID_1420944938" MODIFIED="1404615881209" TEXT="Area Capture">
+</node>
+<node CREATED="1404615702717" ID="ID_1420944938" MODIFIED="1404619123004" TEXT="Area Capture">
 <node CREATED="1404615726017" ID="ID_1311127480" MODIFIED="1404615883645" TEXT="Mission specific meaning..."/>
 </node>
 <node CREATED="1404615906221" ID="ID_1014643162" MODIFIED="1404615917280" TEXT="Join, Leave"/>
 </node>
 <node CREATED="1404615675937" ID="ID_1201185457" MODIFIED="1404616230373" TEXT="MissionEvent">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
-<node CREATED="1404616234401" ID="ID_1510209199" MODIFIED="1404616313461" TEXT="Switching to a next phase">
+<node CREATED="1404616234401" ID="ID_1510209199" MODIFIED="1404618949703" TEXT="Switching to next phase">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
 </node>
-<node CREATED="1404615892097" ID="ID_1823840726" MODIFIED="1404615895679" POSITION="left" TEXT="Session"/>
-<node CREATED="1404615895996" ID="ID_1139835614" MODIFIED="1404615899418" POSITION="left" TEXT="Player"/>
+<node CREATED="1404618991867" ID="ID_718518970" MODIFIED="1404618996972" POSITION="left" TEXT="Unmapped">
+<node CREATED="1404618999129" ID="ID_1937293600" MODIFIED="1404619006795" TEXT="Transport"/>
+<node CREATED="1404619010978" ID="ID_1748421813" MODIFIED="1404619021853" TEXT="Medevac"/>
+<node CREATED="1404619014802" ID="ID_374990625" MODIFIED="1404619097214" TEXT="Medical/Healing"/>
+<node CREATED="1404619386577" ID="ID_1431084759" MODIFIED="1404619395417" TEXT="Disciplinary actions"/>
+</node>
+<node CREATED="1404619139156" ID="ID_197432714" MODIFIED="1404619149189" POSITION="left" TEXT="I&apos;m taking the idea of &quot;scores&quot; out of it">
+<node CREATED="1404619149967" ID="ID_23235189" MODIFIED="1404619163629" TEXT="Too arbitrary, mission dependent"/>
+<node CREATED="1404619169599" ID="ID_968694041" MODIFIED="1404619196507" TEXT="Can generate a &quot;performance profile&quot;"/>
+</node>
 </node>
 </map>
