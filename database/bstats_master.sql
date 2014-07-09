@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.1.9
 -- Dumped by pg_dump version 9.3.1
--- Started on 2014-07-04 23:32:26
+-- Started on 2014-07-09 01:20:37
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,7 +15,7 @@ SET client_min_messages = warning;
 
 DROP DATABASE bstats_master;
 --
--- TOC entry 2175 (class 1262 OID 16590)
+-- TOC entry 2148 (class 1262 OID 16590)
 -- Name: bstats_master; Type: DATABASE; Schema: -; Owner: mahuja
 --
 
@@ -54,35 +54,6 @@ CREATE SCHEMA logs;
 ALTER SCHEMA logs OWNER TO mahuja;
 
 --
--- TOC entry 11 (class 2615 OID 16789)
--- Name: old_queries; Type: SCHEMA; Schema: -; Owner: mahuja
---
-
-CREATE SCHEMA old_queries;
-
-
-ALTER SCHEMA old_queries OWNER TO mahuja;
-
---
--- TOC entry 2177 (class 0 OID 0)
--- Dependencies: 11
--- Name: SCHEMA old_queries; Type: COMMENT; Schema: -; Owner: mahuja
---
-
-COMMENT ON SCHEMA old_queries IS 'SQL code doing complex selects (e.g. ALS php embedded with joins) should be moved here; that way we get the dependency tracking.';
-
-
---
--- TOC entry 12 (class 2615 OID 16790)
--- Name: old_static; Type: SCHEMA; Schema: -; Owner: mahuja
---
-
-CREATE SCHEMA old_static;
-
-
-ALTER SCHEMA old_static OWNER TO mahuja;
-
---
 -- TOC entry 6 (class 2615 OID 16791)
 -- Name: player; Type: SCHEMA; Schema: -; Owner: mahuja
 --
@@ -103,7 +74,7 @@ CREATE SCHEMA server;
 ALTER SCHEMA server OWNER TO mahuja;
 
 --
--- TOC entry 2181 (class 0 OID 0)
+-- TOC entry 2151 (class 0 OID 0)
 -- Dependencies: 8
 -- Name: SCHEMA server; Type: COMMENT; Schema: -; Owner: mahuja
 --
@@ -122,7 +93,7 @@ CREATE SCHEMA session;
 ALTER SCHEMA session OWNER TO mahuja;
 
 --
--- TOC entry 204 (class 3079 OID 16615)
+-- TOC entry 199 (class 3079 OID 16615)
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
@@ -130,8 +101,8 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2184 (class 0 OID 0)
--- Dependencies: 204
+-- TOC entry 2154 (class 0 OID 0)
+-- Dependencies: 199
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
@@ -139,7 +110,7 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
--- TOC entry 203 (class 3079 OID 16620)
+-- TOC entry 198 (class 3079 OID 16620)
 -- Name: adminpack; Type: EXTENSION; Schema: -; Owner: 
 --
 
@@ -147,80 +118,18 @@ CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2185 (class 0 OID 0)
--- Dependencies: 203
+-- TOC entry 2155 (class 0 OID 0)
+-- Dependencies: 198
 -- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
 
 
-SET search_path = old_queries, pg_catalog;
-
---
--- TOC entry 220 (class 1255 OID 16794)
--- Name: view_page_player(integer); Type: FUNCTION; Schema: old_queries; Owner: bstats_auto
---
-
-CREATE FUNCTION view_page_player(playerid integer) RETURNS integer
-    LANGUAGE sql SECURITY DEFINER
-    AS $_$update queries.page_views_player set cnt = cnt + 1 where playerid = $1 returning cnt;$_$;
-
-
-ALTER FUNCTION old_queries.view_page_player(playerid integer) OWNER TO bstats_auto;
-
-SET search_path = old_static, pg_catalog;
-
---
--- TOC entry 218 (class 1255 OID 16795)
--- Name: add_unknown_classes(); Type: FUNCTION; Schema: old_static; Owner: mahuja
---
-
-CREATE FUNCTION add_unknown_classes() RETURNS void
-    LANGUAGE sql
-    AS $$insert into classnames (classname) 
-SELECT distinct class FROM weaponstats_sum
-left join static.classnames on class = classnames.classname
-WHERE classnames.classname IS NULL
-$$;
-
-
-ALTER FUNCTION old_static.add_unknown_classes() OWNER TO mahuja;
-
---
--- TOC entry 2187 (class 0 OID 0)
--- Dependencies: 218
--- Name: FUNCTION add_unknown_classes(); Type: COMMENT; Schema: old_static; Owner: mahuja
---
-
-COMMENT ON FUNCTION add_unknown_classes() IS 'Fill classnames with entries known/reported through wpninfo but not already registered';
-
-
---
--- TOC entry 216 (class 1255 OID 16796)
--- Name: test_before_insert_upsert(); Type: FUNCTION; Schema: old_static; Owner: mahuja
---
-
-CREATE FUNCTION test_before_insert_upsert() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-perform * from test where key = new.key;
-if found then
-  update test set val = new.val where key=new.key;
-  return null;
-end if;
-return new;
-end
-$$;
-
-
-ALTER FUNCTION old_static.test_before_insert_upsert() OWNER TO mahuja;
-
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 217 (class 1255 OID 16797)
+-- TOC entry 211 (class 1255 OID 16797)
 -- Name: player_uid_to_id(character varying); Type: FUNCTION; Schema: player; Owner: mahuja
 --
 
@@ -233,7 +142,7 @@ $_$;
 ALTER FUNCTION player.player_uid_to_id(uid character varying) OWNER TO mahuja;
 
 --
--- TOC entry 219 (class 1255 OID 16798)
+-- TOC entry 212 (class 1255 OID 16798)
 -- Name: weaponstats_sum_upsert(); Type: FUNCTION; Schema: player; Owner: bstats_auto
 --
 
@@ -260,8 +169,8 @@ end $$;
 ALTER FUNCTION player.weaponstats_sum_upsert() OWNER TO bstats_auto;
 
 --
--- TOC entry 2188 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 2156 (class 0 OID 0)
+-- Dependencies: 212
 -- Name: FUNCTION weaponstats_sum_upsert(); Type: COMMENT; Schema: player; Owner: bstats_auto
 --
 
@@ -271,7 +180,7 @@ COMMENT ON FUNCTION weaponstats_sum_upsert() IS 'To have an actual race conditio
 SET search_path = server, pg_catalog;
 
 --
--- TOC entry 234 (class 1255 OID 17192)
+-- TOC entry 226 (class 1255 OID 17192)
 -- Name: accrash1(integer, text, integer, integer, text, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -294,7 +203,7 @@ $_$;
 ALTER FUNCTION server.accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 232 (class 1255 OID 17194)
+-- TOC entry 224 (class 1255 OID 17194)
 -- Name: civcas1(integer, text, text, integer, text, integer, numeric, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -307,7 +216,7 @@ $$;
 ALTER FUNCTION server.civcas1(sessionid integer, killeduid text, killeruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 238 (class 1255 OID 17193)
+-- TOC entry 230 (class 1255 OID 17193)
 -- Name: civdmg1(integer, text, text, numeric, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -320,7 +229,7 @@ $$;
 ALTER FUNCTION server.civdmg1(sessionid integer, victimid text, killer text, "when" numeric, weapon text, score integer, killedpos text, killerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 237 (class 1255 OID 17198)
+-- TOC entry 229 (class 1255 OID 17198)
 -- Name: death1(integer, text, integer, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -340,7 +249,7 @@ $_$;
 ALTER FUNCTION server.death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 240 (class 1255 OID 17195)
+-- TOC entry 232 (class 1255 OID 17195)
 -- Name: endsession1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -355,7 +264,7 @@ $_$;
 ALTER FUNCTION server.endsession1(sessionid integer, duration numeric, outcome text) OWNER TO mahuja;
 
 --
--- TOC entry 233 (class 1255 OID 17196)
+-- TOC entry 225 (class 1255 OID 17196)
 -- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -368,7 +277,7 @@ $$;
 ALTER FUNCTION server.friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 228 (class 1255 OID 17179)
+-- TOC entry 220 (class 1255 OID 17179)
 -- Name: inf_killed_inf1(integer, text, text, numeric, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -393,7 +302,7 @@ $_$;
 ALTER FUNCTION server.inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) OWNER TO bstats_auto;
 
 --
--- TOC entry 226 (class 1255 OID 17180)
+-- TOC entry 218 (class 1255 OID 17180)
 -- Name: inf_killed_veh1(integer, text, text, numeric, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -406,7 +315,7 @@ $$;
 ALTER FUNCTION server.inf_killed_veh1(sessionid integer, killer text, vehicletype text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) OWNER TO mahuja;
 
 --
--- TOC entry 230 (class 1255 OID 17188)
+-- TOC entry 222 (class 1255 OID 17188)
 -- Name: killassist1(integer, text, numeric, integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -419,7 +328,7 @@ $$;
 ALTER FUNCTION server.killassist1(sessionid integer, killer text, "when" numeric, score integer) OWNER TO mahuja;
 
 --
--- TOC entry 225 (class 1255 OID 17182)
+-- TOC entry 217 (class 1255 OID 17182)
 -- Name: missionevent1(integer, text, numeric, integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -432,7 +341,7 @@ $$;
 ALTER FUNCTION server.missionevent1(sessionid integer, killer text, "when" numeric, score integer) OWNER TO mahuja;
 
 --
--- TOC entry 221 (class 1255 OID 16803)
+-- TOC entry 213 (class 1255 OID 16803)
 -- Name: newmission1(integer, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -450,7 +359,7 @@ $_$;
 ALTER FUNCTION server.newmission1(oldsession integer, mission_name text) OWNER TO bstats_auto;
 
 --
--- TOC entry 227 (class 1255 OID 17178)
+-- TOC entry 219 (class 1255 OID 17178)
 -- Name: newplayer1(integer, text, text, numeric, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -467,7 +376,7 @@ $_$;
 ALTER FUNCTION server.newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) OWNER TO bstats_auto;
 
 --
--- TOC entry 222 (class 1255 OID 16805)
+-- TOC entry 214 (class 1255 OID 16805)
 -- Name: player_uid_to_id(text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -481,7 +390,7 @@ $_$;
 ALTER FUNCTION server.player_uid_to_id(uid text) OWNER TO bstats_auto;
 
 --
--- TOC entry 223 (class 1255 OID 16806)
+-- TOC entry 215 (class 1255 OID 16806)
 -- Name: playerleft1(integer, text, integer); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -497,7 +406,7 @@ $_$;
 ALTER FUNCTION server.playerleft1(sessionid integer, playerid text, "when" integer) OWNER TO bstats_auto;
 
 --
--- TOC entry 224 (class 1255 OID 16807)
+-- TOC entry 216 (class 1255 OID 16807)
 -- Name: position(text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -512,7 +421,7 @@ $_$;
 ALTER FUNCTION server."position"(text) OWNER TO mahuja;
 
 --
--- TOC entry 236 (class 1255 OID 17191)
+-- TOC entry 228 (class 1255 OID 17191)
 -- Name: roadkill1(integer, text, text, text, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -525,7 +434,7 @@ $$;
 ALTER FUNCTION server.roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) OWNER TO mahuja;
 
 --
--- TOC entry 239 (class 1255 OID 17199)
+-- TOC entry 231 (class 1255 OID 17199)
 -- Name: suicide1(integer, text, integer, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -545,7 +454,7 @@ $_$;
 ALTER FUNCTION server.suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 229 (class 1255 OID 17186)
+-- TOC entry 221 (class 1255 OID 17186)
 -- Name: transport1(integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -558,7 +467,7 @@ $$;
 ALTER FUNCTION server.transport1(sessionid integer) OWNER TO mahuja;
 
 --
--- TOC entry 231 (class 1255 OID 17189)
+-- TOC entry 223 (class 1255 OID 17189)
 -- Name: vehinfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -571,7 +480,7 @@ $$;
 ALTER FUNCTION server.vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) OWNER TO mahuja;
 
 --
--- TOC entry 235 (class 1255 OID 17190)
+-- TOC entry 227 (class 1255 OID 17190)
 -- Name: wpninfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -588,7 +497,7 @@ SET search_path = event, pg_catalog;
 SET default_with_oids = false;
 
 --
--- TOC entry 167 (class 1259 OID 16809)
+-- TOC entry 165 (class 1259 OID 16809)
 -- Name: event; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -603,7 +512,7 @@ CREATE TABLE event (
 ALTER TABLE event.event OWNER TO mahuja;
 
 --
--- TOC entry 168 (class 1259 OID 16815)
+-- TOC entry 166 (class 1259 OID 16815)
 -- Name: playerevent; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -617,12 +526,13 @@ INHERITS (event);
 ALTER TABLE event.playerevent OWNER TO mahuja;
 
 --
--- TOC entry 169 (class 1259 OID 16821)
+-- TOC entry 167 (class 1259 OID 16821)
 -- Name: scoreevent; Type: TABLE; Schema: event; Owner: mahuja
 --
 
 CREATE TABLE scoreevent (
-    points integer DEFAULT 0 NOT NULL
+    points integer DEFAULT 0 NOT NULL,
+    teamkill teamkilltype
 )
 INHERITS (playerevent);
 
@@ -630,7 +540,7 @@ INHERITS (playerevent);
 ALTER TABLE event.scoreevent OWNER TO mahuja;
 
 --
--- TOC entry 170 (class 1259 OID 16828)
+-- TOC entry 168 (class 1259 OID 16828)
 -- Name: ac_crash; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -644,7 +554,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.ac_crash OWNER TO mahuja;
 
 --
--- TOC entry 171 (class 1259 OID 16835)
+-- TOC entry 169 (class 1259 OID 16835)
 -- Name: civkill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -660,7 +570,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.civkill OWNER TO mahuja;
 
 --
--- TOC entry 172 (class 1259 OID 16842)
+-- TOC entry 170 (class 1259 OID 16842)
 -- Name: death; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -673,7 +583,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.death OWNER TO mahuja;
 
 --
--- TOC entry 173 (class 1259 OID 16850)
+-- TOC entry 171 (class 1259 OID 16850)
 -- Name: event_eventid_seq; Type: SEQUENCE; Schema: event; Owner: mahuja
 --
 
@@ -688,8 +598,8 @@ CREATE SEQUENCE event_eventid_seq
 ALTER TABLE event.event_eventid_seq OWNER TO mahuja;
 
 --
--- TOC entry 2215 (class 0 OID 0)
--- Dependencies: 173
+-- TOC entry 2183 (class 0 OID 0)
+-- Dependencies: 171
 -- Name: event_eventid_seq; Type: SEQUENCE OWNED BY; Schema: event; Owner: mahuja
 --
 
@@ -697,7 +607,7 @@ ALTER SEQUENCE event_eventid_seq OWNED BY event.eventid;
 
 
 --
--- TOC entry 174 (class 1259 OID 16852)
+-- TOC entry 172 (class 1259 OID 16852)
 -- Name: inf_inf_kill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -712,7 +622,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.inf_inf_kill OWNER TO mahuja;
 
 --
--- TOC entry 175 (class 1259 OID 16859)
+-- TOC entry 173 (class 1259 OID 16859)
 -- Name: inf_veh_kill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -728,7 +638,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.inf_veh_kill OWNER TO mahuja;
 
 --
--- TOC entry 176 (class 1259 OID 16866)
+-- TOC entry 174 (class 1259 OID 16866)
 -- Name: kill_assist; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -740,7 +650,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.kill_assist OWNER TO mahuja;
 
 --
--- TOC entry 177 (class 1259 OID 16873)
+-- TOC entry 175 (class 1259 OID 16873)
 -- Name: roadkill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -756,7 +666,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.roadkill OWNER TO mahuja;
 
 --
--- TOC entry 178 (class 1259 OID 16880)
+-- TOC entry 176 (class 1259 OID 16880)
 -- Name: teamkill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -772,7 +682,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.teamkill OWNER TO mahuja;
 
 --
--- TOC entry 179 (class 1259 OID 16887)
+-- TOC entry 177 (class 1259 OID 16887)
 -- Name: transport; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -786,7 +696,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.transport OWNER TO mahuja;
 
 --
--- TOC entry 180 (class 1259 OID 16894)
+-- TOC entry 178 (class 1259 OID 16894)
 -- Name: veh_inf_kill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -802,7 +712,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.veh_inf_kill OWNER TO mahuja;
 
 --
--- TOC entry 181 (class 1259 OID 16901)
+-- TOC entry 179 (class 1259 OID 16901)
 -- Name: veh_veh_kill; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -819,7 +729,7 @@ INHERITS (scoreevent);
 ALTER TABLE event.veh_veh_kill OWNER TO mahuja;
 
 --
--- TOC entry 182 (class 1259 OID 16908)
+-- TOC entry 180 (class 1259 OID 16908)
 -- Name: zone_capture; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -834,7 +744,7 @@ ALTER TABLE event.zone_capture OWNER TO mahuja;
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 183 (class 1259 OID 16915)
+-- TOC entry 181 (class 1259 OID 16915)
 -- Name: client_errors; Type: TABLE; Schema: logs; Owner: mahuja
 --
 
@@ -850,7 +760,7 @@ CREATE TABLE client_errors (
 ALTER TABLE logs.client_errors OWNER TO mahuja;
 
 --
--- TOC entry 184 (class 1259 OID 16921)
+-- TOC entry 182 (class 1259 OID 16921)
 -- Name: client_errors_id_seq; Type: SEQUENCE; Schema: logs; Owner: mahuja
 --
 
@@ -865,66 +775,18 @@ CREATE SEQUENCE client_errors_id_seq
 ALTER TABLE logs.client_errors_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2227 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 2195 (class 0 OID 0)
+-- Dependencies: 182
 -- Name: client_errors_id_seq; Type: SEQUENCE OWNED BY; Schema: logs; Owner: mahuja
 --
 
 ALTER SEQUENCE client_errors_id_seq OWNED BY client_errors.id;
 
 
-SET search_path = old_queries, pg_catalog;
-
---
--- TOC entry 185 (class 1259 OID 16923)
--- Name: page_views_player; Type: TABLE; Schema: old_queries; Owner: mahuja
---
-
-CREATE TABLE page_views_player (
-    playerid integer NOT NULL,
-    cnt integer DEFAULT 0
-);
-
-
-ALTER TABLE old_queries.page_views_player OWNER TO mahuja;
-
-SET search_path = old_static, pg_catalog;
-
---
--- TOC entry 186 (class 1259 OID 16927)
--- Name: classgroups; Type: TABLE; Schema: old_static; Owner: mahuja
---
-
-CREATE TABLE classgroups (
-    groupname character varying(40) NOT NULL,
-    categories character varying(40)[],
-    vorder smallint,
-    worder smallint
-);
-
-
-ALTER TABLE old_static.classgroups OWNER TO mahuja;
-
---
--- TOC entry 187 (class 1259 OID 16933)
--- Name: classnames; Type: TABLE; Schema: old_static; Owner: mahuja
---
-
-CREATE TABLE classnames (
-    classname character varying(40) NOT NULL,
-    displayname character varying(40),
-    vehiclecategory character varying(20),
-    weaponcategory character varying(20),
-    CONSTRAINT either_weapon_or_vehicle CHECK ((NOT ((weaponcategory IS NOT NULL) AND (vehiclecategory IS NOT NULL))))
-);
-
-
-ALTER TABLE old_static.classnames OWNER TO mahuja;
-
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 188 (class 1259 OID 16937)
+-- TOC entry 183 (class 1259 OID 16937)
 -- Name: playername; Type: TABLE; Schema: player; Owner: mahuja
 --
 
@@ -939,7 +801,7 @@ CREATE TABLE playername (
 ALTER TABLE player.playername OWNER TO mahuja;
 
 --
--- TOC entry 189 (class 1259 OID 16945)
+-- TOC entry 184 (class 1259 OID 16945)
 -- Name: last_name_seen; Type: VIEW; Schema: player; Owner: mahuja
 --
 
@@ -950,7 +812,7 @@ SELECT playername.playerid, first_value(playername.name) OVER (PARTITION BY play
 ALTER TABLE player.last_name_seen OWNER TO mahuja;
 
 --
--- TOC entry 190 (class 1259 OID 16949)
+-- TOC entry 185 (class 1259 OID 16949)
 -- Name: player; Type: TABLE; Schema: player; Owner: mahuja
 --
 
@@ -965,7 +827,7 @@ CREATE TABLE player (
 ALTER TABLE player.player OWNER TO mahuja;
 
 --
--- TOC entry 191 (class 1259 OID 16956)
+-- TOC entry 186 (class 1259 OID 16956)
 -- Name: playerlist_id_seq; Type: SEQUENCE; Schema: player; Owner: mahuja
 --
 
@@ -980,8 +842,8 @@ CREATE SEQUENCE playerlist_id_seq
 ALTER TABLE player.playerlist_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2233 (class 0 OID 0)
--- Dependencies: 191
+-- TOC entry 2198 (class 0 OID 0)
+-- Dependencies: 186
 -- Name: playerlist_id_seq; Type: SEQUENCE OWNED BY; Schema: player; Owner: mahuja
 --
 
@@ -989,7 +851,7 @@ ALTER SEQUENCE playerlist_id_seq OWNED BY player.id;
 
 
 --
--- TOC entry 192 (class 1259 OID 16958)
+-- TOC entry 187 (class 1259 OID 16958)
 -- Name: playersum; Type: TABLE; Schema: player; Owner: mahuja
 --
 
@@ -1016,7 +878,7 @@ CREATE TABLE playersum (
 ALTER TABLE player.playersum OWNER TO mahuja;
 
 --
--- TOC entry 193 (class 1259 OID 16976)
+-- TOC entry 188 (class 1259 OID 16976)
 -- Name: weaponstats; Type: TABLE; Schema: player; Owner: mahuja
 --
 
@@ -1037,7 +899,7 @@ CREATE TABLE weaponstats (
 ALTER TABLE player.weaponstats OWNER TO mahuja;
 
 --
--- TOC entry 194 (class 1259 OID 16986)
+-- TOC entry 189 (class 1259 OID 16986)
 -- Name: weaponstats_sum; Type: TABLE; Schema: player; Owner: mahuja
 --
 
@@ -1061,7 +923,7 @@ ALTER TABLE player.weaponstats_sum OWNER TO mahuja;
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 195 (class 1259 OID 16998)
+-- TOC entry 190 (class 1259 OID 16998)
 -- Name: errorlog; Type: TABLE; Schema: session; Owner: mahuja
 --
 
@@ -1075,8 +937,8 @@ CREATE TABLE errorlog (
 ALTER TABLE session.errorlog OWNER TO mahuja;
 
 --
--- TOC entry 2235 (class 0 OID 0)
--- Dependencies: 195
+-- TOC entry 2200 (class 0 OID 0)
+-- Dependencies: 190
 -- Name: TABLE errorlog; Type: COMMENT; Schema: session; Owner: mahuja
 --
 
@@ -1084,7 +946,7 @@ COMMENT ON TABLE errorlog IS 'Anytime a query fails on a server, that should be 
 
 
 --
--- TOC entry 196 (class 1259 OID 17004)
+-- TOC entry 191 (class 1259 OID 17004)
 -- Name: errorlog_errorid_seq; Type: SEQUENCE; Schema: session; Owner: mahuja
 --
 
@@ -1099,8 +961,8 @@ CREATE SEQUENCE errorlog_errorid_seq
 ALTER TABLE session.errorlog_errorid_seq OWNER TO mahuja;
 
 --
--- TOC entry 2237 (class 0 OID 0)
--- Dependencies: 196
+-- TOC entry 2202 (class 0 OID 0)
+-- Dependencies: 191
 -- Name: errorlog_errorid_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
 
@@ -1108,7 +970,7 @@ ALTER SEQUENCE errorlog_errorid_seq OWNED BY errorlog.errorid;
 
 
 --
--- TOC entry 197 (class 1259 OID 17006)
+-- TOC entry 192 (class 1259 OID 17006)
 -- Name: serverlist; Type: TABLE; Schema: session; Owner: mahuja
 --
 
@@ -1123,7 +985,7 @@ CREATE TABLE serverlist (
 ALTER TABLE session.serverlist OWNER TO mahuja;
 
 --
--- TOC entry 198 (class 1259 OID 17012)
+-- TOC entry 193 (class 1259 OID 17012)
 -- Name: serverlist_id_seq; Type: SEQUENCE; Schema: session; Owner: mahuja
 --
 
@@ -1138,8 +1000,8 @@ CREATE SEQUENCE serverlist_id_seq
 ALTER TABLE session.serverlist_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2240 (class 0 OID 0)
--- Dependencies: 198
+-- TOC entry 2205 (class 0 OID 0)
+-- Dependencies: 193
 -- Name: serverlist_id_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
 
@@ -1147,7 +1009,7 @@ ALTER SEQUENCE serverlist_id_seq OWNED BY serverlist.id;
 
 
 --
--- TOC entry 199 (class 1259 OID 17014)
+-- TOC entry 194 (class 1259 OID 17014)
 -- Name: session; Type: TABLE; Schema: session; Owner: mahuja
 --
 
@@ -1163,7 +1025,7 @@ CREATE TABLE session (
 ALTER TABLE session.session OWNER TO mahuja;
 
 --
--- TOC entry 200 (class 1259 OID 17020)
+-- TOC entry 195 (class 1259 OID 17020)
 -- Name: session_id_seq; Type: SEQUENCE; Schema: session; Owner: mahuja
 --
 
@@ -1178,8 +1040,8 @@ CREATE SEQUENCE session_id_seq
 ALTER TABLE session.session_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2243 (class 0 OID 0)
--- Dependencies: 200
+-- TOC entry 2208 (class 0 OID 0)
+-- Dependencies: 195
 -- Name: session_id_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
 
@@ -1187,7 +1049,7 @@ ALTER SEQUENCE session_id_seq OWNED BY session.id;
 
 
 --
--- TOC entry 201 (class 1259 OID 17022)
+-- TOC entry 196 (class 1259 OID 17022)
 -- Name: sessionplayers; Type: TABLE; Schema: session; Owner: mahuja
 --
 
@@ -1205,7 +1067,7 @@ CREATE TABLE sessionplayers (
 ALTER TABLE session.sessionplayers OWNER TO mahuja;
 
 --
--- TOC entry 202 (class 1259 OID 17028)
+-- TOC entry 197 (class 1259 OID 17028)
 -- Name: sessionplayers_id_seq; Type: SEQUENCE; Schema: session; Owner: mahuja
 --
 
@@ -1220,8 +1082,8 @@ CREATE SEQUENCE sessionplayers_id_seq
 ALTER TABLE session.sessionplayers_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2246 (class 0 OID 0)
--- Dependencies: 202
+-- TOC entry 2211 (class 0 OID 0)
+-- Dependencies: 197
 -- Name: sessionplayers_id_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
 
@@ -1231,7 +1093,7 @@ ALTER SEQUENCE sessionplayers_id_seq OWNED BY sessionplayers.id;
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 1937 (class 2604 OID 17030)
+-- TOC entry 1918 (class 2604 OID 17030)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1239,7 +1101,7 @@ ALTER TABLE ONLY ac_crash ALTER COLUMN eventid SET DEFAULT nextval('event_eventi
 
 
 --
--- TOC entry 1938 (class 2604 OID 17031)
+-- TOC entry 1919 (class 2604 OID 17031)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1247,7 +1109,7 @@ ALTER TABLE ONLY ac_crash ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1939 (class 2604 OID 17032)
+-- TOC entry 1920 (class 2604 OID 17032)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1255,7 +1117,7 @@ ALTER TABLE ONLY civkill ALTER COLUMN eventid SET DEFAULT nextval('event_eventid
 
 
 --
--- TOC entry 1940 (class 2604 OID 17033)
+-- TOC entry 1921 (class 2604 OID 17033)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1263,7 +1125,7 @@ ALTER TABLE ONLY civkill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1941 (class 2604 OID 17034)
+-- TOC entry 1922 (class 2604 OID 17034)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1271,7 +1133,7 @@ ALTER TABLE ONLY death ALTER COLUMN eventid SET DEFAULT nextval('event_eventid_s
 
 
 --
--- TOC entry 1942 (class 2604 OID 17035)
+-- TOC entry 1923 (class 2604 OID 17035)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1279,7 +1141,7 @@ ALTER TABLE ONLY death ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1933 (class 2604 OID 17036)
+-- TOC entry 1914 (class 2604 OID 17036)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1287,7 +1149,7 @@ ALTER TABLE ONLY event ALTER COLUMN eventid SET DEFAULT nextval('event_eventid_s
 
 
 --
--- TOC entry 1944 (class 2604 OID 17037)
+-- TOC entry 1925 (class 2604 OID 17037)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1295,7 +1157,7 @@ ALTER TABLE ONLY inf_inf_kill ALTER COLUMN eventid SET DEFAULT nextval('event_ev
 
 
 --
--- TOC entry 1945 (class 2604 OID 17038)
+-- TOC entry 1926 (class 2604 OID 17038)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1303,7 +1165,7 @@ ALTER TABLE ONLY inf_inf_kill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1946 (class 2604 OID 17039)
+-- TOC entry 1927 (class 2604 OID 17039)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1311,7 +1173,7 @@ ALTER TABLE ONLY inf_veh_kill ALTER COLUMN eventid SET DEFAULT nextval('event_ev
 
 
 --
--- TOC entry 1947 (class 2604 OID 17040)
+-- TOC entry 1928 (class 2604 OID 17040)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1319,7 +1181,7 @@ ALTER TABLE ONLY inf_veh_kill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1948 (class 2604 OID 17041)
+-- TOC entry 1929 (class 2604 OID 17041)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1327,7 +1189,7 @@ ALTER TABLE ONLY kill_assist ALTER COLUMN eventid SET DEFAULT nextval('event_eve
 
 
 --
--- TOC entry 1949 (class 2604 OID 17042)
+-- TOC entry 1930 (class 2604 OID 17042)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1335,7 +1197,7 @@ ALTER TABLE ONLY kill_assist ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1934 (class 2604 OID 17043)
+-- TOC entry 1915 (class 2604 OID 17043)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1343,7 +1205,7 @@ ALTER TABLE ONLY playerevent ALTER COLUMN eventid SET DEFAULT nextval('event_eve
 
 
 --
--- TOC entry 1950 (class 2604 OID 17044)
+-- TOC entry 1931 (class 2604 OID 17044)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1351,7 +1213,7 @@ ALTER TABLE ONLY roadkill ALTER COLUMN eventid SET DEFAULT nextval('event_eventi
 
 
 --
--- TOC entry 1951 (class 2604 OID 17045)
+-- TOC entry 1932 (class 2604 OID 17045)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1359,7 +1221,7 @@ ALTER TABLE ONLY roadkill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1936 (class 2604 OID 17046)
+-- TOC entry 1917 (class 2604 OID 17046)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1367,7 +1229,7 @@ ALTER TABLE ONLY scoreevent ALTER COLUMN eventid SET DEFAULT nextval('event_even
 
 
 --
--- TOC entry 1952 (class 2604 OID 17047)
+-- TOC entry 1933 (class 2604 OID 17047)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1375,7 +1237,7 @@ ALTER TABLE ONLY teamkill ALTER COLUMN eventid SET DEFAULT nextval('event_eventi
 
 
 --
--- TOC entry 1953 (class 2604 OID 17048)
+-- TOC entry 1934 (class 2604 OID 17048)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1383,7 +1245,7 @@ ALTER TABLE ONLY teamkill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1954 (class 2604 OID 17049)
+-- TOC entry 1935 (class 2604 OID 17049)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1391,7 +1253,7 @@ ALTER TABLE ONLY transport ALTER COLUMN eventid SET DEFAULT nextval('event_event
 
 
 --
--- TOC entry 1955 (class 2604 OID 17050)
+-- TOC entry 1936 (class 2604 OID 17050)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1399,7 +1261,7 @@ ALTER TABLE ONLY transport ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1956 (class 2604 OID 17051)
+-- TOC entry 1937 (class 2604 OID 17051)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1407,7 +1269,7 @@ ALTER TABLE ONLY veh_inf_kill ALTER COLUMN eventid SET DEFAULT nextval('event_ev
 
 
 --
--- TOC entry 1957 (class 2604 OID 17052)
+-- TOC entry 1938 (class 2604 OID 17052)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1415,7 +1277,7 @@ ALTER TABLE ONLY veh_inf_kill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1958 (class 2604 OID 17053)
+-- TOC entry 1939 (class 2604 OID 17053)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1423,7 +1285,7 @@ ALTER TABLE ONLY veh_veh_kill ALTER COLUMN eventid SET DEFAULT nextval('event_ev
 
 
 --
--- TOC entry 1959 (class 2604 OID 17054)
+-- TOC entry 1940 (class 2604 OID 17054)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1431,7 +1293,7 @@ ALTER TABLE ONLY veh_veh_kill ALTER COLUMN points SET DEFAULT 0;
 
 
 --
--- TOC entry 1960 (class 2604 OID 17055)
+-- TOC entry 1941 (class 2604 OID 17055)
 -- Name: eventid; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1439,7 +1301,7 @@ ALTER TABLE ONLY zone_capture ALTER COLUMN eventid SET DEFAULT nextval('event_ev
 
 
 --
--- TOC entry 1961 (class 2604 OID 17056)
+-- TOC entry 1942 (class 2604 OID 17056)
 -- Name: points; Type: DEFAULT; Schema: event; Owner: mahuja
 --
 
@@ -1449,7 +1311,7 @@ ALTER TABLE ONLY zone_capture ALTER COLUMN points SET DEFAULT 0;
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 1962 (class 2604 OID 17057)
+-- TOC entry 1943 (class 2604 OID 17057)
 -- Name: id; Type: DEFAULT; Schema: logs; Owner: mahuja
 --
 
@@ -1459,7 +1321,7 @@ ALTER TABLE ONLY client_errors ALTER COLUMN id SET DEFAULT nextval('client_error
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 1968 (class 2604 OID 17058)
+-- TOC entry 1947 (class 2604 OID 17058)
 -- Name: id; Type: DEFAULT; Schema: player; Owner: mahuja
 --
 
@@ -1469,7 +1331,7 @@ ALTER TABLE ONLY player ALTER COLUMN id SET DEFAULT nextval('playerlist_id_seq':
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 2000 (class 2604 OID 17059)
+-- TOC entry 1979 (class 2604 OID 17059)
 -- Name: errorid; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1477,7 +1339,7 @@ ALTER TABLE ONLY errorlog ALTER COLUMN errorid SET DEFAULT nextval('errorlog_err
 
 
 --
--- TOC entry 2001 (class 2604 OID 17060)
+-- TOC entry 1980 (class 2604 OID 17060)
 -- Name: id; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1485,7 +1347,7 @@ ALTER TABLE ONLY serverlist ALTER COLUMN id SET DEFAULT nextval('serverlist_id_s
 
 
 --
--- TOC entry 2002 (class 2604 OID 17061)
+-- TOC entry 1981 (class 2604 OID 17061)
 -- Name: id; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1493,7 +1355,7 @@ ALTER TABLE ONLY session ALTER COLUMN id SET DEFAULT nextval('session_id_seq'::r
 
 
 --
--- TOC entry 2003 (class 2604 OID 17062)
+-- TOC entry 1982 (class 2604 OID 17062)
 -- Name: id; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1503,7 +1365,7 @@ ALTER TABLE ONLY sessionplayers ALTER COLUMN id SET DEFAULT nextval('sessionplay
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 2011 (class 2606 OID 17064)
+-- TOC entry 1990 (class 2606 OID 17064)
 -- Name: ac_crash_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1512,7 +1374,7 @@ ALTER TABLE ONLY ac_crash
 
 
 --
--- TOC entry 2013 (class 2606 OID 17066)
+-- TOC entry 1992 (class 2606 OID 17066)
 -- Name: civkill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1521,7 +1383,7 @@ ALTER TABLE ONLY civkill
 
 
 --
--- TOC entry 2015 (class 2606 OID 17068)
+-- TOC entry 1994 (class 2606 OID 17068)
 -- Name: death_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1530,7 +1392,7 @@ ALTER TABLE ONLY death
 
 
 --
--- TOC entry 2005 (class 2606 OID 17070)
+-- TOC entry 1984 (class 2606 OID 17070)
 -- Name: event_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1539,7 +1401,7 @@ ALTER TABLE ONLY event
 
 
 --
--- TOC entry 2017 (class 2606 OID 17072)
+-- TOC entry 1996 (class 2606 OID 17072)
 -- Name: inf_inf_kill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1548,7 +1410,7 @@ ALTER TABLE ONLY inf_inf_kill
 
 
 --
--- TOC entry 2019 (class 2606 OID 17074)
+-- TOC entry 1998 (class 2606 OID 17074)
 -- Name: inf_veh_kill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1557,7 +1419,7 @@ ALTER TABLE ONLY inf_veh_kill
 
 
 --
--- TOC entry 2021 (class 2606 OID 17076)
+-- TOC entry 2000 (class 2606 OID 17076)
 -- Name: kill_assist_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1566,7 +1428,7 @@ ALTER TABLE ONLY kill_assist
 
 
 --
--- TOC entry 2007 (class 2606 OID 17078)
+-- TOC entry 1986 (class 2606 OID 17078)
 -- Name: playerevent_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1575,7 +1437,7 @@ ALTER TABLE ONLY playerevent
 
 
 --
--- TOC entry 2023 (class 2606 OID 17080)
+-- TOC entry 2002 (class 2606 OID 17080)
 -- Name: roadkill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1584,7 +1446,7 @@ ALTER TABLE ONLY roadkill
 
 
 --
--- TOC entry 2009 (class 2606 OID 17082)
+-- TOC entry 1988 (class 2606 OID 17082)
 -- Name: scoreevent_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1593,7 +1455,7 @@ ALTER TABLE ONLY scoreevent
 
 
 --
--- TOC entry 2025 (class 2606 OID 17084)
+-- TOC entry 2004 (class 2606 OID 17084)
 -- Name: teamkill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1602,7 +1464,7 @@ ALTER TABLE ONLY teamkill
 
 
 --
--- TOC entry 2027 (class 2606 OID 17086)
+-- TOC entry 2006 (class 2606 OID 17086)
 -- Name: transport_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1611,7 +1473,7 @@ ALTER TABLE ONLY transport
 
 
 --
--- TOC entry 2029 (class 2606 OID 17088)
+-- TOC entry 2008 (class 2606 OID 17088)
 -- Name: veh_inf_kill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1620,7 +1482,7 @@ ALTER TABLE ONLY veh_inf_kill
 
 
 --
--- TOC entry 2031 (class 2606 OID 17090)
+-- TOC entry 2010 (class 2606 OID 17090)
 -- Name: veh_veh_kill_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1629,7 +1491,7 @@ ALTER TABLE ONLY veh_veh_kill
 
 
 --
--- TOC entry 2033 (class 2606 OID 17092)
+-- TOC entry 2012 (class 2606 OID 17092)
 -- Name: zone_capture_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1640,7 +1502,7 @@ ALTER TABLE ONLY zone_capture
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 2035 (class 2606 OID 17094)
+-- TOC entry 2014 (class 2606 OID 17094)
 -- Name: client_errors_pkey; Type: CONSTRAINT; Schema: logs; Owner: mahuja
 --
 
@@ -1648,41 +1510,10 @@ ALTER TABLE ONLY client_errors
     ADD CONSTRAINT client_errors_pkey PRIMARY KEY (id);
 
 
-SET search_path = old_queries, pg_catalog;
-
---
--- TOC entry 2037 (class 2606 OID 17096)
--- Name: page_views_player_pkey; Type: CONSTRAINT; Schema: old_queries; Owner: mahuja
---
-
-ALTER TABLE ONLY page_views_player
-    ADD CONSTRAINT page_views_player_pkey PRIMARY KEY (playerid);
-
-
-SET search_path = old_static, pg_catalog;
-
---
--- TOC entry 2039 (class 2606 OID 17098)
--- Name: classgroups_pkey; Type: CONSTRAINT; Schema: old_static; Owner: mahuja
---
-
-ALTER TABLE ONLY classgroups
-    ADD CONSTRAINT classgroups_pkey PRIMARY KEY (groupname);
-
-
---
--- TOC entry 2041 (class 2606 OID 17100)
--- Name: classnames_pkey; Type: CONSTRAINT; Schema: old_static; Owner: mahuja
---
-
-ALTER TABLE ONLY classnames
-    ADD CONSTRAINT classnames_pkey PRIMARY KEY (classname);
-
-
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 2045 (class 2606 OID 17102)
+-- TOC entry 2018 (class 2606 OID 17102)
 -- Name: playerlist_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1691,7 +1522,7 @@ ALTER TABLE ONLY player
 
 
 --
--- TOC entry 2043 (class 2606 OID 17104)
+-- TOC entry 2016 (class 2606 OID 17104)
 -- Name: playername_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1700,7 +1531,7 @@ ALTER TABLE ONLY playername
 
 
 --
--- TOC entry 2049 (class 2606 OID 17106)
+-- TOC entry 2022 (class 2606 OID 17106)
 -- Name: playersum_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1709,7 +1540,7 @@ ALTER TABLE ONLY playersum
 
 
 --
--- TOC entry 2047 (class 2606 OID 17108)
+-- TOC entry 2020 (class 2606 OID 17108)
 -- Name: unique_gameuid; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1718,7 +1549,7 @@ ALTER TABLE ONLY player
 
 
 --
--- TOC entry 2051 (class 2606 OID 17110)
+-- TOC entry 2024 (class 2606 OID 17110)
 -- Name: weaponstats_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1727,7 +1558,7 @@ ALTER TABLE ONLY weaponstats
 
 
 --
--- TOC entry 2053 (class 2606 OID 17112)
+-- TOC entry 2026 (class 2606 OID 17112)
 -- Name: weaponstats_sum_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1738,7 +1569,7 @@ ALTER TABLE ONLY weaponstats_sum
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 2055 (class 2606 OID 17114)
+-- TOC entry 2028 (class 2606 OID 17114)
 -- Name: errorlog_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1747,7 +1578,7 @@ ALTER TABLE ONLY errorlog
 
 
 --
--- TOC entry 2057 (class 2606 OID 17116)
+-- TOC entry 2030 (class 2606 OID 17116)
 -- Name: serverlist_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1756,7 +1587,7 @@ ALTER TABLE ONLY serverlist
 
 
 --
--- TOC entry 2059 (class 2606 OID 17118)
+-- TOC entry 2032 (class 2606 OID 17118)
 -- Name: session_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1765,7 +1596,7 @@ ALTER TABLE ONLY session
 
 
 --
--- TOC entry 2061 (class 2606 OID 17120)
+-- TOC entry 2034 (class 2606 OID 17120)
 -- Name: sessionplayers_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1776,7 +1607,7 @@ ALTER TABLE ONLY sessionplayers
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 2170 (class 2618 OID 17121)
+-- TOC entry 2143 (class 2618 OID 17121)
 -- Name: upsert; Type: RULE; Schema: player; Owner: mahuja
 --
 
@@ -1784,7 +1615,7 @@ CREATE RULE upsert AS ON INSERT TO player WHERE ((new.gameuid)::text IN (SELECT 
 
 
 --
--- TOC entry 2067 (class 2620 OID 17123)
+-- TOC entry 2040 (class 2620 OID 17123)
 -- Name: upsert; Type: TRIGGER; Schema: player; Owner: mahuja
 --
 
@@ -1794,7 +1625,7 @@ CREATE TRIGGER upsert BEFORE INSERT ON weaponstats_sum FOR EACH ROW EXECUTE PROC
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 2062 (class 2606 OID 17124)
+-- TOC entry 2035 (class 2606 OID 17124)
 -- Name: event_session_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1805,7 +1636,7 @@ ALTER TABLE ONLY event
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 2063 (class 2606 OID 17160)
+-- TOC entry 2036 (class 2606 OID 17160)
 -- Name: playername_playerid_fkey; Type: FK CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1816,7 +1647,7 @@ ALTER TABLE ONLY playername
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 2064 (class 2606 OID 17134)
+-- TOC entry 2037 (class 2606 OID 17134)
 -- Name: session_server_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1825,7 +1656,7 @@ ALTER TABLE ONLY session
 
 
 --
--- TOC entry 2065 (class 2606 OID 17139)
+-- TOC entry 2038 (class 2606 OID 17139)
 -- Name: sessionplayers_player_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1834,7 +1665,7 @@ ALTER TABLE ONLY sessionplayers
 
 
 --
--- TOC entry 2066 (class 2606 OID 17144)
+-- TOC entry 2039 (class 2606 OID 17144)
 -- Name: sessionplayers_session_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1843,7 +1674,7 @@ ALTER TABLE ONLY sessionplayers
 
 
 --
--- TOC entry 2176 (class 0 OID 0)
+-- TOC entry 2149 (class 0 OID 0)
 -- Dependencies: 10
 -- Name: event; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1857,31 +1688,7 @@ GRANT USAGE ON SCHEMA event TO bstats_admin;
 
 
 --
--- TOC entry 2178 (class 0 OID 0)
--- Dependencies: 11
--- Name: old_queries; Type: ACL; Schema: -; Owner: mahuja
---
-
-REVOKE ALL ON SCHEMA old_queries FROM PUBLIC;
-REVOKE ALL ON SCHEMA old_queries FROM mahuja;
-GRANT ALL ON SCHEMA old_queries TO mahuja;
-GRANT USAGE ON SCHEMA old_queries TO PUBLIC;
-
-
---
--- TOC entry 2179 (class 0 OID 0)
--- Dependencies: 12
--- Name: old_static; Type: ACL; Schema: -; Owner: mahuja
---
-
-REVOKE ALL ON SCHEMA old_static FROM PUBLIC;
-REVOKE ALL ON SCHEMA old_static FROM mahuja;
-GRANT ALL ON SCHEMA old_static TO mahuja;
-GRANT USAGE ON SCHEMA old_static TO PUBLIC;
-
-
---
--- TOC entry 2180 (class 0 OID 0)
+-- TOC entry 2150 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: player; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1895,7 +1702,7 @@ GRANT USAGE ON SCHEMA player TO bstats_reader;
 
 
 --
--- TOC entry 2182 (class 0 OID 0)
+-- TOC entry 2152 (class 0 OID 0)
 -- Dependencies: 8
 -- Name: server; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1908,7 +1715,7 @@ GRANT USAGE ON SCHEMA server TO bstats_auto;
 
 
 --
--- TOC entry 2183 (class 0 OID 0)
+-- TOC entry 2153 (class 0 OID 0)
 -- Dependencies: 7
 -- Name: session; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1920,26 +1727,11 @@ GRANT USAGE ON SCHEMA session TO bstats_auto;
 GRANT USAGE ON SCHEMA session TO bstats_reader;
 
 
-SET search_path = old_queries, pg_catalog;
-
---
--- TOC entry 2186 (class 0 OID 0)
--- Dependencies: 220
--- Name: view_page_player(integer); Type: ACL; Schema: old_queries; Owner: bstats_auto
---
-
-REVOKE ALL ON FUNCTION view_page_player(playerid integer) FROM PUBLIC;
-REVOKE ALL ON FUNCTION view_page_player(playerid integer) FROM bstats_auto;
-GRANT ALL ON FUNCTION view_page_player(playerid integer) TO bstats_auto;
-GRANT ALL ON FUNCTION view_page_player(playerid integer) TO PUBLIC;
-GRANT ALL ON FUNCTION view_page_player(playerid integer) TO bstats_reader;
-
-
 SET search_path = server, pg_catalog;
 
 --
--- TOC entry 2189 (class 0 OID 0)
--- Dependencies: 234
+-- TOC entry 2157 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: accrash1(integer, text, integer, integer, text, integer, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1952,8 +1744,8 @@ GRANT ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer,
 
 
 --
--- TOC entry 2190 (class 0 OID 0)
--- Dependencies: 232
+-- TOC entry 2158 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: civcas1(integer, text, text, integer, text, integer, numeric, text, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1966,8 +1758,8 @@ GRANT ALL ON FUNCTION civcas1(sessionid integer, killeduid text, killeruid text,
 
 
 --
--- TOC entry 2191 (class 0 OID 0)
--- Dependencies: 238
+-- TOC entry 2159 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: civdmg1(integer, text, text, numeric, text, integer, text, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1980,8 +1772,8 @@ GRANT ALL ON FUNCTION civdmg1(sessionid integer, victimid text, killer text, "wh
 
 
 --
--- TOC entry 2192 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 2160 (class 0 OID 0)
+-- Dependencies: 229
 -- Name: death1(integer, text, integer, integer, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1994,8 +1786,8 @@ GRANT ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, s
 
 
 --
--- TOC entry 2193 (class 0 OID 0)
--- Dependencies: 240
+-- TOC entry 2161 (class 0 OID 0)
+-- Dependencies: 232
 -- Name: endsession1(integer, numeric, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2008,8 +1800,8 @@ GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome t
 
 
 --
--- TOC entry 2194 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 2162 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2022,8 +1814,8 @@ GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid 
 
 
 --
--- TOC entry 2195 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 2163 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: inf_killed_inf1(integer, text, text, numeric, text, integer, text, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -2034,8 +1826,8 @@ GRANT ALL ON FUNCTION inf_killed_inf1(sessionid integer, killer text, victim tex
 
 
 --
--- TOC entry 2196 (class 0 OID 0)
--- Dependencies: 226
+-- TOC entry 2164 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: inf_killed_veh1(integer, text, text, numeric, text, integer, text, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2048,8 +1840,8 @@ GRANT ALL ON FUNCTION inf_killed_veh1(sessionid integer, killer text, vehicletyp
 
 
 --
--- TOC entry 2197 (class 0 OID 0)
--- Dependencies: 230
+-- TOC entry 2165 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: killassist1(integer, text, numeric, integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2062,8 +1854,8 @@ GRANT ALL ON FUNCTION killassist1(sessionid integer, killer text, "when" numeric
 
 
 --
--- TOC entry 2198 (class 0 OID 0)
--- Dependencies: 225
+-- TOC entry 2166 (class 0 OID 0)
+-- Dependencies: 217
 -- Name: missionevent1(integer, text, numeric, integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2076,8 +1868,8 @@ GRANT ALL ON FUNCTION missionevent1(sessionid integer, killer text, "when" numer
 
 
 --
--- TOC entry 2199 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 2167 (class 0 OID 0)
+-- Dependencies: 213
 -- Name: newmission1(integer, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -2088,8 +1880,8 @@ GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text) TO bsta
 
 
 --
--- TOC entry 2200 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 2168 (class 0 OID 0)
+-- Dependencies: 219
 -- Name: newplayer1(integer, text, text, numeric, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -2100,8 +1892,8 @@ GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside t
 
 
 --
--- TOC entry 2201 (class 0 OID 0)
--- Dependencies: 222
+-- TOC entry 2169 (class 0 OID 0)
+-- Dependencies: 214
 -- Name: player_uid_to_id(text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -2112,8 +1904,8 @@ GRANT ALL ON FUNCTION player_uid_to_id(uid text) TO bstats_servers;
 
 
 --
--- TOC entry 2202 (class 0 OID 0)
--- Dependencies: 223
+-- TOC entry 2170 (class 0 OID 0)
+-- Dependencies: 215
 -- Name: playerleft1(integer, text, integer); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -2124,8 +1916,8 @@ GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integ
 
 
 --
--- TOC entry 2203 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 2171 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: position(text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2137,8 +1929,8 @@ GRANT ALL ON FUNCTION "position"(text) TO bstats_auto;
 
 
 --
--- TOC entry 2204 (class 0 OID 0)
--- Dependencies: 236
+-- TOC entry 2172 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: roadkill1(integer, text, text, text, integer, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2151,8 +1943,8 @@ GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text,
 
 
 --
--- TOC entry 2205 (class 0 OID 0)
--- Dependencies: 239
+-- TOC entry 2173 (class 0 OID 0)
+-- Dependencies: 231
 -- Name: suicide1(integer, text, integer, integer, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2165,8 +1957,8 @@ GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer,
 
 
 --
--- TOC entry 2206 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 2174 (class 0 OID 0)
+-- Dependencies: 221
 -- Name: transport1(integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2179,8 +1971,8 @@ GRANT ALL ON FUNCTION transport1(sessionid integer) TO bstats_servers;
 
 
 --
--- TOC entry 2207 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 2175 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: vehinfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2193,8 +1985,8 @@ GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass te
 
 
 --
--- TOC entry 2208 (class 0 OID 0)
--- Dependencies: 235
+-- TOC entry 2176 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: wpninfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -2209,8 +2001,8 @@ GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass te
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 2209 (class 0 OID 0)
--- Dependencies: 167
+-- TOC entry 2177 (class 0 OID 0)
+-- Dependencies: 165
 -- Name: event; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2223,8 +2015,8 @@ GRANT SELECT ON TABLE event TO bstats_reader;
 
 
 --
--- TOC entry 2210 (class 0 OID 0)
--- Dependencies: 168
+-- TOC entry 2178 (class 0 OID 0)
+-- Dependencies: 166
 -- Name: playerevent; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2237,8 +2029,8 @@ GRANT SELECT ON TABLE playerevent TO bstats_reader;
 
 
 --
--- TOC entry 2211 (class 0 OID 0)
--- Dependencies: 169
+-- TOC entry 2179 (class 0 OID 0)
+-- Dependencies: 167
 -- Name: scoreevent; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2251,8 +2043,8 @@ GRANT SELECT ON TABLE scoreevent TO bstats_reader;
 
 
 --
--- TOC entry 2212 (class 0 OID 0)
--- Dependencies: 170
+-- TOC entry 2180 (class 0 OID 0)
+-- Dependencies: 168
 -- Name: ac_crash; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2265,8 +2057,8 @@ GRANT SELECT ON TABLE ac_crash TO bstats_reader;
 
 
 --
--- TOC entry 2213 (class 0 OID 0)
--- Dependencies: 171
+-- TOC entry 2181 (class 0 OID 0)
+-- Dependencies: 169
 -- Name: civkill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2279,8 +2071,8 @@ GRANT SELECT ON TABLE civkill TO bstats_reader;
 
 
 --
--- TOC entry 2214 (class 0 OID 0)
--- Dependencies: 172
+-- TOC entry 2182 (class 0 OID 0)
+-- Dependencies: 170
 -- Name: death; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2293,8 +2085,8 @@ GRANT SELECT ON TABLE death TO bstats_reader;
 
 
 --
--- TOC entry 2216 (class 0 OID 0)
--- Dependencies: 173
+-- TOC entry 2184 (class 0 OID 0)
+-- Dependencies: 171
 -- Name: event_eventid_seq; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2307,8 +2099,8 @@ GRANT SELECT ON SEQUENCE event_eventid_seq TO bstats_reader;
 
 
 --
--- TOC entry 2217 (class 0 OID 0)
--- Dependencies: 174
+-- TOC entry 2185 (class 0 OID 0)
+-- Dependencies: 172
 -- Name: inf_inf_kill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2321,8 +2113,8 @@ GRANT SELECT ON TABLE inf_inf_kill TO bstats_reader;
 
 
 --
--- TOC entry 2218 (class 0 OID 0)
--- Dependencies: 175
+-- TOC entry 2186 (class 0 OID 0)
+-- Dependencies: 173
 -- Name: inf_veh_kill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2335,8 +2127,8 @@ GRANT SELECT ON TABLE inf_veh_kill TO bstats_reader;
 
 
 --
--- TOC entry 2219 (class 0 OID 0)
--- Dependencies: 176
+-- TOC entry 2187 (class 0 OID 0)
+-- Dependencies: 174
 -- Name: kill_assist; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2349,8 +2141,8 @@ GRANT SELECT ON TABLE kill_assist TO bstats_reader;
 
 
 --
--- TOC entry 2220 (class 0 OID 0)
--- Dependencies: 177
+-- TOC entry 2188 (class 0 OID 0)
+-- Dependencies: 175
 -- Name: roadkill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2363,8 +2155,8 @@ GRANT SELECT ON TABLE roadkill TO bstats_reader;
 
 
 --
--- TOC entry 2221 (class 0 OID 0)
--- Dependencies: 178
+-- TOC entry 2189 (class 0 OID 0)
+-- Dependencies: 176
 -- Name: teamkill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2377,8 +2169,8 @@ GRANT SELECT ON TABLE teamkill TO bstats_reader;
 
 
 --
--- TOC entry 2222 (class 0 OID 0)
--- Dependencies: 179
+-- TOC entry 2190 (class 0 OID 0)
+-- Dependencies: 177
 -- Name: transport; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2391,8 +2183,8 @@ GRANT SELECT ON TABLE transport TO bstats_reader;
 
 
 --
--- TOC entry 2223 (class 0 OID 0)
--- Dependencies: 180
+-- TOC entry 2191 (class 0 OID 0)
+-- Dependencies: 178
 -- Name: veh_inf_kill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2405,8 +2197,8 @@ GRANT SELECT ON TABLE veh_inf_kill TO bstats_reader;
 
 
 --
--- TOC entry 2224 (class 0 OID 0)
--- Dependencies: 181
+-- TOC entry 2192 (class 0 OID 0)
+-- Dependencies: 179
 -- Name: veh_veh_kill; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2419,8 +2211,8 @@ GRANT SELECT ON TABLE veh_veh_kill TO bstats_reader;
 
 
 --
--- TOC entry 2225 (class 0 OID 0)
--- Dependencies: 182
+-- TOC entry 2193 (class 0 OID 0)
+-- Dependencies: 180
 -- Name: zone_capture; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -2435,8 +2227,8 @@ GRANT SELECT ON TABLE zone_capture TO bstats_reader;
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 2226 (class 0 OID 0)
--- Dependencies: 183
+-- TOC entry 2194 (class 0 OID 0)
+-- Dependencies: 181
 -- Name: client_errors; Type: ACL; Schema: logs; Owner: mahuja
 --
 
@@ -2447,8 +2239,8 @@ GRANT INSERT ON TABLE client_errors TO bstats_auto;
 
 
 --
--- TOC entry 2228 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 2196 (class 0 OID 0)
+-- Dependencies: 182
 -- Name: client_errors_id_seq; Type: ACL; Schema: logs; Owner: mahuja
 --
 
@@ -2457,54 +2249,11 @@ REVOKE ALL ON SEQUENCE client_errors_id_seq FROM mahuja;
 GRANT ALL ON SEQUENCE client_errors_id_seq TO mahuja;
 
 
-SET search_path = old_queries, pg_catalog;
-
---
--- TOC entry 2229 (class 0 OID 0)
--- Dependencies: 185
--- Name: page_views_player; Type: ACL; Schema: old_queries; Owner: mahuja
---
-
-REVOKE ALL ON TABLE page_views_player FROM PUBLIC;
-REVOKE ALL ON TABLE page_views_player FROM mahuja;
-GRANT ALL ON TABLE page_views_player TO mahuja;
-GRANT SELECT ON TABLE page_views_player TO PUBLIC;
-GRANT SELECT,INSERT,UPDATE ON TABLE page_views_player TO bstats_auto;
-
-
-SET search_path = old_static, pg_catalog;
-
---
--- TOC entry 2230 (class 0 OID 0)
--- Dependencies: 186
--- Name: classgroups; Type: ACL; Schema: old_static; Owner: mahuja
---
-
-REVOKE ALL ON TABLE classgroups FROM PUBLIC;
-REVOKE ALL ON TABLE classgroups FROM mahuja;
-GRANT ALL ON TABLE classgroups TO mahuja;
-GRANT SELECT ON TABLE classgroups TO PUBLIC;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE classgroups TO bstats_admin;
-
-
---
--- TOC entry 2231 (class 0 OID 0)
--- Dependencies: 187
--- Name: classnames; Type: ACL; Schema: old_static; Owner: mahuja
---
-
-REVOKE ALL ON TABLE classnames FROM PUBLIC;
-REVOKE ALL ON TABLE classnames FROM mahuja;
-GRANT ALL ON TABLE classnames TO mahuja;
-GRANT SELECT ON TABLE classnames TO PUBLIC;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE classnames TO bstats_admin;
-
-
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 2232 (class 0 OID 0)
--- Dependencies: 190
+-- TOC entry 2197 (class 0 OID 0)
+-- Dependencies: 185
 -- Name: player; Type: ACL; Schema: player; Owner: mahuja
 --
 
@@ -2517,8 +2266,8 @@ GRANT SELECT ON TABLE player TO bstats_reader;
 
 
 --
--- TOC entry 2234 (class 0 OID 0)
--- Dependencies: 191
+-- TOC entry 2199 (class 0 OID 0)
+-- Dependencies: 186
 -- Name: playerlist_id_seq; Type: ACL; Schema: player; Owner: mahuja
 --
 
@@ -2531,8 +2280,8 @@ GRANT USAGE ON SEQUENCE playerlist_id_seq TO bstats_auto;
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 2236 (class 0 OID 0)
--- Dependencies: 195
+-- TOC entry 2201 (class 0 OID 0)
+-- Dependencies: 190
 -- Name: errorlog; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2543,8 +2292,8 @@ GRANT SELECT,INSERT,UPDATE ON TABLE errorlog TO bstats_auto;
 
 
 --
--- TOC entry 2238 (class 0 OID 0)
--- Dependencies: 196
+-- TOC entry 2203 (class 0 OID 0)
+-- Dependencies: 191
 -- Name: errorlog_errorid_seq; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2555,8 +2304,8 @@ GRANT SELECT,UPDATE ON SEQUENCE errorlog_errorid_seq TO bstats_auto;
 
 
 --
--- TOC entry 2239 (class 0 OID 0)
--- Dependencies: 197
+-- TOC entry 2204 (class 0 OID 0)
+-- Dependencies: 192
 -- Name: serverlist; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2567,8 +2316,8 @@ GRANT SELECT,INSERT,UPDATE ON TABLE serverlist TO bstats_auto;
 
 
 --
--- TOC entry 2241 (class 0 OID 0)
--- Dependencies: 198
+-- TOC entry 2206 (class 0 OID 0)
+-- Dependencies: 193
 -- Name: serverlist_id_seq; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2579,8 +2328,8 @@ GRANT SELECT,UPDATE ON SEQUENCE serverlist_id_seq TO bstats_auto;
 
 
 --
--- TOC entry 2242 (class 0 OID 0)
--- Dependencies: 199
+-- TOC entry 2207 (class 0 OID 0)
+-- Dependencies: 194
 -- Name: session; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2591,8 +2340,8 @@ GRANT SELECT,INSERT,UPDATE ON TABLE session TO bstats_auto;
 
 
 --
--- TOC entry 2244 (class 0 OID 0)
--- Dependencies: 200
+-- TOC entry 2209 (class 0 OID 0)
+-- Dependencies: 195
 -- Name: session_id_seq; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2603,8 +2352,8 @@ GRANT SELECT,UPDATE ON SEQUENCE session_id_seq TO bstats_auto;
 
 
 --
--- TOC entry 2245 (class 0 OID 0)
--- Dependencies: 201
+-- TOC entry 2210 (class 0 OID 0)
+-- Dependencies: 196
 -- Name: sessionplayers; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2615,8 +2364,8 @@ GRANT SELECT,INSERT,UPDATE ON TABLE sessionplayers TO bstats_auto;
 
 
 --
--- TOC entry 2247 (class 0 OID 0)
--- Dependencies: 202
+-- TOC entry 2212 (class 0 OID 0)
+-- Dependencies: 197
 -- Name: sessionplayers_id_seq; Type: ACL; Schema: session; Owner: mahuja
 --
 
@@ -2629,7 +2378,7 @@ GRANT SELECT,UPDATE ON SEQUENCE sessionplayers_id_seq TO bstats_auto;
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 1595 (class 826 OID 17149)
+-- TOC entry 1579 (class 826 OID 17149)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: event; Owner: mahuja
 --
 
@@ -2639,7 +2388,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT ALL ON SEQUENCES 
 
 
 --
--- TOC entry 1596 (class 826 OID 17150)
+-- TOC entry 1580 (class 826 OID 17150)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: event; Owner: mahuja
 --
 
@@ -2649,45 +2398,10 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT INSERT ON TABLES 
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT SELECT ON TABLES  TO bstats_reader;
 
 
-SET search_path = old_queries, pg_catalog;
-
---
--- TOC entry 1597 (class 826 OID 17151)
--- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: old_queries; Owner: mahuja
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_queries REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_queries REVOKE ALL ON FUNCTIONS  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_queries GRANT ALL ON FUNCTIONS  TO bstats_reader;
-
-
---
--- TOC entry 1598 (class 826 OID 17152)
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: old_queries; Owner: mahuja
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_queries REVOKE ALL ON TABLES  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_queries REVOKE ALL ON TABLES  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_queries GRANT SELECT ON TABLES  TO PUBLIC;
-
-
-SET search_path = old_static, pg_catalog;
-
---
--- TOC entry 1599 (class 826 OID 17153)
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: old_static; Owner: mahuja
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_static REVOKE ALL ON TABLES  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_static REVOKE ALL ON TABLES  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_static GRANT SELECT ON TABLES  TO PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA old_static GRANT SELECT,INSERT,DELETE,UPDATE ON TABLES  TO bstats_admin;
-
-
 SET search_path = server, pg_catalog;
 
 --
--- TOC entry 1601 (class 826 OID 17154)
+-- TOC entry 1582 (class 826 OID 17154)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: server; Owner: mahuja
 --
 
@@ -2700,7 +2414,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server GRANT ALL ON FUNCTIONS
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 1600 (class 826 OID 17155)
+-- TOC entry 1581 (class 826 OID 17155)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: session; Owner: mahuja
 --
 
@@ -2710,7 +2424,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT,INSERT,U
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT ON TABLES  TO bstats_reader;
 
 
--- Completed on 2014-07-04 23:33:45
+-- Completed on 2014-07-09 01:21:48
 
 --
 -- PostgreSQL database dump complete
