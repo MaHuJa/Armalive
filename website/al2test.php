@@ -15,16 +15,16 @@ try {
 $weapon_q = <<<HEREDOC
 with kills as 
 (
-SELECT player,
-	count(victim), 
-	first_value(weapon) over (partition by player order by count(victim) desc) as weapon
-  FROM event.inf_inf_kill
-GROUP BY player,weapon
-order by player,weapon
+SELECT killer,
+	count(killer) as killcount, 
+	first_value(weapon) over (partition by killer order by count(victim) desc) as weapon
+  FROM event.deathevent
+GROUP BY killer,weapon
+--order by killcount,weapon
 )
-select last_name_seen as "Name", sum(count) as "Killcount", weapon as "Favorite Weapon"
+select last_name_seen as "Name", sum(killcount) as "Killcount", weapon as "Favorite Weapon"
 from kills 
-left join player.player on player.player.id = kills.player
+left join player.player on player.player.id = kills.killer
 group by player.last_name_seen, weapon
 order by "Killcount" desc
 HEREDOC;
