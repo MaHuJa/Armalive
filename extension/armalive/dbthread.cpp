@@ -25,6 +25,8 @@ void dbthread::run() {
 	while (running) {
 		string s = grab_cmd();
 		if (s.empty()) continue;	// Running is false, or caller sent blank string
+		logfile << s << std::flush;
+
 		paramlist p = split(s);
 		assert (!p.empty());
 		p[0] = conn.escapename(p[0]);
@@ -112,7 +114,7 @@ dbthread::paramlist dbthread::split(string in) {
 	return out;
 }
 void dbthread::send_error(string msg, string input) {
-	logfile << "Error: " << msg << '\n' << input << '\n';
+	logfile << "Error: " << msg << std::endl;
 	// for the time being, we'll also do
 	std::cerr << "Error: " << msg << '\n' << input << '\n';
 	// and sometime in the future also push the error to the database.
