@@ -1,7 +1,7 @@
 #define COMPILE(func) func = compilefinal preprocessFileLineNumbers ("armalive\" + #func + ".sqf")
 
 // First, report a new session starting
-_str =  format ["newmission1;%1",missionName];
+_str =  format ["newmission1;%1;%2",missionName,worldName];
 "armalive" callextension _str;
 diag_log _str;
 
@@ -31,3 +31,5 @@ COMPILE(armalive_infeh);
 //player call armalive_infeh;
 // This will also allow kills on AI to be counted. Of course, it needs to be applied to every additional unit ever spawned.
 { if (local _x) then {_x call armalive_infeh;}; } foreach allunits;
+
+
