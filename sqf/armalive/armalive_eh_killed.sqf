@@ -53,7 +53,7 @@ if (isnull _killer || !(_killer isKindOf "Man")) exitwith {
 _killer_uid = _killer getvariable "armalive_uid";
 _killer_side = _killer getvariable "armalive_side";
 
-if (_killer_uid != "") exitwith {
+if (_killer iskindof "Man") exitwith {
 
 	_isTK = "not";
 	if (_victim_side == _killer_side) then {
@@ -62,7 +62,7 @@ if (_killer_uid != "") exitwith {
 
 	format ["inf_killed1;%1;%2;%3;%4;%5;%6;%7;%8;%9;%10;%11", 
 		time,
-		_victum_uid,
+		_victim_uid,
 		getposatl _victim,
 		typeof _victim,
 		_victim_side,
