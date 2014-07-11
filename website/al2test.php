@@ -2,7 +2,7 @@
 $dbhost = 'master1.armalive.com';
 $dbname = 'bstats_master';
 $name = 'hidden';
-$pass = 'hidden';	// will be changed at some point
+$pass = 'hidden'; // will be changed at some point
 
 // DBCONNECTION
 $db = 0;
@@ -16,10 +16,10 @@ $weapon_q = <<<HEREDOC
 with kills as 
 (
 SELECT killer,
-	count(killer) as killcount, 
-	first_value(weapon) over (partition by killer order by count(victim) desc) as weapon
+ count(killer) as killcount, 
+ first_value(killer_weapon) over (partition by killer order by count(victim) desc) as weapon
   FROM event.deathevent
-GROUP BY killer,weapon
+GROUP BY killer,killer_weapon
 --order by killcount,weapon
 )
 select last_name_seen as "Name", sum(killcount) as "Killcount", weapon as "Favorite Weapon"
@@ -38,17 +38,17 @@ $prep->execute();
 print ('<table border="2"><tr>');
 $columns = $prep->columnCount();
 for ($i = 0; $i < $columns; $i++) {
-	$s = $prep->getColumnMeta($i)['name'];
-	print ("<td>$s</td>\n");
+ $s = $prep->getColumnMeta($i)['name'];
+ print ("<td>$s</td>\n");
 }
 print ("</tr>\n");
 
 $all = $prep->fetchAll(PDO::FETCH_NUM);
 
 foreach ($all as $row) {
-	print ("<tr>");
-	foreach ($row as $column) { echo "<td>$column</td>"; };
-	echo ("</tr>\n");
+ print ("<tr>");
+ foreach ($row as $column) { echo "<td>$column</td>"; };
+ echo ("</tr>\n");
 }
 print ("</table>\n");
 ?>
