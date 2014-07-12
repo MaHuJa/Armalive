@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.1.9
 -- Dumped by pg_dump version 9.3.1
--- Started on 2014-07-11 17:48:37
+-- Started on 2014-07-12 19:31:17
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,7 +15,7 @@ SET client_min_messages = warning;
 
 DROP DATABASE bstats_master;
 --
--- TOC entry 2042 (class 1262 OID 16590)
+-- TOC entry 2039 (class 1262 OID 16590)
 -- Name: bstats_master; Type: DATABASE; Schema: -; Owner: mahuja
 --
 
@@ -74,7 +74,7 @@ CREATE SCHEMA server;
 ALTER SCHEMA server OWNER TO mahuja;
 
 --
--- TOC entry 2045 (class 0 OID 0)
+-- TOC entry 2042 (class 0 OID 0)
 -- Dependencies: 8
 -- Name: SCHEMA server; Type: COMMENT; Schema: -; Owner: mahuja
 --
@@ -101,7 +101,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2048 (class 0 OID 0)
+-- TOC entry 2045 (class 0 OID 0)
 -- Dependencies: 187
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
@@ -118,7 +118,7 @@ CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2049 (class 0 OID 0)
+-- TOC entry 2046 (class 0 OID 0)
 -- Dependencies: 186
 -- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
 --
@@ -169,7 +169,7 @@ end $$;
 ALTER FUNCTION player.weaponstats_sum_upsert() OWNER TO bstats_auto;
 
 --
--- TOC entry 2050 (class 0 OID 0)
+-- TOC entry 2047 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: FUNCTION weaponstats_sum_upsert(); Type: COMMENT; Schema: player; Owner: bstats_auto
 --
@@ -180,8 +180,8 @@ COMMENT ON FUNCTION weaponstats_sum_upsert() IS 'To have an actual race conditio
 SET search_path = server, pg_catalog;
 
 --
--- TOC entry 209 (class 1255 OID 17353)
--- Name: accrash1(integer, integer, text, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 210 (class 1255 OID 17353)
+-- Name: accrash1(integer, integer, text, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
 CREATE FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) RETURNS void
@@ -199,54 +199,95 @@ insert into event.ac_crash ("session", "time", playerid, player_position, passen
 $_$;
 
 
-ALTER FUNCTION server.accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) OWNER TO mahuja;
+ALTER FUNCTION server.accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) OWNER TO bstats_auto;
 
 --
--- TOC entry 215 (class 1255 OID 17192)
--- Name: accrash1(integer, text, integer, integer, text, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 214 (class 1255 OID 17486)
+-- Name: death1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
-CREATE FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) RETURNS void
+CREATE FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) RETURNS void
     LANGUAGE sql SECURITY DEFINER
     AS $_$
-insert into event.ac_crash ("session", player, "time", "passengers", "vehicle", 
-	points, "position" ) values
-( $1, 
-server.player_uid_to_id($2), 
-  ($3 || ' seconds') :: interval,
-  $4,
-  $5,
-  $6, 
-  server.position($7)
+insert into event.deathevent
+(session, "time", 
+victim, victim_position, victim_class, victim_side,
+how
+) values (
+$1,	-- session id
+($2 || ' seconds') ::interval,	-- when/time
+-- victim
+server.player_uid_to_id($3),	
+server.position($4),
+$5,	-- class
+$6, 	-- side
+
+'death'
 )
 $_$;
 
 
-ALTER FUNCTION server.accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) OWNER TO mahuja;
+ALTER FUNCTION server.death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO bstats_auto;
 
 --
--- TOC entry 212 (class 1255 OID 17198)
--- Name: death1(integer, text, integer, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 215 (class 1255 OID 17487)
+-- Name: died1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
-CREATE FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) RETURNS void
+CREATE FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) RETURNS void
     LANGUAGE sql SECURITY DEFINER
     AS $_$
-insert into event.death ("session", player, "time", "position", points, is_suicide) values
-( $1, server.player_uid_to_id($2), 
-  ($3 || ' seconds') :: interval,
-  server.position($5),
-  $4,
-  false
+insert into event.deathevent
+(session, "time", 
+victim, victim_position, victim_class, victim_side,
+how
+) values (
+$1,	-- session id
+($2 || ' seconds') ::interval,	-- when/time
+-- victim
+server.player_uid_to_id($3),	
+server.position($4),
+$5,	-- class
+$6, 	-- side
+
+'death'
 )
 $_$;
 
 
-ALTER FUNCTION server.death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) OWNER TO mahuja;
+ALTER FUNCTION server.died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO bstats_auto;
 
 --
--- TOC entry 214 (class 1255 OID 17195)
--- Name: endsession1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 217 (class 1255 OID 17485)
+-- Name: drowned1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+--
+
+CREATE FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) RETURNS void
+    LANGUAGE sql SECURITY DEFINER
+    AS $_$
+insert into event.deathevent
+(session, "time", 
+victim, victim_position, victim_class, victim_side,
+how
+) values (
+$1,	-- session id
+($2 || ' seconds') ::interval,	-- when/time
+-- victim
+server.player_uid_to_id($3),	
+server.position($4),
+$5,	-- class
+$6, 	-- side
+
+'drown'
+)
+$_$;
+
+
+ALTER FUNCTION server.drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO bstats_auto;
+
+--
+-- TOC entry 211 (class 1255 OID 17195)
+-- Name: endsession1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
 CREATE FUNCTION endsession1(sessionid integer, duration numeric, outcome text) RETURNS void
@@ -257,11 +298,11 @@ update session.session set duration = ($2 || ' seconds')::interval, result = $3 
 $_$;
 
 
-ALTER FUNCTION server.endsession1(sessionid integer, duration numeric, outcome text) OWNER TO mahuja;
+ALTER FUNCTION server.endsession1(sessionid integer, duration numeric, outcome text) OWNER TO bstats_auto;
 
 --
--- TOC entry 208 (class 1255 OID 17196)
--- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 206 (class 1255 OID 17196)
+-- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
 CREATE FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) RETURNS void
@@ -270,71 +311,11 @@ CREATE FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, 
 $$;
 
 
-ALTER FUNCTION server.friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) OWNER TO mahuja;
+ALTER FUNCTION server.friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) OWNER TO bstats_auto;
 
 --
--- TOC entry 218 (class 1255 OID 17476)
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
---
-
-CREATE FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) RETURNS void
-    LANGUAGE sql SECURITY DEFINER
-    AS $_$
-insert into event.deathevent
-(session, "time", 
-victim, victim_position, victim_class,
-killer, killer_position, killer_class, killer_weapon
-) values (
-$1,			-- session id
-($2 || ' seconds') ::interval,	-- when/time
--- victim
-server.player_uid_to_id($3),	
-server.position($4),
-$5,
--- killer
-server.player_uid_to_id($5),
-server.position($6),
-$7,	-- class
-$8	-- weapon
-)
-$_$;
-
-
-ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) OWNER TO mahuja;
-
---
--- TOC entry 219 (class 1255 OID 17477)
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
---
-
-CREATE FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) RETURNS void
-    LANGUAGE sql SECURITY DEFINER
-    AS $_$
-insert into event.deathevent
-(session, "time", 
-victim, victim_position, victim_class,
-killer, killer_position, killer_class, killer_weapon
-) values (
-$1,			-- session id
-($2 || ' seconds') ::interval,	-- when/time
--- victim
-server.player_uid_to_id($3),	
-server.position($4),
-$5,
--- killer
-server.player_uid_to_id($5),
-server.position($6),
-$7,	-- class
-$8	-- weapon
-)
-$_$;
-
-
-ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) OWNER TO mahuja;
-
---
--- TOC entry 220 (class 1255 OID 17484)
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 216 (class 1255 OID 17484)
+-- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
 CREATE FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) RETURNS void
@@ -343,7 +324,7 @@ CREATE FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, 
 insert into event.deathevent
 (session, "time", 
 victim, victim_position, victim_class, victim_side,
-killer, killer_position, killer_class, killer_side, killer_weapon, teamkill
+killer, killer_position, killer_class, killer_side, killer_weapon, teamkill, how
 ) values (
 $1,	-- session id
 ($2 || ' seconds') ::interval,	-- when/time
@@ -359,52 +340,17 @@ $9,	-- class
 $10,	-- side
 $11,	-- weapon
 -- TK
-$11::teamkilltype
-)
-$_$;
-
-
-ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) OWNER TO mahuja;
-
---
--- TOC entry 206 (class 1255 OID 17179)
--- Name: inf_killed_inf1(integer, text, text, numeric, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
---
-
-CREATE FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) RETURNS void
-    LANGUAGE sql SECURITY DEFINER
-    AS $_$
-insert into event.deathevent
-(session, "time", killer, killer_position, victim, victim_position, weapon,"how")
-values (
-$1,			-- session id
-($4 || ' seconds') ::interval,	-- when/time
-server.player_uid_to_id($2),	-- killer/player
-server.position($7),	-- position/killerpos
-
-server.player_uid_to_id($3),	-- victim
-server.position($8),	-- victim_position/victimpos
-
-$5,			-- weapon
+$12::teamkilltype,
 'kill'
 )
 $_$;
 
 
-ALTER FUNCTION server.inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) OWNER TO bstats_auto;
+ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) OWNER TO bstats_auto;
 
 --
--- TOC entry 2059 (class 0 OID 0)
--- Dependencies: 206
--- Name: FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text); Type: COMMENT; Schema: server; Owner: bstats_auto
---
-
-COMMENT ON FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) IS '--backwards compatible with tests, will disappear after release';
-
-
---
--- TOC entry 217 (class 1255 OID 17420)
--- Name: missionevent1(integer, text, numeric, integer); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 212 (class 1255 OID 17420)
+-- Name: missionevent1(integer, text, numeric, integer); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
 CREATE FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) RETURNS void
@@ -413,29 +359,11 @@ CREATE FUNCTION missionevent1(sessionid integer, what text, "when" numeric, scor
 $$;
 
 
-ALTER FUNCTION server.missionevent1(sessionid integer, what text, "when" numeric, score integer) OWNER TO mahuja;
+ALTER FUNCTION server.missionevent1(sessionid integer, what text, "when" numeric, score integer) OWNER TO bstats_auto;
 
 --
--- TOC entry 201 (class 1255 OID 16803)
--- Name: newmission1(integer, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
---
-
-CREATE FUNCTION newmission1(oldsession integer, mission_name text) RETURNS integer
-    LANGUAGE sql SECURITY DEFINER
-    AS $_$
-insert into session.session (missionname,server) 
-values ($2,
-  ( select id from session.serverlist where name = session_user )
-)
-returning id;
-$_$;
-
-
-ALTER FUNCTION server.newmission1(oldsession integer, mission_name text) OWNER TO bstats_auto;
-
---
--- TOC entry 216 (class 1255 OID 17354)
--- Name: newmission1(integer, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- TOC entry 213 (class 1255 OID 17354)
+-- Name: newmission1(integer, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
 CREATE FUNCTION newmission1(oldsession integer, mission_name text, map_name text) RETURNS integer
@@ -449,10 +377,10 @@ returning id;
 $_$;
 
 
-ALTER FUNCTION server.newmission1(oldsession integer, mission_name text, map_name text) OWNER TO mahuja;
+ALTER FUNCTION server.newmission1(oldsession integer, mission_name text, map_name text) OWNER TO bstats_auto;
 
 --
--- TOC entry 205 (class 1255 OID 17178)
+-- TOC entry 204 (class 1255 OID 17178)
 -- Name: newplayer1(integer, text, text, numeric, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -469,7 +397,7 @@ $_$;
 ALTER FUNCTION server.newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) OWNER TO bstats_auto;
 
 --
--- TOC entry 202 (class 1255 OID 16805)
+-- TOC entry 201 (class 1255 OID 16805)
 -- Name: player_uid_to_id(text); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -483,7 +411,7 @@ $_$;
 ALTER FUNCTION server.player_uid_to_id(uid text) OWNER TO bstats_auto;
 
 --
--- TOC entry 203 (class 1255 OID 16806)
+-- TOC entry 202 (class 1255 OID 16806)
 -- Name: playerleft1(integer, text, integer); Type: FUNCTION; Schema: server; Owner: bstats_auto
 --
 
@@ -499,7 +427,7 @@ $_$;
 ALTER FUNCTION server.playerleft1(sessionid integer, playerid text, "when" integer) OWNER TO bstats_auto;
 
 --
--- TOC entry 204 (class 1255 OID 16807)
+-- TOC entry 203 (class 1255 OID 16807)
 -- Name: position(text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -514,7 +442,7 @@ $_$;
 ALTER FUNCTION server."position"(text) OWNER TO mahuja;
 
 --
--- TOC entry 211 (class 1255 OID 17191)
+-- TOC entry 208 (class 1255 OID 17191)
 -- Name: roadkill1(integer, text, text, text, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -527,7 +455,7 @@ $$;
 ALTER FUNCTION server.roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) OWNER TO mahuja;
 
 --
--- TOC entry 213 (class 1255 OID 17199)
+-- TOC entry 209 (class 1255 OID 17199)
 -- Name: suicide1(integer, text, integer, integer, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -547,7 +475,7 @@ $_$;
 ALTER FUNCTION server.suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) OWNER TO mahuja;
 
 --
--- TOC entry 207 (class 1255 OID 17189)
+-- TOC entry 205 (class 1255 OID 17189)
 -- Name: vehinfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -560,7 +488,7 @@ $$;
 ALTER FUNCTION server.vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) OWNER TO mahuja;
 
 --
--- TOC entry 210 (class 1255 OID 17190)
+-- TOC entry 207 (class 1255 OID 17190)
 -- Name: wpninfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
@@ -575,7 +503,7 @@ ALTER FUNCTION server.wpninfo1(sessionid integer, playerid text, vehicleclass te
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 185 (class 1259 OID 17454)
+-- TOC entry 184 (class 1259 OID 17454)
 -- Name: event_id_counter; Type: SEQUENCE; Schema: event; Owner: mahuja
 --
 
@@ -611,7 +539,7 @@ CREATE TABLE ac_crash (
 ALTER TABLE event.ac_crash OWNER TO mahuja;
 
 --
--- TOC entry 183 (class 1259 OID 17323)
+-- TOC entry 185 (class 1259 OID 17544)
 -- Name: deathevent; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -619,18 +547,17 @@ CREATE TABLE deathevent (
     eventid integer DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
     session integer NOT NULL,
     "time" interval,
+    how character varying(8) NOT NULL,
     victim integer NOT NULL,
     victim_position real[] NOT NULL,
-    how character varying(8) NOT NULL,
-    teamkill teamkilltype,
+    victim_class text,
+    victim_side text,
     killer integer,
     killer_position real[],
-    weapon text,
-    victim_class text,
     killer_class text,
-    killer_weapon text,
-    victim_side text,
     killer_side text,
+    killer_weapon text,
+    teamkill teamkilltype,
     CONSTRAINT deathevent_how_check CHECK (((how)::text = ANY (ARRAY[('kill'::character varying)::text, ('death'::character varying)::text, ('drown'::character varying)::text, ('suicide'::character varying)::text, ('roadkill'::character varying)::text])))
 );
 
@@ -638,8 +565,8 @@ CREATE TABLE deathevent (
 ALTER TABLE event.deathevent OWNER TO mahuja;
 
 --
--- TOC entry 2074 (class 0 OID 0)
--- Dependencies: 183
+-- TOC entry 2067 (class 0 OID 0)
+-- Dependencies: 185
 -- Name: TABLE deathevent; Type: COMMENT; Schema: event; Owner: mahuja
 --
 
@@ -650,7 +577,7 @@ To be considered: victim_side, victim_class, killer_side, killer_class';
 
 
 --
--- TOC entry 184 (class 1259 OID 17405)
+-- TOC entry 183 (class 1259 OID 17405)
 -- Name: vehicledestruction; Type: TABLE; Schema: event; Owner: mahuja
 --
 
@@ -670,8 +597,8 @@ CREATE TABLE vehicledestruction (
 ALTER TABLE event.vehicledestruction OWNER TO mahuja;
 
 --
--- TOC entry 2076 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 2069 (class 0 OID 0)
+-- Dependencies: 183
 -- Name: COLUMN vehicledestruction.extent; Type: COMMENT; Schema: event; Owner: mahuja
 --
 
@@ -712,7 +639,7 @@ CREATE SEQUENCE client_errors_id_seq
 ALTER TABLE logs.client_errors_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2079 (class 0 OID 0)
+-- TOC entry 2072 (class 0 OID 0)
 -- Dependencies: 166
 -- Name: client_errors_id_seq; Type: SEQUENCE OWNED BY; Schema: logs; Owner: mahuja
 --
@@ -779,7 +706,7 @@ CREATE SEQUENCE playerlist_id_seq
 ALTER TABLE player.playerlist_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2082 (class 0 OID 0)
+-- TOC entry 2075 (class 0 OID 0)
 -- Dependencies: 170
 -- Name: playerlist_id_seq; Type: SEQUENCE OWNED BY; Schema: player; Owner: mahuja
 --
@@ -874,7 +801,7 @@ CREATE TABLE errorlog (
 ALTER TABLE session.errorlog OWNER TO mahuja;
 
 --
--- TOC entry 2084 (class 0 OID 0)
+-- TOC entry 2077 (class 0 OID 0)
 -- Dependencies: 174
 -- Name: TABLE errorlog; Type: COMMENT; Schema: session; Owner: mahuja
 --
@@ -898,7 +825,7 @@ CREATE SEQUENCE errorlog_errorid_seq
 ALTER TABLE session.errorlog_errorid_seq OWNER TO mahuja;
 
 --
--- TOC entry 2086 (class 0 OID 0)
+-- TOC entry 2079 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: errorlog_errorid_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
@@ -937,7 +864,7 @@ CREATE SEQUENCE serverlist_id_seq
 ALTER TABLE session.serverlist_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2089 (class 0 OID 0)
+-- TOC entry 2082 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: serverlist_id_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
@@ -978,7 +905,7 @@ CREATE SEQUENCE session_id_seq
 ALTER TABLE session.session_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2092 (class 0 OID 0)
+-- TOC entry 2085 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: session_id_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
@@ -1020,7 +947,7 @@ CREATE SEQUENCE sessionplayers_id_seq
 ALTER TABLE session.sessionplayers_id_seq OWNER TO mahuja;
 
 --
--- TOC entry 2095 (class 0 OID 0)
+-- TOC entry 2088 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: sessionplayers_id_seq; Type: SEQUENCE OWNED BY; Schema: session; Owner: mahuja
 --
@@ -1031,7 +958,7 @@ ALTER SEQUENCE sessionplayers_id_seq OWNED BY sessionplayers.id;
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 1854 (class 2604 OID 17057)
+-- TOC entry 1851 (class 2604 OID 17057)
 -- Name: id; Type: DEFAULT; Schema: logs; Owner: mahuja
 --
 
@@ -1041,7 +968,7 @@ ALTER TABLE ONLY client_errors ALTER COLUMN id SET DEFAULT nextval('client_error
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 1858 (class 2604 OID 17058)
+-- TOC entry 1855 (class 2604 OID 17058)
 -- Name: id; Type: DEFAULT; Schema: player; Owner: mahuja
 --
 
@@ -1051,7 +978,7 @@ ALTER TABLE ONLY player ALTER COLUMN id SET DEFAULT nextval('playerlist_id_seq':
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 1890 (class 2604 OID 17059)
+-- TOC entry 1887 (class 2604 OID 17059)
 -- Name: errorid; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1059,7 +986,7 @@ ALTER TABLE ONLY errorlog ALTER COLUMN errorid SET DEFAULT nextval('errorlog_err
 
 
 --
--- TOC entry 1891 (class 2604 OID 17060)
+-- TOC entry 1888 (class 2604 OID 17060)
 -- Name: id; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1067,7 +994,7 @@ ALTER TABLE ONLY serverlist ALTER COLUMN id SET DEFAULT nextval('serverlist_id_s
 
 
 --
--- TOC entry 1892 (class 2604 OID 17061)
+-- TOC entry 1889 (class 2604 OID 17061)
 -- Name: id; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1075,7 +1002,7 @@ ALTER TABLE ONLY session ALTER COLUMN id SET DEFAULT nextval('session_id_seq'::r
 
 
 --
--- TOC entry 1893 (class 2604 OID 17062)
+-- TOC entry 1890 (class 2604 OID 17062)
 -- Name: id; Type: DEFAULT; Schema: session; Owner: mahuja
 --
 
@@ -1085,7 +1012,7 @@ ALTER TABLE ONLY sessionplayers ALTER COLUMN id SET DEFAULT nextval('sessionplay
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 1922 (class 2606 OID 17333)
+-- TOC entry 1921 (class 2606 OID 17553)
 -- Name: deathevent_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1094,7 +1021,7 @@ ALTER TABLE ONLY deathevent
 
 
 --
--- TOC entry 1925 (class 2606 OID 17413)
+-- TOC entry 1918 (class 2606 OID 17413)
 -- Name: vehicledestruction_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1105,7 +1032,7 @@ ALTER TABLE ONLY vehicledestruction
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 1899 (class 2606 OID 17094)
+-- TOC entry 1896 (class 2606 OID 17094)
 -- Name: client_errors_pkey; Type: CONSTRAINT; Schema: logs; Owner: mahuja
 --
 
@@ -1116,7 +1043,7 @@ ALTER TABLE ONLY client_errors
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 1903 (class 2606 OID 17102)
+-- TOC entry 1900 (class 2606 OID 17102)
 -- Name: playerlist_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1125,7 +1052,7 @@ ALTER TABLE ONLY player
 
 
 --
--- TOC entry 1901 (class 2606 OID 17104)
+-- TOC entry 1898 (class 2606 OID 17104)
 -- Name: playername_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1134,7 +1061,7 @@ ALTER TABLE ONLY playername
 
 
 --
--- TOC entry 1907 (class 2606 OID 17106)
+-- TOC entry 1904 (class 2606 OID 17106)
 -- Name: playersum_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1143,7 +1070,7 @@ ALTER TABLE ONLY playersum
 
 
 --
--- TOC entry 1905 (class 2606 OID 17108)
+-- TOC entry 1902 (class 2606 OID 17108)
 -- Name: unique_gameuid; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1152,7 +1079,7 @@ ALTER TABLE ONLY player
 
 
 --
--- TOC entry 1909 (class 2606 OID 17110)
+-- TOC entry 1906 (class 2606 OID 17110)
 -- Name: weaponstats_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1161,7 +1088,7 @@ ALTER TABLE ONLY weaponstats
 
 
 --
--- TOC entry 1911 (class 2606 OID 17112)
+-- TOC entry 1908 (class 2606 OID 17112)
 -- Name: weaponstats_sum_pkey; Type: CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1172,7 +1099,7 @@ ALTER TABLE ONLY weaponstats_sum
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 1913 (class 2606 OID 17114)
+-- TOC entry 1910 (class 2606 OID 17114)
 -- Name: errorlog_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1181,7 +1108,7 @@ ALTER TABLE ONLY errorlog
 
 
 --
--- TOC entry 1915 (class 2606 OID 17116)
+-- TOC entry 1912 (class 2606 OID 17116)
 -- Name: serverlist_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1190,7 +1117,7 @@ ALTER TABLE ONLY serverlist
 
 
 --
--- TOC entry 1917 (class 2606 OID 17118)
+-- TOC entry 1914 (class 2606 OID 17118)
 -- Name: session_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1199,7 +1126,7 @@ ALTER TABLE ONLY session
 
 
 --
--- TOC entry 1919 (class 2606 OID 17120)
+-- TOC entry 1916 (class 2606 OID 17120)
 -- Name: sessionplayers_pkey; Type: CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1210,7 +1137,7 @@ ALTER TABLE ONLY sessionplayers
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 1920 (class 1259 OID 17335)
+-- TOC entry 1919 (class 1259 OID 17569)
 -- Name: deathevent_killer_idx; Type: INDEX; Schema: event; Owner: mahuja
 --
 
@@ -1218,7 +1145,7 @@ CREATE INDEX deathevent_killer_idx ON deathevent USING btree (killer) WHERE (kil
 
 
 --
--- TOC entry 1923 (class 1259 OID 17334)
+-- TOC entry 1922 (class 1259 OID 17570)
 -- Name: deathevent_victim_killer_idx; Type: INDEX; Schema: event; Owner: mahuja
 --
 
@@ -1228,7 +1155,7 @@ CREATE INDEX deathevent_victim_killer_idx ON deathevent USING btree (victim, kil
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 2037 (class 2618 OID 17121)
+-- TOC entry 2034 (class 2618 OID 17121)
 -- Name: upsert; Type: RULE; Schema: player; Owner: mahuja
 --
 
@@ -1236,7 +1163,7 @@ CREATE RULE upsert AS ON INSERT TO player WHERE ((new.gameuid)::text IN (SELECT 
 
 
 --
--- TOC entry 1934 (class 2620 OID 17123)
+-- TOC entry 1931 (class 2620 OID 17123)
 -- Name: upsert; Type: TRIGGER; Schema: player; Owner: mahuja
 --
 
@@ -1246,7 +1173,7 @@ CREATE TRIGGER upsert BEFORE INSERT ON weaponstats_sum FOR EACH ROW EXECUTE PROC
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 1931 (class 2606 OID 17341)
+-- TOC entry 1928 (class 2606 OID 17554)
 -- Name: deathevent_killer_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1255,7 +1182,7 @@ ALTER TABLE ONLY deathevent
 
 
 --
--- TOC entry 1932 (class 2606 OID 17346)
+-- TOC entry 1929 (class 2606 OID 17559)
 -- Name: deathevent_session_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1264,7 +1191,7 @@ ALTER TABLE ONLY deathevent
 
 
 --
--- TOC entry 1930 (class 2606 OID 17336)
+-- TOC entry 1930 (class 2606 OID 17564)
 -- Name: deathevent_victim_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1273,7 +1200,7 @@ ALTER TABLE ONLY deathevent
 
 
 --
--- TOC entry 1933 (class 2606 OID 17414)
+-- TOC entry 1927 (class 2606 OID 17414)
 -- Name: vehicledestruction_session_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
 --
 
@@ -1284,7 +1211,7 @@ ALTER TABLE ONLY vehicledestruction
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 1926 (class 2606 OID 17160)
+-- TOC entry 1923 (class 2606 OID 17160)
 -- Name: playername_playerid_fkey; Type: FK CONSTRAINT; Schema: player; Owner: mahuja
 --
 
@@ -1295,7 +1222,7 @@ ALTER TABLE ONLY playername
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 1927 (class 2606 OID 17134)
+-- TOC entry 1924 (class 2606 OID 17134)
 -- Name: session_server_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1304,7 +1231,7 @@ ALTER TABLE ONLY session
 
 
 --
--- TOC entry 1928 (class 2606 OID 17139)
+-- TOC entry 1925 (class 2606 OID 17139)
 -- Name: sessionplayers_player_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1313,7 +1240,7 @@ ALTER TABLE ONLY sessionplayers
 
 
 --
--- TOC entry 1929 (class 2606 OID 17144)
+-- TOC entry 1926 (class 2606 OID 17144)
 -- Name: sessionplayers_session_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
 --
 
@@ -1322,7 +1249,7 @@ ALTER TABLE ONLY sessionplayers
 
 
 --
--- TOC entry 2043 (class 0 OID 0)
+-- TOC entry 2040 (class 0 OID 0)
 -- Dependencies: 10
 -- Name: event; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1336,7 +1263,7 @@ GRANT USAGE ON SCHEMA event TO bstats_admin;
 
 
 --
--- TOC entry 2044 (class 0 OID 0)
+-- TOC entry 2041 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: player; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1350,7 +1277,7 @@ GRANT USAGE ON SCHEMA player TO bstats_reader;
 
 
 --
--- TOC entry 2046 (class 0 OID 0)
+-- TOC entry 2043 (class 0 OID 0)
 -- Dependencies: 8
 -- Name: server; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1363,7 +1290,7 @@ GRANT USAGE ON SCHEMA server TO bstats_auto;
 
 
 --
--- TOC entry 2047 (class 0 OID 0)
+-- TOC entry 2044 (class 0 OID 0)
 -- Dependencies: 7
 -- Name: session; Type: ACL; Schema: -; Owner: mahuja
 --
@@ -1378,172 +1305,125 @@ GRANT USAGE ON SCHEMA session TO bstats_reader;
 SET search_path = server, pg_catalog;
 
 --
--- TOC entry 2051 (class 0 OID 0)
--- Dependencies: 209
--- Name: accrash1(integer, integer, text, text, integer, text, text); Type: ACL; Schema: server; Owner: mahuja
+-- TOC entry 2048 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: accrash1(integer, integer, text, text, integer, text, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
 REVOKE ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) FROM mahuja;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO mahuja;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO PUBLIC;
+REVOKE ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) FROM bstats_auto;
 GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO bstats_auto;
+GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO PUBLIC;
 GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO bstats_servers;
 
 
 --
--- TOC entry 2052 (class 0 OID 0)
--- Dependencies: 215
--- Name: accrash1(integer, text, integer, integer, text, integer, text); Type: ACL; Schema: server; Owner: mahuja
---
-
-REVOKE ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) FROM mahuja;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) TO mahuja;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) TO PUBLIC;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) TO bstats_auto;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, playerid text, "when" integer, passengercount integer, vehiclename text, score integer, playerpos text) TO bstats_servers;
-
-
---
--- TOC entry 2053 (class 0 OID 0)
--- Dependencies: 212
--- Name: death1(integer, text, integer, integer, text); Type: ACL; Schema: server; Owner: mahuja
---
-
-REVOKE ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) FROM mahuja;
-GRANT ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO mahuja;
-GRANT ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO PUBLIC;
-GRANT ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO bstats_auto;
-GRANT ALL ON FUNCTION death1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO bstats_servers;
-
-
---
--- TOC entry 2054 (class 0 OID 0)
+-- TOC entry 2049 (class 0 OID 0)
 -- Dependencies: 214
--- Name: endsession1(integer, numeric, text); Type: ACL; Schema: server; Owner: mahuja
+-- Name: death1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+--
+
+REVOKE ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM bstats_auto;
+GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_auto;
+GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO PUBLIC;
+GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_servers;
+
+
+--
+-- TOC entry 2050 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: died1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+--
+
+REVOKE ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM bstats_auto;
+GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_auto;
+GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO PUBLIC;
+GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_servers;
+
+
+--
+-- TOC entry 2051 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: drowned1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+--
+
+REVOKE ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM bstats_auto;
+GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_auto;
+GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO PUBLIC;
+GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_servers;
+
+
+--
+-- TOC entry 2052 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: endsession1(integer, numeric, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
 REVOKE ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) FROM mahuja;
-GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO mahuja;
-GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO PUBLIC;
+REVOKE ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) FROM bstats_auto;
 GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO bstats_auto;
+GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO PUBLIC;
 GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO bstats_servers;
 
 
 --
--- TOC entry 2055 (class 0 OID 0)
--- Dependencies: 208
--- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: ACL; Schema: server; Owner: mahuja
+-- TOC entry 2053 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
 REVOKE ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) FROM mahuja;
-GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO mahuja;
-GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO PUBLIC;
+REVOKE ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) FROM bstats_auto;
 GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO bstats_auto;
+GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO PUBLIC;
 GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO bstats_servers;
 
 
 --
--- TOC entry 2056 (class 0 OID 0)
--- Dependencies: 218
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
---
-
-REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) FROM mahuja;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) TO mahuja;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) TO PUBLIC;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) TO bstats_auto;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, killer_uid text, killer_class text, killer_position text, killer_weapon text) TO bstats_servers;
-
-
---
--- TOC entry 2057 (class 0 OID 0)
--- Dependencies: 219
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
---
-
-REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) FROM mahuja;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) TO mahuja;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) TO PUBLIC;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) TO bstats_auto;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_class text, victim_position text, victim_side text, killer_uid text, killer_class text, killer_position text, killer_side text, killer_weapon text) TO bstats_servers;
-
-
---
--- TOC entry 2058 (class 0 OID 0)
--- Dependencies: 220
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
+-- TOC entry 2054 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
 REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) FROM mahuja;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO mahuja;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO PUBLIC;
+REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) FROM bstats_auto;
 GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO bstats_auto;
+GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO PUBLIC;
 GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO bstats_servers;
 
 
 --
--- TOC entry 2060 (class 0 OID 0)
--- Dependencies: 206
--- Name: inf_killed_inf1(integer, text, text, numeric, text, integer, text, text); Type: ACL; Schema: server; Owner: bstats_auto
---
-
-REVOKE ALL ON FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) FROM bstats_auto;
-GRANT ALL ON FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) TO bstats_auto;
-GRANT ALL ON FUNCTION inf_killed_inf1(sessionid integer, killer text, victim text, "when" numeric, weapon text, score integer, killerpos text, victimpos text) TO bstats_servers;
-
-
---
--- TOC entry 2061 (class 0 OID 0)
--- Dependencies: 217
--- Name: missionevent1(integer, text, numeric, integer); Type: ACL; Schema: server; Owner: mahuja
+-- TOC entry 2055 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: missionevent1(integer, text, numeric, integer); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
 REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) FROM PUBLIC;
-REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) FROM mahuja;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO mahuja;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO PUBLIC;
+REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) FROM bstats_auto;
 GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO bstats_auto;
+GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO PUBLIC;
 GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO bstats_servers;
 
 
 --
--- TOC entry 2062 (class 0 OID 0)
--- Dependencies: 201
--- Name: newmission1(integer, text); Type: ACL; Schema: server; Owner: bstats_auto
---
-
-REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text) FROM bstats_auto;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text) TO bstats_auto;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text) TO bstats_servers;
-
-
---
--- TOC entry 2063 (class 0 OID 0)
--- Dependencies: 216
--- Name: newmission1(integer, text, text); Type: ACL; Schema: server; Owner: mahuja
+-- TOC entry 2056 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: newmission1(integer, text, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
 REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) FROM mahuja;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO mahuja;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO PUBLIC;
+REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) FROM bstats_auto;
 GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO bstats_auto;
+GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO PUBLIC;
 GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO bstats_servers;
 
 
 --
--- TOC entry 2064 (class 0 OID 0)
--- Dependencies: 205
+-- TOC entry 2057 (class 0 OID 0)
+-- Dependencies: 204
 -- Name: newplayer1(integer, text, text, numeric, text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -1554,8 +1434,8 @@ GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside t
 
 
 --
--- TOC entry 2065 (class 0 OID 0)
--- Dependencies: 202
+-- TOC entry 2058 (class 0 OID 0)
+-- Dependencies: 201
 -- Name: player_uid_to_id(text); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -1566,8 +1446,8 @@ GRANT ALL ON FUNCTION player_uid_to_id(uid text) TO bstats_servers;
 
 
 --
--- TOC entry 2066 (class 0 OID 0)
--- Dependencies: 203
+-- TOC entry 2059 (class 0 OID 0)
+-- Dependencies: 202
 -- Name: playerleft1(integer, text, integer); Type: ACL; Schema: server; Owner: bstats_auto
 --
 
@@ -1578,8 +1458,8 @@ GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integ
 
 
 --
--- TOC entry 2067 (class 0 OID 0)
--- Dependencies: 204
+-- TOC entry 2060 (class 0 OID 0)
+-- Dependencies: 203
 -- Name: position(text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1591,8 +1471,8 @@ GRANT ALL ON FUNCTION "position"(text) TO bstats_auto;
 
 
 --
--- TOC entry 2068 (class 0 OID 0)
--- Dependencies: 211
+-- TOC entry 2061 (class 0 OID 0)
+-- Dependencies: 208
 -- Name: roadkill1(integer, text, text, text, integer, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1605,8 +1485,8 @@ GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text,
 
 
 --
--- TOC entry 2069 (class 0 OID 0)
--- Dependencies: 213
+-- TOC entry 2062 (class 0 OID 0)
+-- Dependencies: 209
 -- Name: suicide1(integer, text, integer, integer, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1619,8 +1499,8 @@ GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer,
 
 
 --
--- TOC entry 2070 (class 0 OID 0)
--- Dependencies: 207
+-- TOC entry 2063 (class 0 OID 0)
+-- Dependencies: 205
 -- Name: vehinfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1633,8 +1513,8 @@ GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass te
 
 
 --
--- TOC entry 2071 (class 0 OID 0)
--- Dependencies: 210
+-- TOC entry 2064 (class 0 OID 0)
+-- Dependencies: 207
 -- Name: wpninfo1(integer, text, text, integer, integer, integer, integer, integer, integer, integer); Type: ACL; Schema: server; Owner: mahuja
 --
 
@@ -1649,8 +1529,8 @@ GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass te
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 2072 (class 0 OID 0)
--- Dependencies: 185
+-- TOC entry 2065 (class 0 OID 0)
+-- Dependencies: 184
 -- Name: event_id_counter; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -1661,7 +1541,7 @@ GRANT ALL ON SEQUENCE event_id_counter TO bstats_auto;
 
 
 --
--- TOC entry 2073 (class 0 OID 0)
+-- TOC entry 2066 (class 0 OID 0)
 -- Dependencies: 182
 -- Name: ac_crash; Type: ACL; Schema: event; Owner: mahuja
 --
@@ -1674,8 +1554,8 @@ GRANT SELECT ON TABLE ac_crash TO bstats_reader;
 
 
 --
--- TOC entry 2075 (class 0 OID 0)
--- Dependencies: 183
+-- TOC entry 2068 (class 0 OID 0)
+-- Dependencies: 185
 -- Name: deathevent; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -1687,8 +1567,8 @@ GRANT SELECT ON TABLE deathevent TO bstats_reader;
 
 
 --
--- TOC entry 2077 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 2070 (class 0 OID 0)
+-- Dependencies: 183
 -- Name: vehicledestruction; Type: ACL; Schema: event; Owner: mahuja
 --
 
@@ -1702,7 +1582,7 @@ GRANT SELECT ON TABLE vehicledestruction TO bstats_reader;
 SET search_path = logs, pg_catalog;
 
 --
--- TOC entry 2078 (class 0 OID 0)
+-- TOC entry 2071 (class 0 OID 0)
 -- Dependencies: 165
 -- Name: client_errors; Type: ACL; Schema: logs; Owner: mahuja
 --
@@ -1714,7 +1594,7 @@ GRANT INSERT ON TABLE client_errors TO bstats_auto;
 
 
 --
--- TOC entry 2080 (class 0 OID 0)
+-- TOC entry 2073 (class 0 OID 0)
 -- Dependencies: 166
 -- Name: client_errors_id_seq; Type: ACL; Schema: logs; Owner: mahuja
 --
@@ -1727,7 +1607,7 @@ GRANT ALL ON SEQUENCE client_errors_id_seq TO mahuja;
 SET search_path = player, pg_catalog;
 
 --
--- TOC entry 2081 (class 0 OID 0)
+-- TOC entry 2074 (class 0 OID 0)
 -- Dependencies: 169
 -- Name: player; Type: ACL; Schema: player; Owner: mahuja
 --
@@ -1741,7 +1621,7 @@ GRANT SELECT ON TABLE player TO bstats_reader;
 
 
 --
--- TOC entry 2083 (class 0 OID 0)
+-- TOC entry 2076 (class 0 OID 0)
 -- Dependencies: 170
 -- Name: playerlist_id_seq; Type: ACL; Schema: player; Owner: mahuja
 --
@@ -1755,7 +1635,7 @@ GRANT USAGE ON SEQUENCE playerlist_id_seq TO bstats_auto;
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 2085 (class 0 OID 0)
+-- TOC entry 2078 (class 0 OID 0)
 -- Dependencies: 174
 -- Name: errorlog; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1767,7 +1647,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE errorlog TO bstats_auto;
 
 
 --
--- TOC entry 2087 (class 0 OID 0)
+-- TOC entry 2080 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: errorlog_errorid_seq; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1779,7 +1659,7 @@ GRANT SELECT,UPDATE ON SEQUENCE errorlog_errorid_seq TO bstats_auto;
 
 
 --
--- TOC entry 2088 (class 0 OID 0)
+-- TOC entry 2081 (class 0 OID 0)
 -- Dependencies: 176
 -- Name: serverlist; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1791,7 +1671,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE serverlist TO bstats_auto;
 
 
 --
--- TOC entry 2090 (class 0 OID 0)
+-- TOC entry 2083 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: serverlist_id_seq; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1803,7 +1683,7 @@ GRANT SELECT,UPDATE ON SEQUENCE serverlist_id_seq TO bstats_auto;
 
 
 --
--- TOC entry 2091 (class 0 OID 0)
+-- TOC entry 2084 (class 0 OID 0)
 -- Dependencies: 178
 -- Name: session; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1815,7 +1695,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE session TO bstats_auto;
 
 
 --
--- TOC entry 2093 (class 0 OID 0)
+-- TOC entry 2086 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: session_id_seq; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1827,7 +1707,7 @@ GRANT SELECT,UPDATE ON SEQUENCE session_id_seq TO bstats_auto;
 
 
 --
--- TOC entry 2094 (class 0 OID 0)
+-- TOC entry 2087 (class 0 OID 0)
 -- Dependencies: 180
 -- Name: sessionplayers; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1839,7 +1719,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE sessionplayers TO bstats_auto;
 
 
 --
--- TOC entry 2096 (class 0 OID 0)
+-- TOC entry 2089 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: sessionplayers_id_seq; Type: ACL; Schema: session; Owner: mahuja
 --
@@ -1853,7 +1733,7 @@ GRANT SELECT,UPDATE ON SEQUENCE sessionplayers_id_seq TO bstats_auto;
 SET search_path = event, pg_catalog;
 
 --
--- TOC entry 1519 (class 826 OID 17149)
+-- TOC entry 1516 (class 826 OID 17149)
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: event; Owner: mahuja
 --
 
@@ -1863,7 +1743,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT ALL ON SEQUENCES 
 
 
 --
--- TOC entry 1520 (class 826 OID 17150)
+-- TOC entry 1517 (class 826 OID 17150)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: event; Owner: mahuja
 --
 
@@ -1876,7 +1756,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT SELECT ON TABLES 
 SET search_path = server, pg_catalog;
 
 --
--- TOC entry 1522 (class 826 OID 17154)
+-- TOC entry 1519 (class 826 OID 17154)
 -- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: server; Owner: mahuja
 --
 
@@ -1889,7 +1769,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server GRANT ALL ON FUNCTIONS
 SET search_path = session, pg_catalog;
 
 --
--- TOC entry 1521 (class 826 OID 17155)
+-- TOC entry 1518 (class 826 OID 17155)
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: session; Owner: mahuja
 --
 
@@ -1899,7 +1779,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT,INSERT,U
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT ON TABLES  TO bstats_reader;
 
 
--- Completed on 2014-07-11 17:49:38
+-- Completed on 2014-07-12 19:32:12
 
 --
 -- PostgreSQL database dump complete
