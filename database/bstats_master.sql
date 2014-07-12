@@ -13,18 +13,16 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-DROP DATABASE bstats_master;
+DROP DATABASE armalive_master;
 --
 -- TOC entry 2039 (class 1262 OID 16590)
--- Name: bstats_master; Type: DATABASE; Schema: -; Owner: mahuja
+-- Name: armalive_master; Type: DATABASE; Schema: -; Owner: mahuja
 --
 
-CREATE DATABASE bstats_master WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1252' LC_CTYPE = 'English_United States.1252';
+CREATE DATABASE armalive_master WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United States.1252' LC_CTYPE = 'English_United States.1252';
+ALTER DATABASE armalive_master OWNER TO mahuja;
 
-
-ALTER DATABASE bstats_master OWNER TO mahuja;
-
-\connect bstats_master
+\connect armalive_master
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -143,7 +141,7 @@ ALTER FUNCTION player.player_uid_to_id(uid character varying) OWNER TO mahuja;
 
 --
 -- TOC entry 200 (class 1255 OID 16798)
--- Name: weaponstats_sum_upsert(); Type: FUNCTION; Schema: player; Owner: bstats_auto
+-- Name: weaponstats_sum_upsert(); Type: FUNCTION; Schema: player; Owner: armalive_auto
 --
 
 CREATE FUNCTION weaponstats_sum_upsert() RETURNS trigger
@@ -166,12 +164,12 @@ return new;
 end $$;
 
 
-ALTER FUNCTION player.weaponstats_sum_upsert() OWNER TO bstats_auto;
+ALTER FUNCTION player.weaponstats_sum_upsert() OWNER TO armalive_auto;
 
 --
 -- TOC entry 2047 (class 0 OID 0)
 -- Dependencies: 200
--- Name: FUNCTION weaponstats_sum_upsert(); Type: COMMENT; Schema: player; Owner: bstats_auto
+-- Name: FUNCTION weaponstats_sum_upsert(); Type: COMMENT; Schema: player; Owner: armalive_auto
 --
 
 COMMENT ON FUNCTION weaponstats_sum_upsert() IS 'To have an actual race condition, some server must delay its data transmission enough for the player to switch to another enabled server. Therefore this, despite being single-checked, is considered adequate.';
@@ -181,7 +179,7 @@ SET search_path = server, pg_catalog;
 
 --
 -- TOC entry 210 (class 1255 OID 17353)
--- Name: accrash1(integer, integer, text, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: accrash1(integer, integer, text, text, integer, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) RETURNS void
@@ -199,11 +197,11 @@ insert into event.ac_crash ("session", "time", playerid, player_position, passen
 $_$;
 
 
-ALTER FUNCTION server.accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) OWNER TO bstats_auto;
+ALTER FUNCTION server.accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 214 (class 1255 OID 17486)
--- Name: death1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: death1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) RETURNS void
@@ -227,11 +225,11 @@ $6, 	-- side
 $_$;
 
 
-ALTER FUNCTION server.death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO bstats_auto;
+ALTER FUNCTION server.death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 215 (class 1255 OID 17487)
--- Name: died1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: died1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) RETURNS void
@@ -255,11 +253,11 @@ $6, 	-- side
 $_$;
 
 
-ALTER FUNCTION server.died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO bstats_auto;
+ALTER FUNCTION server.died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 217 (class 1255 OID 17485)
--- Name: drowned1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: drowned1(integer, numeric, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) RETURNS void
@@ -283,11 +281,11 @@ $6, 	-- side
 $_$;
 
 
-ALTER FUNCTION server.drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO bstats_auto;
+ALTER FUNCTION server.drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 211 (class 1255 OID 17195)
--- Name: endsession1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: endsession1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION endsession1(sessionid integer, duration numeric, outcome text) RETURNS void
@@ -298,11 +296,11 @@ update session.session set duration = ($2 || ' seconds')::interval, result = $3 
 $_$;
 
 
-ALTER FUNCTION server.endsession1(sessionid integer, duration numeric, outcome text) OWNER TO bstats_auto;
+ALTER FUNCTION server.endsession1(sessionid integer, duration numeric, outcome text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 206 (class 1255 OID 17196)
--- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) RETURNS void
@@ -311,11 +309,11 @@ CREATE FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, 
 $$;
 
 
-ALTER FUNCTION server.friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) OWNER TO bstats_auto;
+ALTER FUNCTION server.friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 216 (class 1255 OID 17484)
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) RETURNS void
@@ -346,11 +344,11 @@ $12::teamkilltype,
 $_$;
 
 
-ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) OWNER TO bstats_auto;
+ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 212 (class 1255 OID 17420)
--- Name: missionevent1(integer, text, numeric, integer); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: missionevent1(integer, text, numeric, integer); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) RETURNS void
@@ -359,11 +357,11 @@ CREATE FUNCTION missionevent1(sessionid integer, what text, "when" numeric, scor
 $$;
 
 
-ALTER FUNCTION server.missionevent1(sessionid integer, what text, "when" numeric, score integer) OWNER TO bstats_auto;
+ALTER FUNCTION server.missionevent1(sessionid integer, what text, "when" numeric, score integer) OWNER TO armalive_auto;
 
 --
 -- TOC entry 213 (class 1255 OID 17354)
--- Name: newmission1(integer, text, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: newmission1(integer, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION newmission1(oldsession integer, mission_name text, map_name text) RETURNS integer
@@ -377,11 +375,11 @@ returning id;
 $_$;
 
 
-ALTER FUNCTION server.newmission1(oldsession integer, mission_name text, map_name text) OWNER TO bstats_auto;
+ALTER FUNCTION server.newmission1(oldsession integer, mission_name text, map_name text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 204 (class 1255 OID 17178)
--- Name: newplayer1(integer, text, text, numeric, text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: newplayer1(integer, text, text, numeric, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) RETURNS void
@@ -394,11 +392,11 @@ insert into session.sessionplayers(session, player, side, joined, playername) va
 $_$;
 
 
-ALTER FUNCTION server.newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) OWNER TO bstats_auto;
+ALTER FUNCTION server.newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 201 (class 1255 OID 16805)
--- Name: player_uid_to_id(text); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: player_uid_to_id(text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION player_uid_to_id(uid text) RETURNS bigint
@@ -408,11 +406,11 @@ CREATE FUNCTION player_uid_to_id(uid text) RETURNS bigint
 $_$;
 
 
-ALTER FUNCTION server.player_uid_to_id(uid text) OWNER TO bstats_auto;
+ALTER FUNCTION server.player_uid_to_id(uid text) OWNER TO armalive_auto;
 
 --
 -- TOC entry 202 (class 1255 OID 16806)
--- Name: playerleft1(integer, text, integer); Type: FUNCTION; Schema: server; Owner: bstats_auto
+-- Name: playerleft1(integer, text, integer); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) RETURNS void
@@ -424,7 +422,7 @@ where "session" = $1 and player = server.player_uid_to_id($2);
 $_$;
 
 
-ALTER FUNCTION server.playerleft1(sessionid integer, playerid text, "when" integer) OWNER TO bstats_auto;
+ALTER FUNCTION server.playerleft1(sessionid integer, playerid text, "when" integer) OWNER TO armalive_auto;
 
 --
 -- TOC entry 203 (class 1255 OID 16807)
@@ -1257,9 +1255,9 @@ ALTER TABLE ONLY sessionplayers
 REVOKE ALL ON SCHEMA event FROM PUBLIC;
 REVOKE ALL ON SCHEMA event FROM mahuja;
 GRANT ALL ON SCHEMA event TO mahuja;
-GRANT USAGE ON SCHEMA event TO bstats_auto;
-GRANT USAGE ON SCHEMA event TO bstats_reader;
-GRANT USAGE ON SCHEMA event TO bstats_admin;
+GRANT USAGE ON SCHEMA event TO armalive_auto;
+GRANT USAGE ON SCHEMA event TO armalive_reader;
+GRANT USAGE ON SCHEMA event TO armalive_admin;
 
 
 --
@@ -1271,9 +1269,9 @@ GRANT USAGE ON SCHEMA event TO bstats_admin;
 REVOKE ALL ON SCHEMA player FROM PUBLIC;
 REVOKE ALL ON SCHEMA player FROM mahuja;
 GRANT ALL ON SCHEMA player TO mahuja;
-GRANT USAGE ON SCHEMA player TO bstats_auto;
-GRANT USAGE ON SCHEMA player TO bstats_admin;
-GRANT USAGE ON SCHEMA player TO bstats_reader;
+GRANT USAGE ON SCHEMA player TO armalive_auto;
+GRANT USAGE ON SCHEMA player TO armalive_admin;
+GRANT USAGE ON SCHEMA player TO armalive_reader;
 
 
 --
@@ -1285,8 +1283,8 @@ GRANT USAGE ON SCHEMA player TO bstats_reader;
 REVOKE ALL ON SCHEMA server FROM PUBLIC;
 REVOKE ALL ON SCHEMA server FROM mahuja;
 GRANT ALL ON SCHEMA server TO mahuja;
-GRANT USAGE ON SCHEMA server TO bstats_servers;
-GRANT USAGE ON SCHEMA server TO bstats_auto;
+GRANT USAGE ON SCHEMA server TO armalive_servers;
+GRANT USAGE ON SCHEMA server TO armalive_auto;
 
 
 --
@@ -1298,8 +1296,8 @@ GRANT USAGE ON SCHEMA server TO bstats_auto;
 REVOKE ALL ON SCHEMA session FROM PUBLIC;
 REVOKE ALL ON SCHEMA session FROM mahuja;
 GRANT ALL ON SCHEMA session TO mahuja;
-GRANT USAGE ON SCHEMA session TO bstats_auto;
-GRANT USAGE ON SCHEMA session TO bstats_reader;
+GRANT USAGE ON SCHEMA session TO armalive_auto;
+GRANT USAGE ON SCHEMA session TO armalive_reader;
 
 
 SET search_path = server, pg_catalog;
@@ -1307,154 +1305,154 @@ SET search_path = server, pg_catalog;
 --
 -- TOC entry 2048 (class 0 OID 0)
 -- Dependencies: 210
--- Name: accrash1(integer, integer, text, text, integer, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: accrash1(integer, integer, text, text, integer, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) FROM bstats_auto;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO bstats_auto;
+REVOKE ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) FROM armalive_auto;
+GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO armalive_auto;
 GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO PUBLIC;
-GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO bstats_servers;
+GRANT ALL ON FUNCTION accrash1(sessionid integer, "when" integer, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text) TO armalive_servers;
 
 
 --
 -- TOC entry 2049 (class 0 OID 0)
 -- Dependencies: 214
--- Name: death1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: death1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM bstats_auto;
-GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_auto;
+REVOKE ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM armalive_auto;
+GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO armalive_auto;
 GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO PUBLIC;
-GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_servers;
+GRANT ALL ON FUNCTION death1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO armalive_servers;
 
 
 --
 -- TOC entry 2050 (class 0 OID 0)
 -- Dependencies: 215
--- Name: died1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: died1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM bstats_auto;
-GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_auto;
+REVOKE ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM armalive_auto;
+GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO armalive_auto;
 GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO PUBLIC;
-GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_servers;
+GRANT ALL ON FUNCTION died1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO armalive_servers;
 
 
 --
 -- TOC entry 2051 (class 0 OID 0)
 -- Dependencies: 217
--- Name: drowned1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: drowned1(integer, numeric, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM bstats_auto;
-GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_auto;
+REVOKE ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) FROM armalive_auto;
+GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO armalive_auto;
 GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO PUBLIC;
-GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO bstats_servers;
+GRANT ALL ON FUNCTION drowned1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text) TO armalive_servers;
 
 
 --
 -- TOC entry 2052 (class 0 OID 0)
 -- Dependencies: 211
--- Name: endsession1(integer, numeric, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: endsession1(integer, numeric, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) FROM bstats_auto;
-GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO bstats_auto;
+REVOKE ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) FROM armalive_auto;
+GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO armalive_auto;
 GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO PUBLIC;
-GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO bstats_servers;
+GRANT ALL ON FUNCTION endsession1(sessionid integer, duration numeric, outcome text) TO armalive_servers;
 
 
 --
 -- TOC entry 2053 (class 0 OID 0)
 -- Dependencies: 206
--- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: friendlydmg1(integer, text, text, integer, text, integer, numeric, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) FROM bstats_auto;
-GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO bstats_auto;
+REVOKE ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) FROM armalive_auto;
+GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO armalive_auto;
 GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO PUBLIC;
-GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO bstats_servers;
+GRANT ALL ON FUNCTION friendlydmg1(sessionid integer, victimid text, damageruid text, "when" integer, weapon text, score integer, distance numeric, victimpos text, killerpos text) TO armalive_servers;
 
 
 --
 -- TOC entry 2054 (class 0 OID 0)
 -- Dependencies: 216
--- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) FROM bstats_auto;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO bstats_auto;
+REVOKE ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) FROM armalive_auto;
+GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO armalive_auto;
 GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO PUBLIC;
-GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO bstats_servers;
+GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) TO armalive_servers;
 
 
 --
 -- TOC entry 2055 (class 0 OID 0)
 -- Dependencies: 212
--- Name: missionevent1(integer, text, numeric, integer); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: missionevent1(integer, text, numeric, integer); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) FROM PUBLIC;
-REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) FROM bstats_auto;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO bstats_auto;
+REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) FROM armalive_auto;
+GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO armalive_auto;
 GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO PUBLIC;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO bstats_servers;
+GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, score integer) TO armalive_servers;
 
 
 --
 -- TOC entry 2056 (class 0 OID 0)
 -- Dependencies: 213
--- Name: newmission1(integer, text, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: newmission1(integer, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) FROM bstats_auto;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO bstats_auto;
+REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) FROM armalive_auto;
+GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO armalive_auto;
 GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO PUBLIC;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO bstats_servers;
+GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text) TO armalive_servers;
 
 
 --
 -- TOC entry 2057 (class 0 OID 0)
 -- Dependencies: 204
--- Name: newplayer1(integer, text, text, numeric, text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: newplayer1(integer, text, text, numeric, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) FROM bstats_auto;
-GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) TO bstats_auto;
-GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) TO bstats_servers;
+REVOKE ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) FROM armalive_auto;
+GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) TO armalive_auto;
+GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, playername_p text) TO armalive_servers;
 
 
 --
 -- TOC entry 2058 (class 0 OID 0)
 -- Dependencies: 201
--- Name: player_uid_to_id(text); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: player_uid_to_id(text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION player_uid_to_id(uid text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION player_uid_to_id(uid text) FROM bstats_auto;
-GRANT ALL ON FUNCTION player_uid_to_id(uid text) TO bstats_auto;
-GRANT ALL ON FUNCTION player_uid_to_id(uid text) TO bstats_servers;
+REVOKE ALL ON FUNCTION player_uid_to_id(uid text) FROM armalive_auto;
+GRANT ALL ON FUNCTION player_uid_to_id(uid text) TO armalive_auto;
+GRANT ALL ON FUNCTION player_uid_to_id(uid text) TO armalive_servers;
 
 
 --
 -- TOC entry 2059 (class 0 OID 0)
 -- Dependencies: 202
--- Name: playerleft1(integer, text, integer); Type: ACL; Schema: server; Owner: bstats_auto
+-- Name: playerleft1(integer, text, integer); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) FROM PUBLIC;
-REVOKE ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) FROM bstats_auto;
-GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) TO bstats_auto;
-GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) TO bstats_servers;
+REVOKE ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) FROM armalive_auto;
+GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) TO armalive_auto;
+GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) TO armalive_servers;
 
 
 --
@@ -1466,8 +1464,8 @@ GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integ
 REVOKE ALL ON FUNCTION "position"(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION "position"(text) FROM mahuja;
 GRANT ALL ON FUNCTION "position"(text) TO mahuja;
-GRANT ALL ON FUNCTION "position"(text) TO bstats_servers;
-GRANT ALL ON FUNCTION "position"(text) TO bstats_auto;
+GRANT ALL ON FUNCTION "position"(text) TO armalive_servers;
+GRANT ALL ON FUNCTION "position"(text) TO armalive_auto;
 
 
 --
@@ -1480,8 +1478,8 @@ REVOKE ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text
 REVOKE ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) FROM mahuja;
 GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) TO mahuja;
 GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) TO PUBLIC;
-GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) TO bstats_auto;
-GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) TO bstats_servers;
+GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) TO armalive_auto;
+GRANT ALL ON FUNCTION roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, "position" text) TO armalive_servers;
 
 
 --
@@ -1494,8 +1492,8 @@ REVOKE ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer
 REVOKE ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) FROM mahuja;
 GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO mahuja;
 GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO PUBLIC;
-GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO bstats_auto;
-GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO bstats_servers;
+GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO armalive_auto;
+GRANT ALL ON FUNCTION suicide1(sessionid integer, playerid text, "when" integer, score integer, playerpos text) TO armalive_servers;
 
 
 --
@@ -1508,8 +1506,8 @@ REVOKE ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass t
 REVOKE ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) FROM mahuja;
 GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO mahuja;
 GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO PUBLIC;
-GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO bstats_auto;
-GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO bstats_servers;
+GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO armalive_auto;
+GRANT ALL ON FUNCTION vehinfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO armalive_servers;
 
 
 --
@@ -1522,8 +1520,8 @@ REVOKE ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass t
 REVOKE ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) FROM mahuja;
 GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO mahuja;
 GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO PUBLIC;
-GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO bstats_auto;
-GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO bstats_servers;
+GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO armalive_auto;
+GRANT ALL ON FUNCTION wpninfo1(sessionid integer, playerid text, vehicleclass text, "when" integer, weapontime integer, shotsfired integer, hit_head integer, hit_body integer, hit_arms integer, hit_legs integer) TO armalive_servers;
 
 
 SET search_path = event, pg_catalog;
@@ -1537,7 +1535,7 @@ SET search_path = event, pg_catalog;
 REVOKE ALL ON SEQUENCE event_id_counter FROM PUBLIC;
 REVOKE ALL ON SEQUENCE event_id_counter FROM mahuja;
 GRANT ALL ON SEQUENCE event_id_counter TO mahuja;
-GRANT ALL ON SEQUENCE event_id_counter TO bstats_auto;
+GRANT ALL ON SEQUENCE event_id_counter TO armalive_auto;
 
 
 --
@@ -1549,8 +1547,8 @@ GRANT ALL ON SEQUENCE event_id_counter TO bstats_auto;
 REVOKE ALL ON TABLE ac_crash FROM PUBLIC;
 REVOKE ALL ON TABLE ac_crash FROM mahuja;
 GRANT ALL ON TABLE ac_crash TO mahuja;
-GRANT INSERT ON TABLE ac_crash TO bstats_auto;
-GRANT SELECT ON TABLE ac_crash TO bstats_reader;
+GRANT INSERT ON TABLE ac_crash TO armalive_auto;
+GRANT SELECT ON TABLE ac_crash TO armalive_reader;
 
 
 --
@@ -1562,8 +1560,8 @@ GRANT SELECT ON TABLE ac_crash TO bstats_reader;
 REVOKE ALL ON TABLE deathevent FROM PUBLIC;
 REVOKE ALL ON TABLE deathevent FROM mahuja;
 GRANT ALL ON TABLE deathevent TO mahuja;
-GRANT INSERT ON TABLE deathevent TO bstats_auto;
-GRANT SELECT ON TABLE deathevent TO bstats_reader;
+GRANT INSERT ON TABLE deathevent TO armalive_auto;
+GRANT SELECT ON TABLE deathevent TO armalive_reader;
 
 
 --
@@ -1575,8 +1573,8 @@ GRANT SELECT ON TABLE deathevent TO bstats_reader;
 REVOKE ALL ON TABLE vehicledestruction FROM PUBLIC;
 REVOKE ALL ON TABLE vehicledestruction FROM mahuja;
 GRANT ALL ON TABLE vehicledestruction TO mahuja;
-GRANT INSERT ON TABLE vehicledestruction TO bstats_auto;
-GRANT SELECT ON TABLE vehicledestruction TO bstats_reader;
+GRANT INSERT ON TABLE vehicledestruction TO armalive_auto;
+GRANT SELECT ON TABLE vehicledestruction TO armalive_reader;
 
 
 SET search_path = logs, pg_catalog;
@@ -1590,7 +1588,7 @@ SET search_path = logs, pg_catalog;
 REVOKE ALL ON TABLE client_errors FROM PUBLIC;
 REVOKE ALL ON TABLE client_errors FROM mahuja;
 GRANT ALL ON TABLE client_errors TO mahuja;
-GRANT INSERT ON TABLE client_errors TO bstats_auto;
+GRANT INSERT ON TABLE client_errors TO armalive_auto;
 
 
 --
@@ -1615,9 +1613,9 @@ SET search_path = player, pg_catalog;
 REVOKE ALL ON TABLE player FROM PUBLIC;
 REVOKE ALL ON TABLE player FROM mahuja;
 GRANT ALL ON TABLE player TO mahuja;
-GRANT SELECT,INSERT,UPDATE ON TABLE player TO bstats_auto;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE player TO bstats_admin;
-GRANT SELECT ON TABLE player TO bstats_reader;
+GRANT SELECT,INSERT,UPDATE ON TABLE player TO armalive_auto;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE player TO armalive_admin;
+GRANT SELECT ON TABLE player TO armalive_reader;
 
 
 --
@@ -1629,7 +1627,7 @@ GRANT SELECT ON TABLE player TO bstats_reader;
 REVOKE ALL ON SEQUENCE playerlist_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE playerlist_id_seq FROM mahuja;
 GRANT ALL ON SEQUENCE playerlist_id_seq TO mahuja;
-GRANT USAGE ON SEQUENCE playerlist_id_seq TO bstats_auto;
+GRANT USAGE ON SEQUENCE playerlist_id_seq TO armalive_auto;
 
 
 SET search_path = session, pg_catalog;
@@ -1643,7 +1641,7 @@ SET search_path = session, pg_catalog;
 REVOKE ALL ON TABLE errorlog FROM PUBLIC;
 REVOKE ALL ON TABLE errorlog FROM mahuja;
 GRANT ALL ON TABLE errorlog TO mahuja;
-GRANT SELECT,INSERT,UPDATE ON TABLE errorlog TO bstats_auto;
+GRANT SELECT,INSERT,UPDATE ON TABLE errorlog TO armalive_auto;
 
 
 --
@@ -1655,7 +1653,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE errorlog TO bstats_auto;
 REVOKE ALL ON SEQUENCE errorlog_errorid_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE errorlog_errorid_seq FROM mahuja;
 GRANT ALL ON SEQUENCE errorlog_errorid_seq TO mahuja;
-GRANT SELECT,UPDATE ON SEQUENCE errorlog_errorid_seq TO bstats_auto;
+GRANT SELECT,UPDATE ON SEQUENCE errorlog_errorid_seq TO armalive_auto;
 
 
 --
@@ -1667,7 +1665,7 @@ GRANT SELECT,UPDATE ON SEQUENCE errorlog_errorid_seq TO bstats_auto;
 REVOKE ALL ON TABLE serverlist FROM PUBLIC;
 REVOKE ALL ON TABLE serverlist FROM mahuja;
 GRANT ALL ON TABLE serverlist TO mahuja;
-GRANT SELECT,INSERT,UPDATE ON TABLE serverlist TO bstats_auto;
+GRANT SELECT,INSERT,UPDATE ON TABLE serverlist TO armalive_auto;
 
 
 --
@@ -1679,7 +1677,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE serverlist TO bstats_auto;
 REVOKE ALL ON SEQUENCE serverlist_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE serverlist_id_seq FROM mahuja;
 GRANT ALL ON SEQUENCE serverlist_id_seq TO mahuja;
-GRANT SELECT,UPDATE ON SEQUENCE serverlist_id_seq TO bstats_auto;
+GRANT SELECT,UPDATE ON SEQUENCE serverlist_id_seq TO armalive_auto;
 
 
 --
@@ -1691,7 +1689,7 @@ GRANT SELECT,UPDATE ON SEQUENCE serverlist_id_seq TO bstats_auto;
 REVOKE ALL ON TABLE session FROM PUBLIC;
 REVOKE ALL ON TABLE session FROM mahuja;
 GRANT ALL ON TABLE session TO mahuja;
-GRANT SELECT,INSERT,UPDATE ON TABLE session TO bstats_auto;
+GRANT SELECT,INSERT,UPDATE ON TABLE session TO armalive_auto;
 
 
 --
@@ -1703,7 +1701,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE session TO bstats_auto;
 REVOKE ALL ON SEQUENCE session_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE session_id_seq FROM mahuja;
 GRANT ALL ON SEQUENCE session_id_seq TO mahuja;
-GRANT SELECT,UPDATE ON SEQUENCE session_id_seq TO bstats_auto;
+GRANT SELECT,UPDATE ON SEQUENCE session_id_seq TO armalive_auto;
 
 
 --
@@ -1715,7 +1713,7 @@ GRANT SELECT,UPDATE ON SEQUENCE session_id_seq TO bstats_auto;
 REVOKE ALL ON TABLE sessionplayers FROM PUBLIC;
 REVOKE ALL ON TABLE sessionplayers FROM mahuja;
 GRANT ALL ON TABLE sessionplayers TO mahuja;
-GRANT SELECT,INSERT,UPDATE ON TABLE sessionplayers TO bstats_auto;
+GRANT SELECT,INSERT,UPDATE ON TABLE sessionplayers TO armalive_auto;
 
 
 --
@@ -1727,7 +1725,7 @@ GRANT SELECT,INSERT,UPDATE ON TABLE sessionplayers TO bstats_auto;
 REVOKE ALL ON SEQUENCE sessionplayers_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE sessionplayers_id_seq FROM mahuja;
 GRANT ALL ON SEQUENCE sessionplayers_id_seq TO mahuja;
-GRANT SELECT,UPDATE ON SEQUENCE sessionplayers_id_seq TO bstats_auto;
+GRANT SELECT,UPDATE ON SEQUENCE sessionplayers_id_seq TO armalive_auto;
 
 
 SET search_path = event, pg_catalog;
@@ -1739,7 +1737,7 @@ SET search_path = event, pg_catalog;
 
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event REVOKE ALL ON SEQUENCES  FROM PUBLIC;
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event REVOKE ALL ON SEQUENCES  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT ALL ON SEQUENCES  TO bstats_auto;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT ALL ON SEQUENCES  TO armalive_auto;
 
 
 --
@@ -1749,8 +1747,8 @@ ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT ALL ON SEQUENCES 
 
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event REVOKE ALL ON TABLES  FROM PUBLIC;
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event REVOKE ALL ON TABLES  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT INSERT ON TABLES  TO bstats_auto;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT SELECT ON TABLES  TO bstats_reader;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT INSERT ON TABLES  TO armalive_auto;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA event GRANT SELECT ON TABLES  TO armalive_reader;
 
 
 SET search_path = server, pg_catalog;
@@ -1762,8 +1760,8 @@ SET search_path = server, pg_catalog;
 
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server REVOKE ALL ON FUNCTIONS  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server GRANT ALL ON FUNCTIONS  TO bstats_auto;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server GRANT ALL ON FUNCTIONS  TO bstats_servers;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server GRANT ALL ON FUNCTIONS  TO armalive_auto;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA server GRANT ALL ON FUNCTIONS  TO armalive_servers;
 
 
 SET search_path = session, pg_catalog;
@@ -1775,8 +1773,8 @@ SET search_path = session, pg_catalog;
 
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session REVOKE ALL ON TABLES  FROM PUBLIC;
 ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session REVOKE ALL ON TABLES  FROM mahuja;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT,INSERT,UPDATE ON TABLES  TO bstats_auto;
-ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT ON TABLES  TO bstats_reader;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT,INSERT,UPDATE ON TABLES  TO armalive_auto;
+ALTER DEFAULT PRIVILEGES FOR ROLE mahuja IN SCHEMA session GRANT SELECT ON TABLES  TO armalive_reader;
 
 
 -- Completed on 2014-07-12 19:32:12
