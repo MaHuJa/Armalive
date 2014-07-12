@@ -25,7 +25,7 @@ GROUP BY killer,killer_weapon
 select last_name_seen as "Name", sum(killcount) as "Killcount", weapon as "Favorite Weapon"
 from kills 
 left join player.player on player.player.id = kills.killer
-group by player.last_name_seen, weapon
+group by killer, player.last_name_seen, weapon
 order by "Killcount" desc
 HEREDOC;
 
