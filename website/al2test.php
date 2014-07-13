@@ -1,6 +1,6 @@
 <?php
 $dbhost = 'master1.armalive.com';
-$dbname = 'bstats_master';
+$dbname = 'armalive_master';
 $name = 'hidden';
 $pass = 'hidden'; // will be changed at some point
 
