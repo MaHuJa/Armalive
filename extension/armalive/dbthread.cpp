@@ -25,7 +25,7 @@ void dbthread::run() {
 	while (running) {
 		string s = grab_cmd();
 		if (s.empty()) continue;	// Running is false, or caller sent blank string
-		logfile << s << std::flush;
+		logfile << s << std::endl;
 
 		paramlist p = split(s);
 		assert (!p.empty());
