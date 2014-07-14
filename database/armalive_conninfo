@@ -1,0 +1,3 @@
+host=master1.armalive.com port=5432 dbname=armalive_master user=hidden password=hidden
+
+
