@@ -1,0 +1,24 @@
+﻿-- Schema: event
+
+-- DROP SCHEMA event;
+
+CREATE SCHEMA event
+  AUTHORIZATION mahuja;
+
+GRANT ALL ON SCHEMA event TO mahuja;
+GRANT USAGE ON SCHEMA event TO armalive_auto;
+GRANT USAGE ON SCHEMA event TO armalive_reader;
+GRANT USAGE ON SCHEMA event TO armalive_admin;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA event
+    GRANT INSERT ON TABLES
+    TO armalive_auto;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA event
+    GRANT SELECT ON TABLES
+    TO armalive_reader;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA event
+    GRANT SELECT, UPDATE, USAGE ON SEQUENCES
+    TO armalive_auto;
+
