@@ -6,6 +6,8 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <thread>
 
 #define WIN32_LEAN_AND_MEAN

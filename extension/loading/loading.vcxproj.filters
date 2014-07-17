@@ -29,4 +29,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="armalive_log.in" />
+  </ItemGroup>
 </Project>

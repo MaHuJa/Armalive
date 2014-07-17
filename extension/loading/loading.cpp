@@ -27,20 +27,21 @@ int main(int argc, char* argv[])
 		char buf[256];
 		foo(buf, 256, str);
 	};
-	call("newmission1;HELLO WORLD!!!11one;FantasyWorld");
-	// server.newplayer1(sessionid integer, playerid text, playerside text, jointime integer, playername_p text)
-	call("newplayer1;AAA;west;0;Testplayer A");
-	call("newplayer1;BBB;east;0;Testplayer B");
-	call("newplayer1;CCC;west;10;Testplayer C");
-	/* The function used here is obsolete.
-	call("inf_killed_inf1;AAA;BBB;15;testweapon1;10;[10,20,0];[20,10,0]");
-	call("inf_killed_inf1;AAA;BBB;15;testweapon1;10;[10,20,0];[20,10,0]");
-	call("inf_killed_inf1;BBB;CCC;15;testweapon2;10;[10,20,0];[20,10,0]");
-	call("inf_killed_inf1;CCC;AAA;15;testweapon1;10;[10,20,0];[20,10,0]");
-	call("inf_killed_inf1;AAA;BBB;15;testweapon2;10;[10,20,0];[20,10,0]");
-	*/
+
+	std::ifstream in("armalive_log.in");
+	std::string s;
+	int count = 0;
+	while (in) {
+		std::getline(in, s);
+		call(s.c_str());
+		count++;
+	}
+	std::cout << count;
 	__asm nop;
-	std::this_thread::sleep_for(std::chrono::seconds(10));
+	// Assume my ping time will never exceed 200.
+	std::this_thread::sleep_for(std::chrono::milliseconds(200*count+1000));
+
+	// TODO: File compare
 	return 0;
 }
 
