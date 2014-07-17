@@ -11,14 +11,14 @@ victim, victim_position, victim_class, victim_side,
 how
 ) values (
 $1,	-- session id
-($2 || ' seconds') ::interval,	-- when/time
+server.seconds($2),	-- when/time
 -- victim
 server.player_uid_to_id($3),	
 server.position($4),
 $5,	-- class
 $6, 	-- side
 
-'death'
+'suicide'
 )
 $BODY$
   LANGUAGE sql VOLATILE SECURITY DEFINER
@@ -27,3 +27,4 @@ ALTER FUNCTION server.suicide1(integer, numeric, text, text, text, text)
   OWNER TO armalive_auto;
 GRANT EXECUTE ON FUNCTION server.suicide1(integer, numeric, text, text, text, text) TO public;
 GRANT EXECUTE ON FUNCTION server.suicide1(integer, numeric, text, text, text, text) TO armalive_auto;
+GRANT EXECUTE ON FUNCTION server.suicide1(integer, numeric, text, text, text, text) TO armalive_server;

@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION server.endsession1(sessionid integer, duration numeri
   RETURNS void AS
 $BODY$
 -- todo: Sanity checks - has this been called already?
-update session.session set duration = ($2 || ' seconds')::interval, result = $3 where id = $1;
+update session.session set duration = server.seconds($2), result = $3 where id = $1;
 $BODY$
   LANGUAGE sql VOLATILE SECURITY DEFINER
   COST 100;

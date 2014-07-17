@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION server.newplayer1(sessionid integer, playeruid text, 
 $BODY$
 insert into player.player(gameuid,last_name_seen) values ($2, $5);
 insert into session.sessionplayers(session, player, side, joined, playername) values 
-($1, server.player_uid_to_id($2), $3, ($4 || ' seconds') ::interval, $5);
+($1, server.player_uid_to_id($2), $3, server.seconds($4), $5);
 -- todo: add to playername list
 $BODY$
   LANGUAGE sql VOLATILE SECURITY DEFINER

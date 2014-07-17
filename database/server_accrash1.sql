@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION server.accrash1(sessionid integer, "when" integer, pl
 $BODY$
 insert into event.ac_crash ("session", "time", playerid, player_position, passengers, vehicle_class, vehicle_position ) values
 ( $1, 
-  ($2 || ' seconds') :: interval,
+  server.seconds($2),
   server.player_uid_to_id($3), 
   server.position($4),
   $5,

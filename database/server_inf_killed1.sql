@@ -11,7 +11,7 @@ victim, victim_position, victim_class, victim_side,
 killer, killer_position, killer_class, killer_side, killer_weapon, teamkill, how
 ) values (
 $1,	-- session id
-($2 || ' seconds') ::interval,	-- when/time
+server.seconds($2),	-- when/time
 -- victim
 server.player_uid_to_id($3),	
 server.position($4),

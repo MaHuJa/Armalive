@@ -6,7 +6,8 @@ CREATE OR REPLACE FUNCTION server.playerleft1(sessionid integer, playerid text, 
   RETURNS void AS
 $BODY$
 -- todo: Sanity checks - has this been called already?
-update session.sessionplayers set "left" = ($3 || ' seconds')::interval 
+-- todo: A player can join and leave several times
+update session.sessionplayers set "left" = server.seconds($3)
 where "session" = $1 and player = server.player_uid_to_id($2);
 $BODY$
   LANGUAGE sql VOLATILE SECURITY DEFINER
