@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 		foo(buf, 256, str);
 	};
 
-	std::ifstream in("armalive_log.in");
+	std::ifstream in("armalive_dump.in");
 	std::string s;
 	int count = 0;
 	while (in) {
