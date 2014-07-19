@@ -19,6 +19,7 @@
   <ItemGroup>
     <ClInclude Include="dbthread.h" />
     <ClInclude Include="pg.h" />
+    <ClInclude Include="squeue.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
