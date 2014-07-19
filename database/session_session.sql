@@ -10,6 +10,8 @@ CREATE TABLE session.session
   server integer NOT NULL,
   duration interval,
   mapname text,
+  duplidetect numeric,
+  session_start timestamp with time zone DEFAULT now(),
   CONSTRAINT session_pkey PRIMARY KEY (id),
   CONSTRAINT session_server_fkey FOREIGN KEY (server)
       REFERENCES session.serverlist (id) MATCH SIMPLE
