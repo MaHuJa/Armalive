@@ -1,12 +1,12 @@
 #pragma once
 #include "pg.h"
+#include "squeue.h"
 
 class dbthread { 
 	typedef std::string string;
 	pg::Connection conn;
 	std::thread my_thread;
-	std::deque<string> q; std::mutex qm;
-	typedef std::lock_guard<std::mutex> guard;
+	squeue<string> mainqueue;
 
 	long int sessionid;
 	bool running;
@@ -24,7 +24,9 @@ public:
 
 	// A new command has arrived, add to the queue here.
 	// This function is designed to be called from some other thread than it creates.
-	void sendquery(string s);
+	void sendquery(string s) {
+		mainqueue.push(s);
+	}
 
 };
 

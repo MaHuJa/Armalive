@@ -65,33 +65,22 @@ void dbthread::run() {
 	}
 }
 
-void dbthread::sendquery (std::string s) {
-	guard g(qm);
-	q.push_back(std::move(s));
-};
 dbthread::~dbthread() {
 	running = false;
 	if (my_thread.joinable()) my_thread.join();
 }
 
 std::string dbthread::grab_cmd () {
-	string s;
 	bool is_empty = false;
 	do {
-		if (!running) return s;
-		if (is_empty) { // was empty last try, putting us here right away
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		if (!running) return "";
+		auto main = mainqueue.pop();
+		if (!main.second) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			continue;
 		}
-		guard g(qm);
-		if (q.empty()) { 
-			is_empty = true;
-		} else {
-			is_empty = false;
-			s = q.front();
-			q.pop_front();
-		}
-	} while (is_empty);
-	return s;
+		return main.first;
+	} while (true);
 }
 dbthread::paramlist dbthread::split(string in) {
 	// I considered regexes, but then I'd have two problems... 
