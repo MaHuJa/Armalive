@@ -29,7 +29,15 @@ bool Connection::reconnect() {
 	return is_connected();
 }
 Result Connection::exec(std::string query) {
-	return PQexec(connection(conn),query.c_str());
+	auto res = PQexec(connection(conn),query.c_str());
+	while (PQstatus(connection(conn)) != CONNECTION_OK) {
+		logfile << PQerrorMessage(connection(conn));
+		PQclear(result(res));
+		PQreset(connection(conn));
+		auto res = PQexec(connection(conn), query.c_str());
+		auto status = PQstatus(connection(conn));
+	}
+	return res;
 }
 Result::Result(void* p) :res(p) {}
 Result::~Result() {
