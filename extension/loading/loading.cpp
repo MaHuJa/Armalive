@@ -31,8 +31,7 @@ int main(int argc, char* argv[])
 	std::ifstream in("armalive_dump.in");
 	std::string s;
 	int count = 0;
-	while (in) {
-		std::getline(in, s);
+	while (std::getline(in, s)) {
 		call(s.c_str());
 		count++;
 	}
