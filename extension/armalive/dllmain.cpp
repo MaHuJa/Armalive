@@ -44,7 +44,7 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	if (!db) {
 		db = new dbthread();
 	}
-	dumpfile << function << '\n';
+	dumpfile << function << endl;
 
 	assert(outputSize > 200);
 	db->sendquery(function);
