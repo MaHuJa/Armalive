@@ -91,4 +91,15 @@ bool Result::failed() {
 	}
 }
 
+bool Result::has_data() {
+	auto status = PQresultStatus(result(res));
+	switch (status) {
+	case PGRES_SINGLE_TUPLE:
+	case PGRES_TUPLES_OK:
+		return true;
+	default: 
+		return false;
+	}
+}
+
 }// namespace

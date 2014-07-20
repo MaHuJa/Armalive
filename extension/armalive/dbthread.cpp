@@ -35,23 +35,25 @@ void dbthread::run() {
 		std::ostringstream cmd;
 		// newsession is a special case because we need to react to its return value
 		if (p[0]=="\"newmission1\"") { // TODO support any newer version
-			if (p.size()<3) {
-				send_error("Newsession missing parameter",s);
-				throw std::invalid_argument("Missing parameter");
+			cmd << "SELECT \"server\"." << std::move(p[0]) << '(' << sessionid; // previous session id
+			for (auto it = p.begin() + 1; it<p.end(); it++) {
+				cmd << ',' << std::move(*it);
 			}
-			cmd << "SELECT \"server\"." << std::move(p[0]) << '(' 
-				<< sessionid << ',' // previous session id
-				<< std::move(p[1]) << ',' 
-				<< std::move(p[2]) << ");";
+
 			string command = cmd.str();	//For debug purposes
 			// The below should loop until it succeeds.
 			auto r = conn.exec(command);
 			if (r.failed()) { 
 				send_error(conn.error_message(),command); 
 			}
-
-			s = r.get_single_value();
-			std::istringstream is(s); is >> sessionid;	// aka lexical_cast
+			if (r.has_data()) {
+				s = r.get_single_value();
+				std::istringstream is(s); is >> sessionid;	// aka lexical_cast
+			}
+			else {
+				sessionid = 0;	// Which will cause subsequent calls to fail as well
+			}
+			
 		} else {
 			// Normal case
 			cmd << "SELECT \"server\"." << std::move(p[0]) << '(' << sessionid;

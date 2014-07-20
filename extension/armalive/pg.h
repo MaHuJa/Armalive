@@ -28,6 +28,7 @@ class Result {
 public:
 	std::string get_single_value();
 	bool failed();
+	bool has_data();
 	Result(void*);
 	~Result();
 
