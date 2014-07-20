@@ -9,7 +9,7 @@ public:
 
 	void push(T t) {
 		guard g(qm);
-		content.push_back(t);
+		content.push_back(move(t));
 	}
 
 	// .second is true if there is an actual result

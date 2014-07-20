@@ -8,6 +8,37 @@ void dbthread::connectloop() {
 		conn.reconnect();
 	}
 }
+void dbthread::task_send(string input) {
+	paramlist p = split(input);
+	assert(!p.empty());
+	p[0] = conn.escapename(p[0]);
+	for (auto it = begin(p) + 1; it != end(p); it++)
+		*it = conn.escapestring(*it);
+	std::ostringstream cmd;
+	cmd << "SELECT \"server\"." << std::move(p[0]) << '(' << sessionid;
+	for (auto it = p.begin() + 1; it < p.end(); it++) {
+		cmd << ',' << std::move(*it);
+	}
+	cmd << ");";
+
+	auto res = conn.exec(cmd.str());
+	if (res.failed()) { send_error(conn.error_message(), input); }
+
+	// magic string follows
+	if (input.substr(0, 10) == "newmission") {
+		if (res.has_data()) {
+			// reusing existing string object
+			input = res.get_single_value();
+			std::istringstream is(input); is >> sessionid;	// aka lexical_cast
+		}
+		else {
+			send_error("No returned session id!", input);
+			sessionid = 0;	// Which will cause subsequent calls to fail as well
+		}
+	}
+
+}
+
 void dbthread::run() {
 	std::string s;
 	{
@@ -23,35 +54,11 @@ void dbthread::run() {
 	connectloop();
 
 	while (running) {
-		string s = grab_cmd();
-		if (s.empty()) continue;	// Running is false, or caller sent blank string
+		Task t = grab_cmd();
+		if (!t.valid())
+			continue;	// Running is false, or caller sent blank string
+		t();
 
-		paramlist p = split(s);
-		assert (!p.empty());
-		p[0] = conn.escapename(p[0]);
-		for (auto it = begin(p)+1; it!=end(p); it++) 
-			*it = conn.escapestring(*it);
-
-		std::ostringstream cmd;
-
-		cmd << "SELECT \"server\"." << std::move(p[0]) << '(' << sessionid;
-		for (auto it = p.begin() + 1; it<p.end(); it++) {
-			cmd << ',' << std::move(*it);
-		}
-		cmd << ");";
-		auto r = conn.exec(cmd.str());
-		if (r.failed()) { send_error(conn.error_message(), s); }
-
-		if (s.substr(0, 10) == "newmission") {
-			if (r.has_data()) {
-				s = r.get_single_value();
-				std::istringstream is(s); is >> sessionid;	// aka lexical_cast
-			}
-			else {
-				send_error("No returned session id!", s);
-				sessionid = 0;	// Which will cause subsequent calls to fail as well
-			}
-		}
 	}
 }
 
@@ -60,16 +67,16 @@ dbthread::~dbthread() {
 	if (my_thread.joinable()) my_thread.join();
 }
 
-std::string dbthread::grab_cmd () {
+dbthread::Task dbthread::grab_cmd () {
 	bool is_empty = false;
 	do {
-		if (!running) return "";
+		if (!running) return Task();
 		auto main = mainqueue.pop();
 		if (!main.second) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 			continue;
 		}
-		return main.first;
+		return move(main.first);
 	} while (true);
 }
 dbthread::paramlist dbthread::split(string in) {

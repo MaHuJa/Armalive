@@ -3,7 +3,7 @@
 #include "dbthread.h"
 
 std::ofstream logfile("armalive_log");
-std::ofstream dumpfile("armalive_dump");	// TODO: Make dynamic based on current time
+std::ofstream dumpfile("armalive_dump");	// TODO: Make name dynamic based on current time
 dbthread* db = nullptr;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -46,9 +46,17 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	}
 	dumpfile << function << endl;
 
-	assert(outputSize > 200);
-	db->sendquery(function);
+	string input = function;
+	
+	dbthread::Task t ([input]()->string {
+		db->task_send(input);
+		return "";
+	});
+	db->mainqueue.push(move(t));
+
+	
 	// TODO: Proper feedback
+	assert(outputSize > 200);
 	output[0] = '9';
 	output[1] = 0;
 
