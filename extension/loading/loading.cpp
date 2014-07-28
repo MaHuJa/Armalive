@@ -15,8 +15,12 @@ int main(int argc, char* argv[])
 #endif
 	);
 	if (!m) { 
-		std::cout << "LoadLibraryA failed\n";	
-		return 1; 
+		if (m = LoadLibraryA("armalive.dll")) {
+		}
+		else {
+			std::cout << "LoadLibraryA failed\n";
+			return 1;
+		}
 	}
 	rve foo = reinterpret_cast<rve>(GetProcAddress(m,"_RVExtension@12"));
 	if (!foo) { 
