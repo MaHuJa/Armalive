@@ -46,6 +46,7 @@ using namespace std;
 void __stdcall RVExtension(char *output, int outputSize, const char *function)
 {
 	if (!db) {
+		logfile << "armalive a3 extension version 0.1";
 		db = new dbthread();
 	}
 	dumpfile << function << endl;
