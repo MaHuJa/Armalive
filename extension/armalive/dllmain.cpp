@@ -26,7 +26,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		break;
 	case DLL_PROCESS_DETACH:
 		//logfile << "PROCESS_DETACH" << std::endl;
+		logfile << "\nShutting down..." << std::endl;
 		delete db;
+		logfile << "Complete." << std::endl;
 		break;
 	}
 	return TRUE;
