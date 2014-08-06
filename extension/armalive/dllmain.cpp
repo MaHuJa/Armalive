@@ -78,6 +78,8 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 		dbthread::Task t(std::bind(&dbthread::task_ask, db, input));
 		pending_results[result_count++] = t.get_future();
 		db->mainqueue.push(move(t));
+	} else if (input.substr(0, 10) == "newmission") {
+		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_newmission, db, input)));
 	} else {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
 	}

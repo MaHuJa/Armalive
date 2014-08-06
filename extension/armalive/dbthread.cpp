@@ -22,23 +22,26 @@ std::string dbthread::make_query(string input) {
 	cmd << ");";
 	return cmd.str();
 }
+std::string dbthread::task_newmission(string input) {
+	string query = make_query(input);
+	auto res = conn.exec(query);
+	if (res.failed()) { send_error(conn.error_message(), input); }
+	string s;
+	if (res.has_data()) {
+		// reusing existing string object
+		s = res.get_single_value();
+		std::istringstream is(s); is >> sessionid;	// aka lexical_cast
+	}
+	else {
+		send_error("No returned session id!", input);
+		sessionid = 0;	// Which will cause subsequent calls to fail as well
+	}
+	return s;
+}
 std::string dbthread::task_send(string input) {
 	string query = make_query(input);
 	auto res = conn.exec(query);
 	if (res.failed()) { send_error(conn.error_message(), input); }
-
-	// magic string follows
-	if (input.substr(0, 10) == "newmission") {
-		if (res.has_data()) {
-			// reusing existing string object
-			input = res.get_single_value();
-			std::istringstream is(input); is >> sessionid;	// aka lexical_cast
-		}
-		else {
-			send_error("No returned session id!", input);
-			sessionid = 0;	// Which will cause subsequent calls to fail as well
-		}
-	}
 	return "";
 }
 std::string dbthread::task_ask(string input) {
