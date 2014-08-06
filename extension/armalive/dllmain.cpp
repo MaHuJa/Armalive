@@ -44,6 +44,22 @@ extern "C"
 
 using namespace std;
 
+std::string getreference(int ref) {
+	auto it = pending_results.find(ref);
+	if (it == pending_results.end()) {
+		logfile << "No pending result " << ref << std::endl;
+		return "error";
+	}
+	auto status = it->second.wait_for(std::chrono::seconds(0));
+	if (status == std::future_status::ready)  {
+		auto ret = it->second.get();
+		pending_results.erase(it);
+		return ret;
+	}
+	return "";
+}
+
+
 void __stdcall RVExtension(char *output, int outputSize, const char *function)
 {
 	--outputSize;
@@ -56,21 +72,8 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	string input = function;
 	string prefix = input.substr(0, 4);
 	if (prefix == "ref ") {
-		istringstream in(input.substr(4));
-		int value = 0; in >> value;
-		auto it = pending_results.find(value);
-		if (it==pending_results.end()) {
-			logfile << "No pending result " << value << std::endl;
-			strcpy(output, "error");
-			return;
-		}
-		auto status = it->second.wait_for(std::chrono::seconds(0));
-		if (status == std::future_status::ready)  {
-			auto ret = it->second.get();
-			strncpy(output, ret.c_str(), outputSize);
-			pending_results.erase(it);
-			return;
-		}
+		int ref = atoi(input.substr(4).c_str());
+		strncpy(output, getreference(ref).c_str(), outputSize);
 	} else if (prefix == "get_") {
 		dbthread::Task t(std::bind(&dbthread::task_ask, db, input));
 		pending_results[result_count++] = t.get_future();
