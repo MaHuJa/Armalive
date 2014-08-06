@@ -38,6 +38,27 @@ std::string dbthread::task_send(string input) {
 	}
 	return "";
 }
+std::string dbthread::task_ask(string input) {
+	paramlist p = split(input);
+	assert(!p.empty());
+	p[0] = conn.escapename(p[0]);
+	for (auto it = begin(p) + 1; it != end(p); it++)
+		*it = conn.escapestring(*it);
+	std::ostringstream cmd;
+	cmd << "SELECT \"server\"." << std::move(p[0]) << '(' << sessionid;
+	for (auto it = p.begin() + 1; it < p.end(); it++) {
+		cmd << ',' << std::move(*it);
+	}
+	cmd << ");";
+
+	auto res = conn.exec(cmd.str());
+	if (res.failed()) { send_error(conn.error_message(), input); }
+
+	if (res.has_data()) {
+		input = res.get_single_value();
+	}
+	return input;
+}
 
 void dbthread::run() {
 	std::string s;

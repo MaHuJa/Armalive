@@ -6,6 +6,9 @@ std::ofstream logfile("armalive_log");
 std::ofstream dumpfile("armalive_dump");	// TODO: Make name dynamic based on current time
 dbthread* db = nullptr;
 
+std::map <int, std::future<std::string>> pending_results;
+int result_count = 1;
+
 BOOL APIENTRY DllMain(HMODULE hModule,
 	DWORD  ul_reason_for_call,
 	LPVOID lpReserved
@@ -43,6 +46,7 @@ using namespace std;
 
 void __stdcall RVExtension(char *output, int outputSize, const char *function)
 {
+	--outputSize;
 	if (!db) {
 		logfile << "armalive a3 extension version 0.1";
 		db = new dbthread();
@@ -50,15 +54,30 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	dumpfile << function << endl;
 
 	string input = function;
-	
-	db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
-
-	
-	// TODO: Proper feedback
-	assert(outputSize > 200);
-	output[0] = '9';
-	output[1] = 0;
-
+	string prefix = input.substr(0, 4);
+	if (prefix == "ref ") {
+		istringstream in(input.substr(4));
+		int value = 0; in >> value;
+		auto it = pending_results.find(value);
+		if (it==pending_results.end()) {
+			logfile << "No pending result " << value << std::endl;
+			strcpy(output, "error");
+			return;
+		}
+		auto status = it->second.wait_for(std::chrono::seconds(0));
+		if (status == std::future_status::ready)  {
+			auto ret = it->second.get();
+			strncpy(output, ret.c_str(), outputSize);
+			pending_results.erase(it);
+			return;
+		}
+	} else if (prefix == "get_") {
+		dbthread::Task t(std::bind(&dbthread::task_ask, db, input));
+		pending_results[result_count++] = t.get_future();
+		db->mainqueue.push(move(t));
+	} else {
+		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
+	}
 }
 
 //*/
