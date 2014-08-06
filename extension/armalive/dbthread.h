@@ -26,7 +26,7 @@ public:
 	~dbthread();
 	bool is_online();
 
-	void task_send(string input);
+	string task_send(string input);
 	string task_ask(string input);
 
 	squeue<Task> mainqueue;

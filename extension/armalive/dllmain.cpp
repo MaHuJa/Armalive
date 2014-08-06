@@ -51,11 +51,7 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 
 	string input = function;
 	
-	dbthread::Task t ([input]()->string {
-		db->task_send(input);
-		return "";
-	});
-	db->mainqueue.push(move(t));
+	db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
 
 	
 	// TODO: Proper feedback

@@ -8,7 +8,7 @@ void dbthread::connectloop() {
 		conn.reconnect();
 	}
 }
-void dbthread::task_send(string input) {
+std::string dbthread::task_send(string input) {
 	paramlist p = split(input);
 	assert(!p.empty());
 	p[0] = conn.escapename(p[0]);
@@ -36,7 +36,7 @@ void dbthread::task_send(string input) {
 			sessionid = 0;	// Which will cause subsequent calls to fail as well
 		}
 	}
-
+	return "";
 }
 
 void dbthread::run() {
