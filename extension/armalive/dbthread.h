@@ -20,6 +20,7 @@ private:
 	paramlist split(string);
 	Task grab_cmd();
 	void send_error(string msg, string input);
+	string make_query(paramlist);
 public:
 	dbthread() : my_thread(&dbthread::run,this), running(true), sessionid(0) {}
 	dbthread(dbthread&) = delete;

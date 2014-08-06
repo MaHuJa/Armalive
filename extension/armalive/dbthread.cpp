@@ -8,7 +8,7 @@ void dbthread::connectloop() {
 		conn.reconnect();
 	}
 }
-std::string dbthread::task_send(string input) {
+std::string dbthread::make_query(string input) {
 	paramlist p = split(input);
 	assert(!p.empty());
 	p[0] = conn.escapename(p[0]);
@@ -20,8 +20,11 @@ std::string dbthread::task_send(string input) {
 		cmd << ',' << std::move(*it);
 	}
 	cmd << ");";
-
-	auto res = conn.exec(cmd.str());
+	return cmd.str();
+}
+std::string dbthread::task_send(string input) {
+	string query = make_query(input);
+	auto res = conn.exec(query);
 	if (res.failed()) { send_error(conn.error_message(), input); }
 
 	// magic string follows
@@ -39,19 +42,8 @@ std::string dbthread::task_send(string input) {
 	return "";
 }
 std::string dbthread::task_ask(string input) {
-	paramlist p = split(input);
-	assert(!p.empty());
-	p[0] = conn.escapename(p[0]);
-	for (auto it = begin(p) + 1; it != end(p); it++)
-		*it = conn.escapestring(*it);
-	std::ostringstream cmd;
-	cmd << "SELECT \"server\"." << std::move(p[0]) << '(' << sessionid;
-	for (auto it = p.begin() + 1; it < p.end(); it++) {
-		cmd << ',' << std::move(*it);
-	}
-	cmd << ");";
-
-	auto res = conn.exec(cmd.str());
+	string query = make_query(input);
+	auto res = conn.exec(query);
 	if (res.failed()) { send_error(conn.error_message(), input); }
 
 	if (res.has_data()) {
