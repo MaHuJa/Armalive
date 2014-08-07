@@ -70,12 +70,14 @@ void dbthread::run() {
 	conn.connect(s);
 	connectloop();
 
-	while (running) {
+	while (true) {
 		Task t = grab_cmd();
-		if (!t.valid())
-			continue;	// Running is false, or caller sent blank string
+		if (!t.valid()) {
+			if (!running) return;
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			continue;
+		}
 		t();
-
 	}
 }
 
