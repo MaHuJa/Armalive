@@ -42,9 +42,11 @@ int main(int argc, char* argv[])
 	std::cout << count;
 	__asm nop;
 	// Assume my ping time will never exceed 200.
-	std::this_thread::sleep_for(std::chrono::milliseconds(200*count+1000));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(200*count+1000));
 
-	// TODO: File compare
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	FreeLibrary(m);
+	// TODO: Compare dump and dump.in
 	return 0;
 }
 
