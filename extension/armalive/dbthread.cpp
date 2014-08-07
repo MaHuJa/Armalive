@@ -90,7 +90,7 @@ dbthread::Task dbthread::grab_cmd () {
 	Task t = 
 		// fasttrack.pop()
 		// if (!t.valid()) t = 
-		mainqueue.pop().first;
+		mainqueue.pop();
 	return t;	
 }
 dbthread::paramlist dbthread::split(string in) {

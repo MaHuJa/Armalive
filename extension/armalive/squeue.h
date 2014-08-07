@@ -13,7 +13,7 @@ public:
 	}
 
 	// .second is true if there is an actual result
-	std::pair<T,bool> pop() {
+	std::pair<T,bool> pop2() {
 		std::pair<T, bool> ret;
 		guard g(qm);
 		if (content.empty()) {
@@ -23,6 +23,16 @@ public:
 			ret.first = move(content.front());
 			content.pop_front();
 			ret.second = true;
+		}
+		return ret;
+	}
+	// Default is default constructed object.
+	T pop() {
+		T ret;
+		guard g(qm);
+		if (!content.empty()) {
+			ret = move(content.front());
+			content.pop_front();
 		}
 		return ret;
 	}
