@@ -87,16 +87,11 @@ dbthread::~dbthread() {
 }
 
 dbthread::Task dbthread::grab_cmd () {
-	bool is_empty = false;
-	do {
-		if (!running) return Task();
-		auto main = mainqueue.pop();
-		if (!main.second) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
-			continue;
-		}
-		return move(main.first);
-	} while (true);
+	Task t = 
+		// fasttrack.pop()
+		// if (!t.valid()) t = 
+		mainqueue.pop().first;
+	return t;	
 }
 dbthread::paramlist dbthread::split(string in) {
 	// I considered regexes, but then I'd have two problems... 
