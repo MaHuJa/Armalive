@@ -70,7 +70,7 @@ void dbthread::run() {
 	conn.connect(s);
 	connectloop();
 
-	while (true) {
+	while (running) {
 		Task t = grab_cmd();
 		if (!t.valid()) {
 			if (!running) break;
