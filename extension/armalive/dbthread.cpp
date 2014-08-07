@@ -79,6 +79,9 @@ void dbthread::run() {
 			continue;
 		}
 		t();
+		if (!running && !conn.is_connected()) {
+			break;
+		}
 	}
 }
 

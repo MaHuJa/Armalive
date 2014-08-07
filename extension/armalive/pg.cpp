@@ -30,10 +30,10 @@ bool Connection::reconnect() {
 }
 Result Connection::exec(std::string query) {
 	auto res = PQexec(connection(conn),query.c_str());
-	while (PQstatus(connection(conn)) != CONNECTION_OK) {
-		logfile << PQerrorMessage(connection(conn));
+	while (PQstatus(connection(conn)) != CONNECTION_OK && retries < 5) {
+		logfile << PQerrorMessage(connection(conn)) << std::endl;
 		PQclear(result(res));
-		PQreset(connection(conn));
+		reconnect(); //PQreset(connection(conn));
 		auto res = PQexec(connection(conn), query.c_str());
 		auto status = PQstatus(connection(conn));
 	}
