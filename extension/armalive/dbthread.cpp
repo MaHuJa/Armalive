@@ -5,6 +5,7 @@ void dbthread::connectloop() {
 	while (!conn.is_connected()) {
 		logfile << "Connect error: " << conn.error_message();
 		std::this_thread::sleep_for(std::chrono::seconds(conn.retries));
+		if (!running) break;
 		conn.reconnect();
 	}
 }
