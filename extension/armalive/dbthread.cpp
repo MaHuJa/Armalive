@@ -72,11 +72,10 @@ void dbthread::run() {
 
 	while (running) {
 		Task t = grab_cmd();
-		if (!t.valid()) {
-			if (!running) break;
-			continue;
-		}
+		if (!t.valid())
+			continue;	// Running is false, or caller sent blank string
 		t();
+
 	}
 }
 
