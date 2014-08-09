@@ -1,13 +1,13 @@
 ﻿-- Table: player.weaponstats
 
--- DROP TABLE player.weaponstats;
+DROP TABLE player.weaponstats;
 
 CREATE TABLE player.weaponstats
 (
   session integer NOT NULL,
   player integer NOT NULL,
   class character varying(40) NOT NULL,
-  totalseconds integer DEFAULT 0,
+  totalseconds numeric DEFAULT 0,
   fired integer DEFAULT 0,
   vehiclehits integer DEFAULT 0,
   headhits integer DEFAULT 0,

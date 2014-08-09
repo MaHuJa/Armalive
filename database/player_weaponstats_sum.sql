@@ -6,15 +6,13 @@ CREATE TABLE player.weaponstats_sum
 (
   player integer NOT NULL,
   class character varying(40) NOT NULL,
-  totalseconds integer NOT NULL DEFAULT 0,
+  totalseconds numeric NOT NULL DEFAULT 0,
   fired integer NOT NULL DEFAULT 0,
   vehiclehits integer NOT NULL DEFAULT 0,
   headhits integer NOT NULL DEFAULT 0,
   bodyhits integer NOT NULL DEFAULT 0,
   leghits integer NOT NULL DEFAULT 0,
   armhits integer NOT NULL DEFAULT 0,
-  avgdist real NOT NULL DEFAULT 0,
-  avgcnt integer NOT NULL DEFAULT 0,
   CONSTRAINT weaponstats_sum_pkey PRIMARY KEY (player, class)
 )
 WITH (
