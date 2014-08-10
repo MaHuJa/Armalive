@@ -59,12 +59,13 @@ std::string getreference(int ref) {
 	return "";
 }
 
+const char* versionstring = "0.2";
 
 void __stdcall RVExtension(char *output, int outputSize, const char *function)
 {
 	--outputSize;
 	if (!db) {
-		logfile << "armalive a3 extension version 0.1";
+		logfile << "armalive a3 extension version" << versionstring << std::endl;
 		db = new dbthread();
 	}
 	dumpfile << function << endl;
@@ -80,6 +81,8 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 		db->mainqueue.push(move(t));
 	} else if (input.substr(0, 10) == "newmission") {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_newmission, db, input)));
+	} else if (input == "version") {
+		strncpy(output, versionstring, outputSize);
 	} else {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
 	}
