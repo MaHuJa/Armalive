@@ -14,7 +14,7 @@ try {
 $sessionid = intval($_GET['armasessionid']);
 
 $weapon_q = <<<HEREDOC
-SELECT eventid, "time", victims.last_name_seen as Victimname, how, killers.last_name_seen as Killername, round(point(victim_position[1], victim_position[2]) <-> point(killer_position[1],killer_position[2]),1) as distance,
+SELECT eventid, "time", victims.last_name_seen as Victimname, how, killers.last_name_seen as Killername, round(point(victim_position[1], victim_position[2]) <-> point(killer_position[1],killer_position[2])) as "Distance (m)",
        killer_weapon, teamkill
   FROM event.deathevent
 join player.player victims on victim = victims.id
