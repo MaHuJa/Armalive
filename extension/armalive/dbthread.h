@@ -27,6 +27,8 @@ public:
 	~dbthread();
 	bool is_online();
 
+	long int getsession() { return sessionid; }
+
 	string task_send(string input);
 	string task_ask(string input);
 	string task_newmission(string input);

@@ -44,6 +44,7 @@ extern "C"
 
 using namespace std;
 
+// TODO: oversize splitting
 std::string getreference(int ref) {
 	auto it = pending_results.find(ref);
 	if (it == pending_results.end()) {
@@ -83,6 +84,9 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_newmission, db, input)));
 	} else if (input == "version") {
 		strncpy(output, versionstring, outputSize);
+	} else if (input == "session") {
+		// WARNING! If backlogged, this value may refer to the previous session played.
+		_itoa(db->getsession(), output, 10);
 	} else {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
 	}
