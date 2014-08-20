@@ -1,5 +1,5 @@
 #define COMPILE(func) func = compilefinal preprocessFileLineNumbers ("armalive\" + #func + ".sqf")
-
+//loki was here :)
 // First, report a new session starting
 _str =  format ["newmission1;%1;%2",missionName,worldName];
 "armalive" callextension _str;
