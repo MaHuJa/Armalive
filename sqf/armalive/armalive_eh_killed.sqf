@@ -13,7 +13,7 @@ if (_victim == _killer) exitwith {
 			"drowned1;%1;%2;%3;%4;%5",
 			time,
 			_victim_uid,
-			position _victim,
+			getposasl _victim,
 			typeof _victim,
 			_victim_side
 		] call armalive_send;
@@ -25,7 +25,7 @@ if (_victim == _killer) exitwith {
 			"suicide1;%1;%2;%3;%4;%5",
 			time,
 			_victim_uid,
-			position _victim,
+			getposasl _victim,
 			typeof _victim,
 			_victim_side
 		] call armalive_send;
@@ -41,7 +41,7 @@ if (isnull _killer || !(_killer isKindOf "Man")) exitwith {
 		"died1;%1;%2;%3;%4;%5",
 		time,
 		_victim_uid,
-		position _victim,
+		getposasl _victim,
 		typeof _victim,
 		_victim_side
 	] call armalive_send;
@@ -63,12 +63,12 @@ if (_killer iskindof "Man") exitwith {
 	format ["inf_killed1;%1;%2;%3;%4;%5;%6;%7;%8;%9;%10;%11", 
 		time,
 		_victim_uid,
-		getposatl _victim,
+		getposasl _victim,
 		typeof _victim,
 		_victim_side,
 		
 		_killer_uid,
-		getposatl _killer,
+		getposasl _killer,
 		typeof _killer,
 		_killer_side,
 		
