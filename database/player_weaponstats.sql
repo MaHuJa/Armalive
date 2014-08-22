@@ -1,6 +1,6 @@
 ﻿-- Table: player.weaponstats
 
-DROP TABLE player.weaponstats;
+-- DROP TABLE player.weaponstats;
 
 CREATE TABLE player.weaponstats
 (
@@ -21,3 +21,17 @@ WITH (
 );
 ALTER TABLE player.weaponstats
   OWNER TO mahuja;
+GRANT ALL ON TABLE player.weaponstats TO mahuja;
+GRANT SELECT ON TABLE player.weaponstats TO armalive_reader;
+GRANT SELECT, UPDATE, INSERT ON TABLE player.weaponstats TO armalive_auto;
+
+-- Trigger: weaponstats_upsert on player.weaponstats
+
+-- DROP TRIGGER weaponstats_upsert ON player.weaponstats;
+
+CREATE TRIGGER weaponstats_upsert
+  BEFORE INSERT
+  ON player.weaponstats
+  FOR EACH ROW
+  EXECUTE PROCEDURE player.weaponstats_upsert();
+
