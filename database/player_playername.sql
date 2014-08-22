@@ -18,3 +18,6 @@ WITH (
 );
 ALTER TABLE player.playername
   OWNER TO mahuja;
+GRANT ALL ON TABLE player.playername TO mahuja;
+GRANT SELECT ON TABLE player.playername TO armalive_reader;
+GRANT SELECT, UPDATE, INSERT ON TABLE player.playername TO armalive_auto;
