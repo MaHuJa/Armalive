@@ -5,7 +5,7 @@
 CREATE OR REPLACE FUNCTION player.weaponstats_sum_upsert()
   RETURNS trigger AS
 $BODY$begin
-perform * from weaponstats_sum where player = new.player and "class" = new.class;
+perform * from player.weaponstats_sum where player = new.player and "class" = new.class;
 if found then
   update player.weaponstats_sum set 
 	totalseconds = totalseconds + new.totalseconds,

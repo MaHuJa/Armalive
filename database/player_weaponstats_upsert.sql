@@ -1,13 +1,13 @@
-﻿-- Function: player.weaponstats_sum_upsert()
+﻿-- Function: player.weaponstats_upsert()
 
--- DROP FUNCTION player.weaponstats_sum_upsert();
+-- DROP FUNCTION player.weaponstats_upsert();
 
 CREATE OR REPLACE FUNCTION player.weaponstats_upsert()
   RETURNS trigger AS
 $BODY$begin
-perform * from weaponstats where player = new.player and "class" = new.class and session = new.session;
+perform * from player.weaponstats where player = new.player and "class" = new.class and session = new.session;
 if found then
-  update player.weaponstats_sum set 
+  update player.weaponstats set 
 	totalseconds = totalseconds + new.totalseconds,
 	"fired" = "fired" + new.fired,
 	vehiclehits = vehiclehits + new.vehiclehits,
@@ -25,5 +25,3 @@ end $BODY$
 ALTER FUNCTION player.weaponstats_upsert()
   OWNER TO armalive_auto;
 COMMENT ON FUNCTION player.weaponstats_upsert() IS 'I don''t care enough about this to double-check it. If a piece of data is lost, then meh, who cares.';
-
-
