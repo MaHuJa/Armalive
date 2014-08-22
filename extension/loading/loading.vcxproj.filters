@@ -30,6 +30,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="armalive_log.in" />
+    <None Include="armalive_dump.in" />
   </ItemGroup>
 </Project>
