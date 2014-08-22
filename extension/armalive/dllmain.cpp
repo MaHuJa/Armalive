@@ -19,19 +19,16 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		//logfile << "PROCESS_ATTACH" << std::endl;
 		break;
 	case DLL_THREAD_ATTACH:
-		//logfile << "THREAD_ATTACH" << std::endl;
 		break;
 	case DLL_THREAD_DETACH:
-		//logfile << "THREAD_DETACH" << std::endl;
 		break;
 	case DLL_PROCESS_DETACH:
-		//logfile << "PROCESS_DETACH" << std::endl;
-		logfile << "\nShutting down..." << std::endl;
+		logfile << "\nShutting down..." << '\n';
 		delete db;
-		logfile << "Complete." << std::endl;
+		logfile << "Complete." << '\n';
+		logfile.flush();
 		break;
 	}
 	return TRUE;
@@ -48,7 +45,8 @@ using namespace std;
 std::string getreference(int ref) {
 	auto it = pending_results.find(ref);
 	if (it == pending_results.end()) {
-		logfile << "No pending result " << ref << std::endl;
+		logfile << "No pending result " << ref << '\n';
+		logfile.flush();
 		return "error";
 	}
 	auto status = it->second.wait_for(std::chrono::seconds(0));
@@ -60,16 +58,18 @@ std::string getreference(int ref) {
 	return "";
 }
 
-const char* versionstring = "0.3";
+const char* versionstring = "0.4";
 
 void __stdcall RVExtension(char *output, int outputSize, const char *function)
 {
 	--outputSize;
 	if (!db) {
-		logfile << "armalive a3 extension version" << versionstring << std::endl;
+		logfile << "armalive a3 extension version " << versionstring << '\n';
+		logfile.flush();
 		db = new dbthread();
 	}
-	dumpfile << function << endl;
+	dumpfile << function << '\n';
+	dumpfile.flush();
 
 	string input = function;
 	string prefix = input.substr(0, 4);

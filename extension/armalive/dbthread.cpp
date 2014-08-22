@@ -62,6 +62,7 @@ void dbthread::run() {
 		if (!infile.is_open()) infile.open("@armalive/armalive_conninfo");
 		if (!infile.is_open()) { 
 			logfile << "Can't connect to db: File armalive_conninfo does not exist!\n"; 
+			logfile.flush();
 			return; 
 		}
 		std::getline (infile,s); 
@@ -117,7 +118,8 @@ dbthread::paramlist dbthread::split(string in) {
 	return out;
 }
 void dbthread::send_error(string msg, string input) {
-	logfile << "Error: " << input << '\n' << msg << std::endl;
+	logfile << "Error: " << input << '\n' << msg << '\n';
+	logfile.flush();
 	// for the time being, we'll also do
 	std::cerr << "Error: " << msg << '\n' << input << '\n';
 	// and sometime in the future also push the error to the database.
