@@ -20,6 +20,9 @@ WITH (
 );
 ALTER TABLE player.weaponstats_sum
   OWNER TO mahuja;
+GRANT ALL ON TABLE player.weaponstats_sum TO mahuja;
+GRANT SELECT ON TABLE player.weaponstats_sum TO armalive_reader;
+GRANT SELECT, UPDATE, INSERT ON TABLE player.weaponstats_sum TO armalive_auto;
 
 -- Trigger: upsert on player.weaponstats_sum
 
