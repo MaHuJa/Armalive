@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="armalive_dump.in" />
+    <None Include="armalive_log" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

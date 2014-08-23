@@ -31,5 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="armalive_dump.in" />
+    <None Include="armalive_log" />
   </ItemGroup>
 </Project>
