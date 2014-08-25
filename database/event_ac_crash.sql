@@ -18,7 +18,8 @@ CREATE TABLE event.ac_crash
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT ac_crash_session_fkey FOREIGN KEY (session)
       REFERENCES session.session (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT ac_crash_passengers_positive CHECK (passengers >= 0)
 )
 WITH (
   OIDS=FALSE
