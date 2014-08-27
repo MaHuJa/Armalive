@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
 	std::string s;
 	int count = 0;
 	while (std::getline(in, s)) {
+		if (s.empty()) continue;
 		call(s.c_str());
 		count++;
 	}
