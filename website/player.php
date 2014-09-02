@@ -63,10 +63,11 @@ printresult($prep);
 
 // KILLS
 $kills_q = <<<HEREDOC
-select count(killer) as "Kills count"
+select count(killer) as "Kills", case "teamkill" when 'teamkill' then 'teamkill' else how end as "How"
 from event.deathevent
 join player.player killers on killers.id = deathevent.killer
 where killers.gameuid = :id
+group by killer, how, teamkill
 ;
 HEREDOC;
 $prep = $db->prepare($kills_q);
