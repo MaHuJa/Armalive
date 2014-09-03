@@ -77,11 +77,11 @@ printresult($prep);
 
 // Deaths by type
 $deaths_q = <<<HEREDOC
-select count(victim) as "Deaths", how
+select count(victim) as "Deaths", case "teamkill" when 'teamkill' then 'teamkill' else how end as "How"
 from event.deathevent
 join player.player v on victim = v.id
 where v.gameuid = :id
-group by victim,how
+group by victim,how,teamkill
 order by "Deaths" desc
 ;
 HEREDOC;
