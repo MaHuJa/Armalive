@@ -13,7 +13,7 @@ try {
 }
 $sessionid = intval($_GET['armasessionid']);
 
-$weapon_q = <<<HEREDOC
+$kills_q = <<<HEREDOC
 SELECT eventid, "time", victims.last_name_seen as Victimname, how, killers.last_name_seen as Killername, round(point(victim_position[1], victim_position[2]) <-> point(killer_position[1],killer_position[2])) as "Distance (m)",
        killer_weapon, teamkill
   FROM event.deathevent
@@ -24,12 +24,22 @@ order by eventid asc
 ;
 HEREDOC;
 
-$prep = $db->prepare($weapon_q);
+$kprep = $db->prepare($kills_q);
 //$prep->bindValue(':id', $id);
-$prep->execute();
+$kprep->execute();
+
+$acc_q = <<<HEREDOC
+select eventid, "time", playerid, last_name_seen as playername, passengers, vehicle_class, round(point(player_position[1], player_position[2]) <-> point(vehicle_position[1],vehicle_position[2])) as distance
+from event.ac_crash
+join player.player on playerid = player.id
+where session = $sessionid
+order by eventid asc
+;
+HEREDOC;
 
 //var_dump ($prep->errorInfo());
 
+$prep = $kprep; // Just to keep the below display working
 print ('<table border="2"><tr>');
 $columns = $prep->columnCount();
 for ($i = 0; $i < $columns; $i++) {
