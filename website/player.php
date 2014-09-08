@@ -90,9 +90,24 @@ $prep->bindValue(':id', $playeruid);
 $prep->execute();
 printresult($prep);
 
-
-
-
+$prey_q = <<<HEREDOC
+with kills_list as (
+SELECT victim, count(eventid) as kills
+  FROM event.deathevent
+where  killer = server.player_uid_to_id(:id) and teamkill = 'not'
+group by victim
+order by kills desc
+limit 5
+)
+select last_name_seen as "Favorite prey", kills
+from kills_list
+join player.player on player.id = victim
+;
+HEREDOC;
+$prep = $db->prepare($prey_q);
+$prep->bindValue(':id', $playeruid);
+$prep->execute();
+printresult($prep);
 
 
 
