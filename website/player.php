@@ -110,7 +110,25 @@ $prep->execute();
 printresult($prep);
 
 
-
+$nemesis_q = <<<HEREDOC
+with kills_list as (
+SELECT killer, count(eventid) as kills
+  FROM event.deathevent
+where  victim = server.player_uid_to_id(:id) and teamkill = 'not'
+group by killer
+order by kills desc
+limit 5
+)
+select last_name_seen as "Favorite prey", kills
+from kills_list
+join player.player on player.id = killer
+;
+HEREDOC;
+$prep = $db->prepare($nemesis_q);
+$prep->bindValue(':id', $playeruid);
+$prep->execute();
+//var_dump($prep->errorInfo());
+printresult($prep);
 
 
 
