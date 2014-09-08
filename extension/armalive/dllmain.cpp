@@ -76,9 +76,12 @@ void __stdcall RVExtension(char *output, int outputSize, const char *function)
 	if (prefix == "ref ") {
 		int ref = atoi(input.substr(4).c_str());
 		strncpy(output, getreference(ref).c_str(), outputSize);
-	} else if (prefix == "get_") {
+	}	else if (prefix == "get_") {
 		dbthread::Task t(std::bind(&dbthread::task_ask, db, input));
 		pending_results[result_count++] = t.get_future();
+		db->mainqueue.push(move(t));
+	} else if (prefix == "put_") {
+		dbthread::Task t(std::bind(&dbthread::task_send, db, input));
 		db->mainqueue.push(move(t));
 	} else if (input.substr(0, 10) == "newmission") {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_newmission, db, input)));
