@@ -28,7 +28,6 @@ std::string dbthread::task_newmission(string input) {
 	if (res.failed()) { send_error(conn.error_message(), input); }
 	string s;
 	if (res.has_data()) {
-		// reusing existing string object
 		s = res.get_single_value();
 		std::istringstream is(s); is >> sessionid;	// aka lexical_cast
 		logfile << "New session ID " << sessionid << '\n';
