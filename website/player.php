@@ -119,7 +119,7 @@ group by killer
 order by kills desc
 limit 5
 )
-select last_name_seen as "Favorite prey", kills
+select last_name_seen as "Greatest nemesis", kills
 from kills_list
 join player.player on player.id = killer
 ;
