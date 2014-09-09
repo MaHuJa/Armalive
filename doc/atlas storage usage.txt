@@ -1,0 +1,12 @@
+"armalive" callextension "put_atlas_addpoints1;76561198001161042;engineer_xp;25" ;
+
+_ref = "armalive" callextension "get_atlas_all1;76561198001161042" ;
+_val = "";
+while {_val = ""} do {
+  sleep 0.2;
+  "armalive" callextension _ref;
+}
+
+{
+  obj setvariable [_x select 0, _x select 1, true];
+} foreach call compile _val;;
