@@ -58,7 +58,7 @@ std::string getreference(int ref) {
 	return "";
 }
 
-const char* versionstring = "0.4";
+const char* versionstring = "0.5";
 
 void __stdcall RVExtension(char *output, unsigned int outputSize, const char *function)
 {
