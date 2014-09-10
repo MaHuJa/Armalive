@@ -36,13 +36,13 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 extern "C" 
 {
-  __declspec(dllexport) void __stdcall RVExtension(char *output, int outputSize, const char *function); 
+  __declspec(dllexport) void __stdcall RVExtension(char *output, unsigned int outputSize, const char *function); 
 };
 
 using namespace std;
 
-// TODO: oversize splitting
 std::string getreference(int ref) {
+	// TODO: oversize splitting
 	auto it = pending_results.find(ref);
 	if (it == pending_results.end()) {
 		logfile << "No pending result " << ref << '\n';
@@ -60,7 +60,7 @@ std::string getreference(int ref) {
 
 const char* versionstring = "0.4";
 
-void __stdcall RVExtension(char *output, int outputSize, const char *function)
+void __stdcall RVExtension(char *output, unsigned int outputSize, const char *function)
 {
 	--outputSize;
 	if (!db) {
