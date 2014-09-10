@@ -84,6 +84,9 @@ void __stdcall RVExtension(char *output, unsigned int outputSize, const char *fu
 		strncpy(output, getreference(ref).c_str(), outputSize);
 	}	else if (prefix == "get_") {
 		dbthread::Task t(std::bind(&dbthread::task_ask, db, input));
+		ostringstream s;
+		s << "ref " << result_count;
+		strncpy(output, s.str().c_str(), min(outputSize, s.str().size()+1));
 		pending_results[result_count++] = t.get_future();
 		db->mainqueue.push(move(t));
 	} else if (prefix == "put_") {
