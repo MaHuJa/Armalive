@@ -70,6 +70,8 @@ void __stdcall RVExtension(char *output, unsigned int outputSize, const char *fu
 	}
 
 	string input = function;
+	if (input == "") 
+		return;
 	string prefix = input.substr(0, 4);
 
 	if (prefix != "ref ") {
