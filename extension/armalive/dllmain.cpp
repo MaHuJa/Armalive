@@ -68,11 +68,15 @@ void __stdcall RVExtension(char *output, unsigned int outputSize, const char *fu
 		logfile.flush();
 		db = new dbthread();
 	}
-	dumpfile << function << '\n';
-	dumpfile.flush();
 
 	string input = function;
 	string prefix = input.substr(0, 4);
+
+	if (prefix != "ref ") {
+		dumpfile << function << '\n';
+		dumpfile.flush();
+	}
+
 	if (prefix == "ref ") {
 		int ref = atoi(input.substr(4).c_str());
 		strncpy(output, getreference(ref).c_str(), outputSize);
