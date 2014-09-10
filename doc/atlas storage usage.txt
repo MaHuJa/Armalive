@@ -2,9 +2,9 @@
 
 _ref = "armalive" callextension "get_atlas_all1;76561198001161042" ;
 _val = "";
-while {_val = ""} do {
+while {_val == ""} do {
   sleep 0.2;
-  "armalive" callextension _ref;
+  _val = "armalive" callextension _ref;
 }
 
 {
