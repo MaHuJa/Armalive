@@ -9,4 +9,4 @@ while {_val = ""} do {
 
 {
   obj setvariable [_x select 0, _x select 1, true];
-} foreach call compile _val;;
+} foreach call compile _val;
