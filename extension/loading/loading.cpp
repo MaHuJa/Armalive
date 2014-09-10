@@ -28,8 +28,11 @@ int main(int argc, char* argv[])
 		return 2; 
 	}
 	auto call = [foo](const char* str) {
-		char buf[256];
+		char buf[256] = { 0 };
 		foo(buf, 256, str);
+		if (buf[0]) {
+			std::cout << buf << '\n';
+		}
 	};
 
 	std::ifstream in("armalive_dump.in");
@@ -40,7 +43,19 @@ int main(int argc, char* argv[])
 		call(s.c_str());
 		count++;
 	}
-	std::cout << count;
+	std::cout << count << '\n';
+
+	/*	TODO: Expand the test to check refs automatically
+	std::string ret = "";
+	while (ret == "") {
+		char buf[256] = { 0 };
+		foo(buf, 256, "ref 1");
+		ret = buf;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	std::cout << ret << std::endl;
+	/**/
+
 	__asm nop;
 	// Assume my ping time will never exceed 200.
 	std::this_thread::sleep_for(std::chrono::milliseconds(200*count+1000));
