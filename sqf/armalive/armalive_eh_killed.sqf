@@ -17,9 +17,8 @@ if (_victim == _killer) exitwith {
 			typeof _victim,
 			_victim_side
 		] call armalive_send;
-		if (!isNil "armalive_hook_drowned") then {
-			_victim call armalive_hook_drowned;
-		};
+		{	_victim call _x;
+		} foreach (missionnamespace getvariable ["armalive_hook_drowned",[]];
 	} else {
 		format[
 			"suicide1;%1;%2;%3;%4;%5",
@@ -29,9 +28,8 @@ if (_victim == _killer) exitwith {
 			typeof _victim,
 			_victim_side
 		] call armalive_send;
-		if (!isNil "armalive_hook_suicide") then {
-			_victim call armalive_hook_suicide;
-		};
+		{	_victim call _x;
+		} foreach (missionnamespace getvariable ["armalive_hook_suicide",[]];
 	};
 };
 
@@ -45,9 +43,8 @@ if (isnull _killer || !(_killer isKindOf "Man")) exitwith {
 		typeof _victim,
 		_victim_side
 	] call armalive_send;
-	if (!isNil "armalive_hook_died") then {
-		_victim call armalive_hook_died;
-	};
+	{	_victim call _x;
+	} foreach (missionnamespace getvariable ["armalive_hook_died",[]];
 };
 
 _killer_uid = _killer getvariable "armalive_uid";
@@ -75,15 +72,9 @@ if (_killer iskindof "Man") exitwith {
 		currentweapon _killer, // TODO: bstats parity
 		_isTK
 	] call armalive_send;
-	if (!isNil "armalive_hook_kill") then {
-		[_victim, _killer, _isTK] call armalive_hook_kill;
-	};
+	{	[_victim, _killer, _isTK] call _x;
+	} foreach (missionnamespace getvariable ["armalive_hook_kill",[]];
 };
-
-
-
-
-
 
 
 

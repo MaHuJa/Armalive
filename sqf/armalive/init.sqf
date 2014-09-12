@@ -1,4 +1,11 @@
 #define COMPILE(func) func = compilefinal preprocessFileLineNumbers ("armalive\" + #func + ".sqf")
+#define MAKEHOOKLIST(name) if (!isNil #name ) then { name = []; };
+
+MAKEHOOKLIST(armalive_hook_drowned)
+MAKEHOOKLIST(armalive_hook_suicide)
+MAKEHOOKLIST(armalive_hook_death)
+MAKEHOOKLIST(armalive_hook_kill)
+
 
 // First, report a new session starting
 _str =  format ["newmission1;%1;%2",missionName,worldName];
