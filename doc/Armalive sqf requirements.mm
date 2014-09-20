@@ -1,7 +1,7 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1410980050572" ID="ID_142879548" MODIFIED="1411244027631" TEXT="Armalive sqf requirements">
-<node CREATED="1411246710059" ID="ID_229996467" MODIFIED="1411248986156" POSITION="right" TEXT="How to read this mindmap">
+<node CREATED="1411246710059" FOLDED="true" ID="ID_229996467" MODIFIED="1411254961649" POSITION="right" TEXT="How to read this mindmap">
 <node CREATED="1411246733255" ID="ID_1525291828" MODIFIED="1411246773229" TEXT="DB function definitions include a first parameter &quot;sessionid&quot; which scripts shall pretend does not exist"/>
 <node CREATED="1411250047072" ID="ID_751023744" MODIFIED="1411250064083" TEXT="Not implemented in database side">
 <icon BUILTIN="closed"/>
@@ -63,7 +63,7 @@
 </node>
 <node CREATED="1411251998507" ID="ID_782296840" MODIFIED="1411252000644" TEXT="suicide1"/>
 </node>
-<node CREATED="1411246519253" ID="ID_107950699" MODIFIED="1411248988265" POSITION="right" TEXT="Session/Player accounting">
+<node CREATED="1411246519253" FOLDED="true" ID="ID_107950699" MODIFIED="1411254959170" POSITION="right" TEXT="Session/Player accounting">
 <node CREATED="1411246590491" ID="ID_290973949" MODIFIED="1411246592801" TEXT="New session"/>
 <node CREATED="1411246572031" ID="ID_1508408840" MODIFIED="1411249590221" TEXT="Player joined">
 <node CREATED="1411246694432" ID="ID_610564600" MODIFIED="1411246696083" TEXT="newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[])"/>
@@ -83,8 +83,9 @@
 <node CREATED="1411246599431" ID="ID_1716485836" MODIFIED="1411246609551" TEXT="Depends on mission?"/>
 </node>
 </node>
-<node CREATED="1411246526682" ID="ID_1157462138" MODIFIED="1411248973299" POSITION="right" TEXT="Kill/Death registration">
-<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1411249607937" TEXT="Killed by shot">
+<node CREATED="1411246526682" ID="ID_1157462138" MODIFIED="1411257236555" POSITION="right" TEXT="Kill/Death registration">
+<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1411257264246" TEXT="Killed by shot">
+<icon BUILTIN="button_ok"/>
 <node CREATED="1411249173058" ID="ID_1214812846" LINK="#ID_973020385" MODIFIED="1411251635776" TEXT="infkilled1"/>
 <node CREATED="1411253958956" ID="ID_1561638128" MODIFIED="1411253963016" TEXT="how = "/>
 </node>
@@ -172,7 +173,7 @@
 <node CREATED="1411243301478" ID="ID_288797497" MODIFIED="1411243318802" POSITION="right" TEXT="Unit Vehicle Weapon statistics">
 <node CREATED="1411243625603" ID="ID_104631808" MODIFIED="1411243711202" TEXT="One message for each uvw combo whose counts have changed"/>
 </node>
-<node CREATED="1411243542252" ID="ID_737534664" MODIFIED="1411245347281" POSITION="right" TEXT="Transportation">
+<node CREATED="1411243542252" FOLDED="true" ID="ID_737534664" MODIFIED="1411254976331" POSITION="right" TEXT="Transportation">
 <icon BUILTIN="pencil"/>
 <node CREATED="1411243861985" ID="ID_999191678" MODIFIED="1411244142068" TEXT="Who provided the transport"/>
 <node CREATED="1411244142478" ID="ID_1049682278" MODIFIED="1411244144399" TEXT="What vehicle"/>
@@ -185,12 +186,12 @@
 <node CREATED="1411243979107" ID="ID_1176768800" MODIFIED="1411244909364" POSITION="right" TEXT="Damage but not kill of friendly">
 <icon BUILTIN="pencil"/>
 </node>
-<node CREATED="1411244819430" ID="ID_1457276037" MODIFIED="1411247967989" POSITION="right" TEXT="Randomly report positions">
+<node CREATED="1411244819430" FOLDED="true" ID="ID_1457276037" MODIFIED="1411254986216" POSITION="right" TEXT="Randomly report positions">
 <icon BUILTIN="pencil"/>
 <node CREATED="1411244848835" ID="ID_1025410739" MODIFIED="1411244856833" TEXT="More work needs to go into this"/>
 <node CREATED="1411244857250" ID="ID_362940804" MODIFIED="1411244874529" TEXT="Every 60-300 seconds, send a db report on where the player is"/>
 </node>
-<node CREATED="1411244916068" ID="ID_464897636" MODIFIED="1411247969899" POSITION="right" TEXT="Shot reports">
+<node CREATED="1411244916068" FOLDED="true" ID="ID_464897636" MODIFIED="1411254987406" POSITION="right" TEXT="Shot reports">
 <icon BUILTIN="pencil"/>
 <node CREATED="1411244921154" ID="ID_1879609824" MODIFIED="1411244938645" TEXT="Report from where and what direction a player shoots"/>
 <node CREATED="1411244941078" ID="ID_1337826126" MODIFIED="1411244967657" TEXT="Do not send further reports for 30 seconds after previous message"/>
