@@ -82,7 +82,7 @@ void __stdcall RVExtension(char *output, unsigned int outputSize, const char *fu
 	if (prefix == "ref ") {
 		int ref = atoi(input.substr(4).c_str());
 		strncpy(output, getreference(ref).c_str(), outputSize);
-	}	else if (prefix == "get_") {
+	} else if (prefix == "get_") {
 		dbthread::Task t(std::bind(&dbthread::task_ask, db, input));
 		ostringstream s;
 		s << "ref " << result_count;
