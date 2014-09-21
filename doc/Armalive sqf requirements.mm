@@ -1,7 +1,7 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1410980050572" ID="ID_142879548" MODIFIED="1411244027631" TEXT="Armalive sqf requirements">
-<node CREATED="1411246710059" FOLDED="true" ID="ID_229996467" MODIFIED="1411254961649" POSITION="right" TEXT="How to read this mindmap">
+<node CREATED="1411246710059" ID="ID_229996467" MODIFIED="1411258123521" POSITION="right" TEXT="How to read this mindmap">
 <node CREATED="1411246733255" ID="ID_1525291828" MODIFIED="1411246773229" TEXT="DB function definitions include a first parameter &quot;sessionid&quot; which scripts shall pretend does not exist"/>
 <node CREATED="1411250047072" ID="ID_751023744" MODIFIED="1411250064083" TEXT="Not implemented in database side">
 <icon BUILTIN="closed"/>
@@ -16,7 +16,7 @@
 <icon BUILTIN="help"/>
 </node>
 </node>
-<node CREATED="1411248645565" FOLDED="true" ID="ID_1045708319" MODIFIED="1411253993277" POSITION="right" TEXT="Common Database calls">
+<node CREATED="1411248645565" ID="ID_1045708319" MODIFIED="1411258079747" POSITION="right" TEXT="Common Database calls">
 <node CREATED="1411251384304" ID="ID_1658327242" MODIFIED="1411251387399" TEXT="Common parameters">
 <node CREATED="1411249546958" ID="ID_1062947714" MODIFIED="1411249739385" TEXT="When: time in seconds since mission start.">
 <node CREATED="1411249740017" ID="ID_1786737069" MODIFIED="1411249742332" TEXT="https://community.bistudio.com/wiki/time"/>
@@ -25,7 +25,7 @@
 <node CREATED="1411249762422" ID="ID_1168308256" MODIFIED="1411249763021" TEXT="https://community.bistudio.com/wiki/getPlayerUID"/>
 </node>
 </node>
-<node CREATED="1411248651473" ID="ID_973020385" MODIFIED="1411251461749" TEXT="infkilled1">
+<node CREATED="1411248651473" ID="ID_973020385" MODIFIED="1411258119385" TEXT="infkilled1">
 <node CREATED="1411249538002" ID="ID_907165344" MODIFIED="1411249539327" TEXT="inf_killed1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text)"/>
 <node CREATED="1411250538108" ID="ID_1768384659" MODIFIED="1411250557181" TEXT="victim_class is always the unit type"/>
 <node CREATED="1411250558246" ID="ID_1179813714" MODIFIED="1411250578103" TEXT="killer_class is always the &quot;typeof vehicle _killer&quot;">
@@ -84,8 +84,9 @@
 </node>
 </node>
 <node CREATED="1411246526682" ID="ID_1157462138" MODIFIED="1411257236555" POSITION="right" TEXT="Kill/Death registration">
-<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1411257264246" TEXT="Killed by shot">
+<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1411258815368" TEXT="Killed by shot">
 <icon BUILTIN="button_ok"/>
+<icon BUILTIN="full-0"/>
 <node CREATED="1411249173058" ID="ID_1214812846" LINK="#ID_973020385" MODIFIED="1411251635776" TEXT="infkilled1"/>
 <node CREATED="1411253958956" ID="ID_1561638128" MODIFIED="1411253963016" TEXT="how = "/>
 </node>
@@ -118,7 +119,6 @@
 <icon BUILTIN="help"/>
 <node CREATED="1411254005448" ID="ID_10833575" MODIFIED="1411254009706" TEXT="suicide1"/>
 <node CREATED="1411253656368" ID="ID_1551882923" MODIFIED="1411253786178" TEXT="Appears as a suicide?"/>
-<node CREATED="1411253845593" ID="ID_918103929" MODIFIED="1411253849821" TEXT="Should be treated as suicide"/>
 </node>
 <node CREATED="1411243029394" ID="ID_132054614" MODIFIED="1411246054185" TEXT="Death by car crash">
 <node CREATED="1411246102416" ID="ID_694363659" MODIFIED="1411254178150" TEXT="In essence similar to aircraft crashes">
@@ -142,7 +142,9 @@
 <node CREATED="1411081419579" ID="ID_1122652404" MODIFIED="1411243367159" TEXT="Scrapped is mandatory, the rest are &quot;just&quot; desirable."/>
 <node CREATED="1411081472957" ID="ID_710542502" MODIFIED="1411081709478" TEXT="Try to send only one message">
 <icon BUILTIN="help"/>
-<node CREATED="1411081650944" ID="ID_631644036" MODIFIED="1411081701290" TEXT="you hit the tires, the crew gets out, &#xa;and the whole thing blows up 5 seconds later:&#xa;we really only want the scrapped message. "/>
+<node CREATED="1411081650944" ID="ID_631644036" MODIFIED="1411258055566" TEXT="you hit the tires, the crew gets out, &#xa;and the whole thing blows up 5 seconds later:&#xa;we really only want the scrapped message. ">
+<node CREATED="1411253845593" ID="ID_918103929" MODIFIED="1411253849821" TEXT="Should be treated as suicide"/>
+</node>
 </node>
 <node CREATED="1411081186378" ID="ID_579096371" MODIFIED="1411081208088" TEXT="Mobility">
 <node CREATED="1411081224244" ID="ID_1001432065" MODIFIED="1411084200819" TEXT="It has been hit such that it can no longer move effectively"/>
