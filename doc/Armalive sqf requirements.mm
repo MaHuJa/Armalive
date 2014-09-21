@@ -1,7 +1,7 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1410980050572" ID="ID_142879548" MODIFIED="1411257087521" TEXT="Armalive sqf requirements">
-<node CREATED="1411246710059" ID="ID_229996467" MODIFIED="1411256937118" POSITION="right" TEXT="How to read this mindmap">
+<node CREATED="1411246710059" FOLDED="true" ID="ID_229996467" MODIFIED="1411262527548" POSITION="right" TEXT="How to read this mindmap">
 <node CREATED="1411246733255" ID="ID_1525291828" MODIFIED="1411246773229" TEXT="DB function definitions include a first parameter &quot;sessionid&quot; which scripts shall pretend does not exist"/>
 <node CREATED="1411250047072" ID="ID_751023744" MODIFIED="1411250064083" TEXT="Not implemented in database side">
 <icon BUILTIN="closed"/>
@@ -16,7 +16,7 @@
 <icon BUILTIN="help"/>
 </node>
 </node>
-<node CREATED="1411248645565" ID="ID_1045708319" MODIFIED="1411256730183" POSITION="right" TEXT="Common Database calls">
+<node CREATED="1411248645565" FOLDED="true" ID="ID_1045708319" MODIFIED="1411262529646" POSITION="right" TEXT="Common Database calls">
 <node CREATED="1411251384304" ID="ID_1658327242" MODIFIED="1411256938229" TEXT="Common parameters">
 <node CREATED="1411249546958" ID="ID_1062947714" MODIFIED="1411249739385" TEXT="When: time in seconds since mission start.">
 <node CREATED="1411249740017" ID="ID_1786737069" MODIFIED="1411249742332" TEXT="https://community.bistudio.com/wiki/time"/>
@@ -68,7 +68,7 @@
 <node CREATED="1411257797792" ID="ID_366157584" MODIFIED="1411257799009" TEXT="died1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text)"/>
 </node>
 </node>
-<node CREATED="1411246519253" ID="ID_107950699" MODIFIED="1411248988265" POSITION="right" TEXT="Session/Player accounting">
+<node CREATED="1411246519253" FOLDED="true" ID="ID_107950699" MODIFIED="1411262531564" POSITION="right" TEXT="Session/Player accounting">
 <node CREATED="1411246590491" ID="ID_290973949" MODIFIED="1411246592801" TEXT="New session"/>
 <node CREATED="1411246572031" ID="ID_1508408840" MODIFIED="1411249590221" TEXT="Player joined">
 <node CREATED="1411246694432" ID="ID_610564600" MODIFIED="1411246696083" TEXT="newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[])"/>
@@ -90,24 +90,28 @@
 </node>
 </node>
 <node CREATED="1411246526682" ID="ID_1157462138" MODIFIED="1411259117863" POSITION="right" TEXT="Kill/Death registration">
-<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1411249607937" TEXT="Killed by shot">
+<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1411263078035" TEXT="Killed by shot">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411249173058" ID="ID_1214812846" LINK="#ID_973020385" MODIFIED="1411251635776" TEXT="infkilled1"/>
 <node CREATED="1411257557771" ID="ID_1943215810" MODIFIED="1411257595555" TEXT="It may be possible to get hit by your own ricochet">
 <node CREATED="1411257576952" ID="ID_1293675892" LINK="#ID_782296840" MODIFIED="1411257586068" TEXT="suicide1"/>
 </node>
 </node>
-<node CREATED="1411188897898" ID="ID_1445224943" MODIFIED="1411253284971" TEXT="Killed by a bomb (vanilla)">
+<node CREATED="1411188897898" ID="ID_1445224943" MODIFIED="1411265410623" TEXT="Killed by a bomb (vanilla)">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411249173058" ID="ID_1901952982" LINK="#ID_973020385" MODIFIED="1411251633626" TEXT="infkilled1"/>
 <node CREATED="1411242849615" ID="ID_824827446" LINK="#ID_782296840" MODIFIED="1411253341827" TEXT="suicide1"/>
 <node CREATED="1411243210127" ID="ID_1236087480" MODIFIED="1411243228751" TEXT="For req purposes grenades fall under this."/>
 </node>
-<node CREATED="1411188994871" ID="ID_1276141249" MODIFIED="1411253333401" TEXT="Killed by a bomb (scripted)">
+<node CREATED="1411188994871" ID="ID_1276141249" MODIFIED="1411266011201" TEXT="Killed by a bomb (scripted)">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411249173058" ID="ID_476686163" LINK="#ID_973020385" MODIFIED="1411251633626" TEXT="infkilled1"/>
 <node CREATED="1411242849615" ID="ID_168075294" LINK="#ID_782296840" MODIFIED="1411253341827" TEXT="suicide1"/>
 <node CREATED="1411189011491" ID="ID_475136480" MODIFIED="1411189025242" TEXT="Requires support from the script"/>
 <node CREATED="1411242849615" ID="ID_1067097159" MODIFIED="1411242859632" TEXT="Suicide if you did it yourself"/>
 </node>
-<node CREATED="1411079817699" ID="ID_1266935527" MODIFIED="1411257367000" TEXT="Roadkill">
+<node CREATED="1411079817699" ID="ID_1266935527" MODIFIED="1411266118583" TEXT="Roadkill">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411256859476" ID="ID_1039798979" MODIFIED="1411256860195" TEXT="roadkill1(sessionid integer, victimid text, killerid text, vehicle_used text, score integer, &quot;position&quot; text)"/>
 </node>
 <node CREATED="1411189056930" ID="ID_968515743" MODIFIED="1411257123651" TEXT="Player dies long after injury">
@@ -116,7 +120,8 @@
 </node>
 <node CREATED="1411189076061" ID="ID_831501880" MODIFIED="1411189110778" TEXT="Bleeding out, revival script timeout, etc"/>
 </node>
-<node CREATED="1410980066323" ID="ID_38876002" MODIFIED="1411257125688" TEXT="Infantry Kills">
+<node CREATED="1410980066323" ID="ID_38876002" MODIFIED="1411266645512" TEXT="Infantry Kills">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1410980118479" ID="ID_44946867" MODIFIED="1411088593201" TEXT="Should elicit exactly one kill message"/>
 <node CREATED="1411081146558" ID="ID_1848479244" MODIFIED="1411081171120" TEXT="Detect teamkills, report them as such"/>
 </node>
@@ -126,7 +131,8 @@
 <node CREATED="1411253656368" ID="ID_1551882923" MODIFIED="1411253786178" TEXT="Appears as a suicide?"/>
 <node CREATED="1411253845593" ID="ID_918103929" MODIFIED="1411253849821" TEXT="Should be treated as suicide"/>
 </node>
-<node CREATED="1411243029394" ID="ID_132054614" MODIFIED="1411257134823" TEXT="Death by car crash">
+<node CREATED="1411243029394" ID="ID_132054614" MODIFIED="1411266981981" TEXT="Death by car crash">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411246102416" ID="ID_694363659" MODIFIED="1411254178150" TEXT="In essence similar to aircraft crashes">
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
@@ -140,10 +146,12 @@
 <node CREATED="1410980083475" ID="ID_1067078033" MODIFIED="1411243077757" TEXT="Scripted deaths">
 <node CREATED="1411254265337" ID="ID_99590567" MODIFIED="1411254273044" TEXT="death1"/>
 </node>
-<node CREATED="1411243237545" ID="ID_1045419302" MODIFIED="1411243240053" TEXT="Drowning">
+<node CREATED="1411243237545" ID="ID_1045419302" MODIFIED="1411266997769" TEXT="Drowning">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411256892075" ID="ID_1590035241" MODIFIED="1411256893080" TEXT="drowned1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text)"/>
 </node>
-<node CREATED="1411081180736" ID="ID_1613880427" MODIFIED="1411254574230" TEXT="Vehicle kills">
+<node CREATED="1411081180736" ID="ID_1613880427" MODIFIED="1411267011624" TEXT="Vehicle kills">
+<icon BUILTIN="button_cancel"/>
 <node CREATED="1411081419579" ID="ID_1122652404" MODIFIED="1411243367159" TEXT="Scrapped is mandatory, the rest are &quot;just&quot; desirable."/>
 <node CREATED="1411081472957" ID="ID_710542502" MODIFIED="1411081709478" TEXT="Try to send only one message">
 <icon BUILTIN="help"/>
