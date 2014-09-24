@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION server.put_atlas_addpoints1(sessionid integer, player
 $BODY$
 with record as (
 insert into persistence.atlas ( session, playerid, varname, increment) values 
-($1,server.player_uid_to_id($2),$3,$4) returning *
+($1,util.player_uid_to_id($2),$3,$4) returning *
 )
 insert into persistence.atlas_archive select * from record;
 $BODY$

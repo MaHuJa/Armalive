@@ -8,7 +8,7 @@ $BODY$
 -- todo: Sanity checks - has this been called already?
 -- todo: A player can join and leave several times
 update session.sessionplayers set "left" = server.seconds($3)
-where "session" = $1 and player = server.player_uid_to_id($2);
+where "session" = $1 and player = util.player_uid_to_id($2);
 $BODY$
   LANGUAGE sql VOLATILE SECURITY DEFINER
   COST 100;

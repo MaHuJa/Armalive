@@ -11,10 +11,10 @@ victim, victim_position, victim_class, victim_side,
 how
 ) values (
 $1,	-- session id
-server.seconds($2),	-- when/time
+util.seconds($2),	-- when/time
 -- victim
-server.player_uid_to_id($3),	
-server.position($4),
+util.player_uid_to_id($3),	
+util.position($4),
 $5,	-- class
 $6, 	-- side
 

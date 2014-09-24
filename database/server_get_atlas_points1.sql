@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION server.get_atlas_points1(sessionid integer, playeruid
 $BODY$
 select sum(increment)::integer 
 from persistence.atlas
-where playerid = server.player_uid_to_id($2)
+where playerid = util.player_uid_to_id($2)
 and varname = $3
 ;
 $BODY$

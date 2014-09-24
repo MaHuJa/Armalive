@@ -7,12 +7,12 @@ CREATE OR REPLACE FUNCTION server.accrash1(sessionid integer, "when" numeric, pl
 $BODY$
 insert into event.ac_crash ("session", "time", playerid, player_position, passengers, vehicle_class, vehicle_position ) values
 ( $1, 
-  server.seconds($2),
-  server.player_uid_to_id($3), 
-  server.position($4),
+  util.seconds($2),
+  util.player_uid_to_id($3), 
+  util.position($4),
   $5,
   $6, 
-  server.position($7)
+  util.position($7)
 )
 $BODY$
   LANGUAGE sql VOLATILE SECURITY DEFINER

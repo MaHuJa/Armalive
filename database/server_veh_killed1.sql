@@ -18,10 +18,10 @@ INSERT INTO event.vehicledestruction(
 	killer_class, killer_weapon, killer_side
 	)
     VALUES (
-	$1, server.seconds($2), $3, 
-	$4, server.position($5), 
-	$6, server.player_uid_to_id($7),
-	server.player_uid_to_id($8), server.position($9),
+	$1, util.seconds($2), $3, 
+	$4, util.position($5), 
+	$6, util.player_uid_to_id($7),
+	util.player_uid_to_id($8), util.position($9),
 	$10, $11, $12        
 	);
 $BODY$

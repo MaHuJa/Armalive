@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION server.get_atlas_all1(session integer, playerid text)
   RETURNS text AS
 $BODY$
 DECLARE
-  pid integer = server.player_uid_to_id ($2);
+  pid integer = util.player_uid_to_id ($2);
   retval text = e'[\n';
   name text;
   val int;
@@ -14,12 +14,12 @@ BEGIN
   FOR name, val IN 
 	SELECT varname, sum(increment)
 	FROM persistence.atlas
-	where atlas.playerid = server.player_uid_to_id('76561198001161042')
+	where atlas.playerid = pid
 	group by varname
   LOOP
     retval = retval || '["' || name || '",' || val || e'],\n';
   END LOOP;
-  retval = retval || ']';
+  retval = retval || e'["atlas_read_successful",1]\n]';
   RETURN retval;
 END
 $BODY$

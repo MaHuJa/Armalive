@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION server.newplayer1(sessionid integer, playeruid text, 
   RETURNS void AS
 $BODY$
 DECLARE
-	p_id integer := server.player_uid_to_id($2);
+	p_id integer := util.player_uid_to_id($2);
 	pname text := array_to_string(playername_p,';');
 BEGIN
 -- todo: Consider doing trigger work here
