@@ -61,7 +61,8 @@ void dbthread::run() {
 	{
 		std::ifstream infile ("armalive_conninfo");
 		if (!infile.is_open()) infile.open("@armalive/armalive_conninfo");
-		if (!infile.is_open()) { 
+		if (!infile.is_open()) infile.open("../armalive_conninfo");
+		if (!infile.is_open()) {
 			logfile << "Can't connect to db: File armalive_conninfo does not exist!\n"; 
 			logfile.flush();
 			return; 
