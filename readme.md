@@ -12,7 +12,7 @@ We had linux server support from the beginning - before extensions were availabl
 The extension currently requires the
 Visual C++ Redistributable Packages for Visual Studio 2013
 http://www.microsoft.com/en-us/download/details.aspx?id=40784
-and in particular it needs the 32-bit version.
+and in particular it needs the 32-bit version. vcredist_x86.exe 
 
 Linux extension to follow.
 
