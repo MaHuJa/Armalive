@@ -9,7 +9,10 @@ CREATE TABLE persistence.atlas
   increment integer,
   session integer NOT NULL,
   id integer NOT NULL DEFAULT nextval('persistence.atlas_variables_id_seq'::regclass),
-  CONSTRAINT atlas_variables_pkey PRIMARY KEY (id)
+  CONSTRAINT atlas_variables_pkey PRIMARY KEY (id),
+  CONSTRAINT atlas_session_fkey FOREIGN KEY (session)
+      REFERENCES session.session (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 WITH (
   OIDS=FALSE
