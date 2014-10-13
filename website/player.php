@@ -44,8 +44,8 @@ $mission = $_GET['missionname'];
 $names_q = <<<HEREDOC
 SELECT 
   playername.name as "Name", 
-  playername.lastseen as "Last seen", 
-  playername.firstseen as "First seen"
+  to_char(playername.lastseen at time zone 'UTC', 'YYYY-MM-DD HHMMz') as "Last seen", 
+  to_char(playername.firstseen at time zone 'UTC', 'YYYY-MM-DD HHMMz') as "First seen"
 FROM 
   player.playername
 JOIN player.player on playername.playerid = player.id
