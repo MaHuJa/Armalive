@@ -7,4 +7,5 @@ CREATE SCHEMA util
 
 GRANT ALL ON SCHEMA util TO mahuja;
 GRANT USAGE ON SCHEMA util TO armalive_auto;
+GRANT USAGE ON SCHEMA util TO armalive_reader;
 
