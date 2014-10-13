@@ -90,11 +90,12 @@ $prep->bindValue(':id', $playeruid);
 $prep->execute();
 printresult($prep);
 
+// Killed most
 $prey_q = <<<HEREDOC
 with kills_list as (
 SELECT victim, count(eventid) as kills
   FROM event.deathevent
-where  killer = server.player_uid_to_id(:id) and teamkill = 'not'
+where  killer = util.player_uid_to_id(:id) and teamkill = 'not'
 group by victim
 order by kills desc
 limit 5
@@ -102,6 +103,7 @@ limit 5
 select last_name_seen as "Favorite prey", kills
 from kills_list
 join player.player on player.id = victim
+order by kills desc
 ;
 HEREDOC;
 $prep = $db->prepare($prey_q);
@@ -109,12 +111,12 @@ $prep->bindValue(':id', $playeruid);
 $prep->execute();
 printresult($prep);
 
-
+// Killed most by
 $nemesis_q = <<<HEREDOC
 with kills_list as (
 SELECT killer, count(eventid) as kills
   FROM event.deathevent
-where  victim = server.player_uid_to_id(:id) and teamkill = 'not'
+where  victim = util.player_uid_to_id(:id) and teamkill = 'not'
 group by killer
 order by kills desc
 limit 5
@@ -122,6 +124,7 @@ limit 5
 select last_name_seen as "Greatest nemesis", kills
 from kills_list
 join player.player on player.id = killer
+order by kills desc
 ;
 HEREDOC;
 $prep = $db->prepare($nemesis_q);
