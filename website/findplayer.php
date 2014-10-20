@@ -24,16 +24,17 @@ $namesearch = '%';
 if ($_GET['name']) {
 	$namesearch = '%' . $_GET['name'] . '%';
 }
-
+$page = intval($_GET['page']);
 $players_q = <<<HEREDOC
 select * from player.playername
 where name ILIKE :namesearch
+limit :page,100
 HEREDOC;
 $prep = $db->prepare($players_q);
 $prep->bindValue(':namesearch', $namesearch);
+$prep->bindValue(':page',($page-1)*100);
 $prep->execute();
-print($players_q);
-print($namesearch);
+
 //var_dump ($prep->errorInfo());
 
 print ('<table border="2"><tr>');
@@ -51,5 +52,15 @@ foreach ($all as $row) {
  foreach ($row as $column) { echo "<td>$column</td>"; };
  echo ("</tr>\n");
 }
-print ("</table>\n");
+print ("</table><br>\n");
+
+if ($page > 2) {
+	$pageprev = $page-1;
+	print ("<a href=\"findplayer.php?name=$name_form&page=$pageprev\">&lt;&lt;</a>");
+}
+echo ' ';
+$pagenext = $page+1;
+print ("<a href=\"findplayer.php?name=$name_form&page=$pagenext\">&gt;&gt;</a>");
+
+
 ?>
