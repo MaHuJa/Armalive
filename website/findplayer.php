@@ -36,7 +36,7 @@ select
 from player.playername
 join player.player on playername.playerid = player.id
 where name ILIKE :namesearch
-order by playername.lastseen
+order by playername.firstseen asc
 offset :page
 limit 100
 HEREDOC;
