@@ -47,20 +47,23 @@ $prep->execute();
 
 //var_dump ($prep->errorInfo());
 
-print ('<table border="2"><tr>');
-$columns = $prep->columnCount();
-for ($i = 0; $i < $columns; $i++) {
- $s = $prep->getColumnMeta($i)['name'];
- print ("<td>$s</td>\n");
-}
-print ("</tr>\n");
+echo '<table border="2"><tr>';
+echo "<td>Player name</td><td>Last seen</td><td>First seen</td></tr>\n";
 
 $all = $prep->fetchAll(PDO::FETCH_NUM);
 
+
 foreach ($all as $row) {
- print ("<tr>");
- foreach ($row as $column) { echo "<td>$column</td>"; };
- echo ("</tr>\n");
+	echo '<tr><td><a href="player.php?playeruid=';
+	echo htmlentities($row[0]);
+	echo '">';
+	echo htmlentities($row[1]);
+	echo "</td>\n";
+	echo '  <td>';
+	echo $row[2];
+	echo '</td><td>';
+	echo $row[3];
+	echo "</td>\n</tr>\n";
 }
 print ("</table><br>\n");
 
