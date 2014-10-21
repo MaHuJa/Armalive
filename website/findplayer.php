@@ -25,10 +25,20 @@ if ($_GET['name']) {
 	$namesearch = '%' . $_GET['name'] . '%';
 }
 $page = intval($_GET['page']);
+if ($page==0) $page=1;
+
 $players_q = <<<HEREDOC
-select * from player.playername
+select 
+	gameuid, 
+	playername.name as name, 
+	to_char(playername.lastseen at time zone 'UTC', 'YYYY-MM-DD HHMMz') as "Last seen",
+	to_char(playername.firstseen at time zone 'UTC', 'YYYY-MM-DD HHMMz') as "First seen"
+from player.playername
+join player.player on playername.playerid = player.id
 where name ILIKE :namesearch
-limit :page,100
+order by playername.lastseen
+offset :page
+limit 100
 HEREDOC;
 $prep = $db->prepare($players_q);
 $prep->bindValue(':namesearch', $namesearch);
@@ -54,7 +64,7 @@ foreach ($all as $row) {
 }
 print ("</table><br>\n");
 
-if ($page > 2) {
+if ($page > 1) {
 	$pageprev = $page-1;
 	print ("<a href=\"findplayer.php?name=$name_form&page=$pageprev\">&lt;&lt;</a>");
 }
