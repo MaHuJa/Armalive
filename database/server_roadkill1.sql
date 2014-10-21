@@ -8,7 +8,7 @@ $BODY$
 DECLARE
 vicpos real[] = util.position(victim_position);
 kilpos real[] = util.position(killer_position);
-distance real = vicpos::point <-> kilpos::point;
+distance real = util.realpoint(vicpos) <-> util.realpoint(kilpos);
 BEGIN
 IF distance == 0 THEN RAISE EXCEPTION 'Zero distance (Lazy scripter check)'; END IF;
 IF distance > 20 THEN RAISE WARNING 'Too far to be a road kill. Saving it anyway.'; END IF;
