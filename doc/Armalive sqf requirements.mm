@@ -60,7 +60,7 @@
 <node CREATED="1411249955811" ID="ID_11673347" MODIFIED="1411249960957" TEXT="potential warcrime"/>
 <node CREATED="1411249967871" ID="ID_177102107" MODIFIED="1411252133664" TEXT="Only with proper manual review should anything be flagged &quot;definite warcrime&quot;.">
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
-<node CREATED="1411250285269" ID="ID_641735279" MODIFIED="1411269651993" TEXT="Blocked at db input">
+<node CREATED="1411250285269" ID="ID_641735279" MODIFIED="1413862853723" TEXT="Will be blocked at db input">
 <icon BUILTIN="closed"/>
 </node>
 </node>
@@ -113,6 +113,12 @@
 </node>
 <node CREATED="1411265994273" ID="ID_573944941" MODIFIED="1411788958958" TEXT="kill/teamkill"/>
 <node CREATED="1411266005084" ID="ID_985018267" MODIFIED="1411266017556" TEXT="by infantry/vehicle"/>
+<node CREATED="1413862435467" ID="ID_1885334961" MODIFIED="1413862442517" TEXT="Killed by UAV/UGV">
+<node CREATED="1413862445520" ID="ID_1516082374" MODIFIED="1413862524950" TEXT="killer uid, side,  should be that of controller">
+<node CREATED="1413862593753" ID="ID_1643468915" MODIFIED="1413862597492" TEXT="AI if uncontrolled"/>
+</node>
+<node CREATED="1413862466867" ID="ID_1917238011" MODIFIED="1413862560491" TEXT="killer position, class, (weapon) should be that of the uav"/>
+</node>
 <node CREATED="1411420801532" ID="ID_119882297" MODIFIED="1411420813893" TEXT="Should register for the correct gunner in a multigunner vehicle">
 <node CREATED="1411420815194" ID="ID_662243782" MODIFIED="1411420822866" TEXT="Tank gunner and commander"/>
 <node CREATED="1411420823339" ID="ID_674614468" MODIFIED="1411420831827" TEXT="Helicopter with door guns on each side"/>
@@ -211,13 +217,16 @@
 <node CREATED="1411243301478" ID="ID_288797497" MODIFIED="1411255288529" POSITION="right" TEXT="Unit Vehicle Weapon statistics">
 <node CREATED="1411255157468" ID="ID_1701642190" MODIFIED="1411255175444" TEXT="Send updates periodically"/>
 <node CREATED="1411243625603" ID="ID_104631808" MODIFIED="1411243711202" TEXT="One message for each uvw combo whose counts have changed"/>
-<node CREATED="1411256841694" ID="ID_181118575" MODIFIED="1411256842544" TEXT="server.uvwstats(IN sessionid integer, IN &quot;when&quot; numeric, IN playerid text, IN unitclass text, IN vehicleclass text, IN weaponclass text, IN weapontime numeric, VARIADIC hits text[])"/>
+<node CREATED="1413852534333" ID="ID_1825469394" MODIFIED="1413852543040" TEXT="server.uvwstats1(IN sessionid integer, IN &quot;when&quot; numeric, IN playerid text, IN unitclass text, IN vehicleclass text, IN weaponclass text, IN weapontime numeric, VARIADIC hits text[]) "/>
 <node CREATED="1412015215559" ID="ID_901584314" MODIFIED="1412015280112" TEXT="hits should have the format  class:selection">
 <node CREATED="1412015256275" ID="ID_1047285598" MODIFIED="1412015262013" TEXT="Note colon rather than semicolon"/>
 </node>
 </node>
-<node CREATED="1411243542252" FOLDED="true" ID="ID_737534664" MODIFIED="1411789847993" POSITION="right" TEXT="Transportation">
+<node CREATED="1411243542252" ID="ID_737534664" MODIFIED="1413854266382" POSITION="right" TEXT="Transportation">
 <icon BUILTIN="pencil"/>
+<node CREATED="1413854284235" ID="ID_82021336" MODIFIED="1413854291857" TEXT="GetIn GetOut messages">
+<node CREATED="1413854292927" ID="ID_1253693988" MODIFIED="1413854312256" TEXT="Who else was crewing?"/>
+</node>
 <node CREATED="1411243861985" ID="ID_999191678" MODIFIED="1411244142068" TEXT="Who provided the transport"/>
 <node CREATED="1411244142478" ID="ID_1049682278" MODIFIED="1411244144399" TEXT="What vehicle"/>
 <node CREATED="1411244144687" ID="ID_301443479" MODIFIED="1411244147231" TEXT="Who was transported"/>
@@ -232,7 +241,7 @@
 <node CREATED="1411244848835" ID="ID_1025410739" MODIFIED="1411244856833" TEXT="More work needs to go into this"/>
 <node CREATED="1411244857250" ID="ID_362940804" MODIFIED="1411244874529" TEXT="Every 60-300 seconds, send a db report on where the player is"/>
 </node>
-<node CREATED="1411244916068" FOLDED="true" ID="ID_464897636" MODIFIED="1411789850670" POSITION="right" TEXT="Shot reports">
+<node CREATED="1411244916068" FOLDED="true" ID="ID_464897636" MODIFIED="1413854279212" POSITION="right" TEXT="Shot reports">
 <icon BUILTIN="pencil"/>
 <node CREATED="1411244921154" ID="ID_1879609824" MODIFIED="1411244938645" TEXT="Report from where and what direction a player shoots"/>
 <node CREATED="1411244941078" ID="ID_1337826126" MODIFIED="1411244967657" TEXT="Do not send further reports for 30 seconds after previous message"/>
@@ -240,7 +249,7 @@
 <node CREATED="1411245441833" ID="ID_1051322261" MODIFIED="1411256211132" POSITION="right" TEXT="Medical/healing">
 <node CREATED="1411245482148" ID="ID_419922949" MODIFIED="1411245488412" TEXT="Will depend on medical system in use"/>
 </node>
-<node CREATED="1411244230047" FOLDED="true" ID="ID_1113245109" MODIFIED="1411789825907" POSITION="left" TEXT="Bstats feature list">
+<node CREATED="1411244230047" FOLDED="true" ID="ID_1113245109" MODIFIED="1413862795637" POSITION="left" TEXT="Bstats feature list">
 <node CREATED="1411244602977" ID="ID_43480712" MODIFIED="1411244602977" TEXT="">
 <node CREATED="1411244586034" FOLDED="true" ID="ID_130987651" MODIFIED="1411244647509" TEXT="Combat:">
 <node CREATED="1411244627549" ID="ID_28318494" MODIFIED="1411244641264" TEXT="inf kills"/>
@@ -263,7 +272,7 @@
 <node CREATED="1411244737702" ID="ID_292410946" MODIFIED="1411244739551" TEXT="team damage"/>
 <node CREATED="1411244739794" ID="ID_893225740" MODIFIED="1411244743926" TEXT="ac crash"/>
 </node>
-<node CREATED="1411244748428" FOLDED="true" ID="ID_81132403" MODIFIED="1411244765850" TEXT="Teamwork">
+<node CREATED="1411244748428" FOLDED="true" ID="ID_81132403" MODIFIED="1413862794546" TEXT="Teamwork">
 <node CREATED="1411244750709" ID="ID_921122865" MODIFIED="1411244757609" TEXT="Medical treatment"/>
 <node CREATED="1411244758118" ID="ID_1616543782" MODIFIED="1411244759589" TEXT="repair"/>
 <node CREATED="1411244759963" ID="ID_1743177045" MODIFIED="1411244763117" TEXT="build"/>

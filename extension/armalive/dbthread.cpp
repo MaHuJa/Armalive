@@ -78,7 +78,6 @@ void dbthread::run() {
 		if (!t.valid())
 			continue;	// Running is false, or caller sent blank string
 		t();
-
 	}
 }
 
