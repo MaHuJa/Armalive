@@ -217,7 +217,7 @@
 <node CREATED="1411243301478" ID="ID_288797497" MODIFIED="1411255288529" POSITION="right" TEXT="Unit Vehicle Weapon statistics">
 <node CREATED="1411255157468" ID="ID_1701642190" MODIFIED="1411255175444" TEXT="Send updates periodically"/>
 <node CREATED="1411243625603" ID="ID_104631808" MODIFIED="1411243711202" TEXT="One message for each uvw combo whose counts have changed"/>
-<node CREATED="1413852534333" ID="ID_1825469394" MODIFIED="1413852543040" TEXT="server.uvwstats1(IN sessionid integer, IN &quot;when&quot; numeric, IN playerid text, IN unitclass text, IN vehicleclass text, IN weaponclass text, IN weapontime numeric, VARIADIC hits text[]) "/>
+<node CREATED="1413852534333" ID="ID_1825469394" MODIFIED="1414337053000" TEXT="server.uvwstats1 (IN sessionid integer, IN &quot;when&quot; numeric, IN playerid text, &#xa;IN unitclass text, IN vehicleclass text, IN weaponclass text, &#xa;IN weapontime numeric, IN shotsfired integer, VARIADIC hits text[])"/>
 <node CREATED="1412015215559" ID="ID_901584314" MODIFIED="1412015280112" TEXT="hits should have the format  class:selection">
 <node CREATED="1412015256275" ID="ID_1047285598" MODIFIED="1412015262013" TEXT="Note colon rather than semicolon"/>
 </node>
