@@ -10,14 +10,18 @@ IN weapontime numeric, IN shotsfired integer, VARIADIC hits text[])
 $BODY$
 DECLARE
   playerid integer = util.player_uid_to_id($3);
+  unit text = $4;
+  vehicle text = $5;
+  weapon text = $6;
   totaltime interval = util.seconds($7);
 BEGIN
+  IF unit = vehicle THEN vehicle = ''; END IF;
   EXECUTE util.checkwritable($1);
   INSERT INTO player.uvwstats_raw (session, player, 
     unit, vehicle, weapon, 
     totalseconds, fired, hits)
   VALUES ($1, playerid, 
-    $4, $5, $6, 
+    unit, vehicle, weapon, 
     totaltime, $8, $9);
 END
 $BODY$
