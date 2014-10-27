@@ -8,6 +8,7 @@ CREATE TABLE player.player
   gameuid character varying(64) NOT NULL,
   first_seen timestamp with time zone NOT NULL DEFAULT now(),
   last_name_seen text NOT NULL,
+  hide boolean DEFAULT false,
   CONSTRAINT playerlist_pkey PRIMARY KEY (id),
   CONSTRAINT unique_gameuid UNIQUE (gameuid)
 )

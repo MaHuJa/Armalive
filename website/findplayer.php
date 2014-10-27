@@ -35,7 +35,7 @@ select
 	to_char(playername.firstseen at time zone 'UTC', 'YYYY-MM-DD HHMMz') as "First seen"
 from player.playername
 join player.player on playername.playerid = player.id
-where name ILIKE :namesearch
+where name ILIKE :namesearch and hide = false
 order by playername.firstseen asc
 offset :page
 limit 100
