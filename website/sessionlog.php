@@ -12,6 +12,12 @@ try {
     die("Error!: " . $e->getMessage() . "<br/>");
 }
 $sessionid = intval($_GET['armasessionid']);
+// Form for changing your search
+echo <<<HEREDOC
+<form action="findplayer.php" method="get">
+  Session ID: <input type="text" name="armasessionid" value="$sessionid"> <input type="submit" value="Submit">
+</form> 
+HEREDOC;
 
 $kills_q = <<<HEREDOC
 SELECT eventid, "time", victims.last_name_seen as Victimname, how, killers.last_name_seen as Killername, round(point(victim_position[1], victim_position[2]) <-> point(killer_position[1],killer_position[2])) as "Distance (m)",
