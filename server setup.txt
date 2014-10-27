@@ -1,0 +1,27 @@
+Armalive server setup
+
+- Make sure you have a running, working server setup, and that the missions otherwise run properly. Setting up armalive is the last thing you do.
+
+- Drop the @armalive folder in the server, and add it as a mod folder, as per usual.
+Clients do not need, nor want, the @armalive extension running.
+
+- If you do not have a valid armalive_conninfo, you need to ask for one. If it contains a very generic username/password, you need a proper one. 
+If you need one, try asking staff@armalive.com or ask mahuja.net on skype.
+Note that two servers running using the same username will block each others reporting. 
+We do not support automatic signups for this; player displays are by default global and someone could sign up a server just to inject false scores.
+
+- The armalive_conninfo file requires special attention.
+This file contains a password that must not be readable by other means like loadfile. The password could be used to impersonate your server and inject false data.
+The extension will search for it in the arma3 folder, arma3/@armalive folder, and parent folder of arma3, in that order. 
+The parent folder was added so it can be used if the server is not properly configured with loadfileextensions etc.
+
+- ATLAS should already support armalive. A more general script suite that can simply be dropped in as an addon has not been made yet,
+ but a specification of what it has to support exists.
+
+- After the server stops, the process may keep running in the background until FreeLibrary() is called, which the arma3server does not currently do, or the process is forcibly terminated. 
+This may trick watchdog programs that would otherwise restart it.
+
+
+- A linux extension has not yet been made, mainly because I haven't set up the compile/test server for doing that.
+
+
