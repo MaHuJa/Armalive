@@ -1,3 +1,4 @@
+<p>At the moment this is unfortunately just a kill list.</p>
 <?php
 $dbhost = 'master1.armalive.com';
 $dbname = 'armalive_master';
@@ -14,7 +15,7 @@ try {
 $sessionid = intval($_GET['armasessionid']);
 // Form for changing your search
 echo <<<HEREDOC
-<form action="findplayer.php" method="get">
+<form action="sessionlog.php" method="get">
   Session ID: <input type="text" name="armasessionid" value="$sessionid"> <input type="submit" value="Submit">
 </form> 
 HEREDOC;
