@@ -16,15 +16,16 @@ The extension will search for it in the arma3 folder, arma3/@armalive folder, an
 The parent folder was added so it can be used if the server is not properly configured with loadfileextensions etc.
 
 - ATLAS should already support armalive. 
-A more general script suite that can simply be dropped in as an addon, and work for every mission has not been made yet,
- but a specification of what it has to support exists at https://github.com/MaHuJa/Armalive/tree/master/doc
+A more general script suite that can simply be dropped in as an addon, and work for every mission, is under separate development. (bstats)
+If you wish to make your own, a specification of what it has to support exists at https://github.com/MaHuJa/Armalive/tree/master/doc
 Much of the time you have to combine the output of several eventhandlers to figure out what to report.
  
 - Welcome to the second generation of arma statskeeping system, armalive v2.
-Unfortunately we don't do much in the way of pretty displays, maps with overlays, and much more that's on the wishlist - yet.
+Unfortunately we don't do much in the way of pretty displays, maps from the game with data overlays, and much more that's on the wishlist - yet.
  
-- After the server stops, the process may keep running in the background until FreeLibrary() is called, which the arma3server does not currently do, or the process is forcibly terminated. 
+- After the server stops, the process may keep running in the background until the process is forcibly terminated. 
 This may trick watchdog programs that would otherwise restart it.
+There is little to be done on our end for this.
 
 - A linux extension has not yet been made, mainly because I haven't set up the compile/test server for doing that.
 
