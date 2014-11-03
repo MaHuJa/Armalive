@@ -77,7 +77,14 @@
 </node>
 </node>
 <node CREATED="1411246519253" ID="ID_107950699" MODIFIED="1411248988265" POSITION="right" TEXT="Session/Player accounting">
-<node CREATED="1411246590491" ID="ID_290973949" MODIFIED="1411246592801" TEXT="New session"/>
+<node CREATED="1411246590491" ID="ID_290973949" MODIFIED="1411246592801" TEXT="New session">
+<node CREATED="1415040818948" ID="ID_531729661" MODIFIED="1415040820186" TEXT="server.newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric)"/>
+<node CREATED="1415040862257" ID="ID_1657939095" MODIFIED="1415040876584" TEXT="missionname and worldname commands"/>
+<node CREATED="1415040877649" ID="ID_533174409" MODIFIED="1415040926905" TEXT="Duplidetect should be fairly unique - and will be used to detect if maybe a dump has already been imported."/>
+<node CREATED="1415040821404" ID="ID_1995566041" MODIFIED="1415040976971" TEXT="newmission1;Splendid_testing;Altis;1554329">
+<font BOLD="true" NAME="Arial" SIZE="12"/>
+</node>
+</node>
 <node CREATED="1411246572031" ID="ID_1508408840" MODIFIED="1411249590221" TEXT="Player joined">
 <node CREATED="1411246694432" ID="ID_610564600" MODIFIED="1411246696083" TEXT="newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[])"/>
 <node CREATED="1411246799799" ID="ID_1153877399" MODIFIED="1411246891942" TEXT="playerside is assumed to be constant until leaving">

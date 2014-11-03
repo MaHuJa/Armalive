@@ -5,6 +5,7 @@
 CREATE OR REPLACE FUNCTION server.newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric)
   RETURNS integer AS
 $BODY$
+-- this is an opportunity to finish "cleanup" of oldsession, or schedule it.
 insert into session.session (missionname, mapname,server,duplidetect) 
 values ($2, $3,
   ( select id from session.serverlist where name = session_user ),
