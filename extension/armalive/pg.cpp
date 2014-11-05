@@ -47,8 +47,7 @@ std::string Result::get_single_value() {
 	PGresult* p = result(res);
 	if (PQntuples(p) != 1 || PQnfields(p) != 1 || PQfformat(p, 0) != 0)	// format is text
 	{
-		__asm nop;	// breakpoint me!
-		// TODO: Exception
+		return "ERROR";
 	}
 	return PQgetvalue(p, 0, 0);
 }
