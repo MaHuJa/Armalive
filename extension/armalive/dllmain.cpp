@@ -2,45 +2,13 @@
 #include "stdafx.h"
 #include "dbthread.h"
 
+const char* versionstring = "0.6+dev";
 std::ofstream logfile("armalive_log");
 std::ofstream dumpfile("armalive_dump");	// TODO: Make name dynamic based on current time
 dbthread* db = nullptr;
 
 std::map <int, std::future<std::string>> pending_results;
 int result_count = 1;
-
-BOOL APIENTRY DllMain(HMODULE hModule,
-	DWORD  ul_reason_for_call,
-	LPVOID lpReserved
-	)
-{
-	hModule, lpReserved;	// silence "unreferenced"
-
-	switch (ul_reason_for_call)
-	{
-	case DLL_PROCESS_ATTACH:
-		break;
-	case DLL_THREAD_ATTACH:
-		break;
-	case DLL_THREAD_DETACH:
-		break;
-	case DLL_PROCESS_DETACH:
-		logfile << "\nShutting down..." << '\n';
-		delete db;
-		logfile << "Complete." << '\n';
-		logfile.flush();
-		break;
-	}
-	return TRUE;
-}
-
-extern "C" 
-{
-  __declspec(dllexport) void __stdcall RVExtension(char *output, unsigned int outputSize, const char *function); 
-};
-
-using namespace std;
-
 std::string getreference(int ref) {
 	// TODO: oversize splitting
 	auto it = pending_results.find(ref);
@@ -58,9 +26,57 @@ std::string getreference(int ref) {
 	return "";
 }
 
-const char* versionstring = "0.6";
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport) __stdcall
+#define DESTRUCTOR
+#else
+#define EXPORT __attribute__ ((visibility ("default")))
+#define DESTRUCTOR __attribute__((destructor))
+#endif
 
-void __stdcall RVExtension(char *output, unsigned int outputSize, const char *function)
+
+void DESTRUCTOR onUnload() 
+{
+	logfile << "\nShutting down..." << '\n';
+	delete db;
+	logfile << "Complete." << '\n';
+	logfile.flush();
+}
+
+#ifdef _WIN32
+BOOL APIENTRY DllMain(HMODULE hModule,
+	DWORD  ul_reason_for_call,
+	LPVOID lpReserved
+	)
+{
+	hModule, lpReserved;	// silence "unreferenced"
+
+	switch (ul_reason_for_call)
+	{
+	case DLL_PROCESS_ATTACH:
+		break;
+	case DLL_THREAD_ATTACH:
+		break;
+	case DLL_THREAD_DETACH:
+		break;
+	case DLL_PROCESS_DETACH:
+		onUnload();
+		break;
+	}
+	return TRUE;
+}
+#endif
+
+extern "C" 
+{
+  void EXPORT RVExtension(char *output, unsigned int outputSize, const char *function); 
+};
+
+using namespace std;
+
+
+
+void EXPORT RVExtension(char *output, unsigned int outputSize, const char *function)
 {
 	--outputSize;
 	if (!db) {
