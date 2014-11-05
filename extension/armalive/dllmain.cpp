@@ -98,7 +98,10 @@ void __stdcall RVExtension(char *output, unsigned int outputSize, const char *fu
 		strncpy(output, versionstring, outputSize);
 	} else if (input == "session") {
 		// WARNING! If backlogged, this value may refer to the previous session played.
-		_itoa(db->getsession(), output, 10);
+		//std::itoa(db->getsession(), output, 10);
+		ostringstream s; 
+		s << db->getsession();
+		strncpy(output, s.str().c_str(), outputSize);
 	} else {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_send, db, input)));
 	}
