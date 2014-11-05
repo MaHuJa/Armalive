@@ -99,14 +99,6 @@ dbthread::Task dbthread::grab_cmd () {
 	} while (true);
 }
 dbthread::paramlist dbthread::split(string in) {
-	// I considered regexes, but then I'd have two problems... 
-	// I mean, it would be quite complicated to handle escaping etc
-	// But then I decided not to do that sort of stuff.
-
-	// It was the intention to treat "custom data" that could contain a ; as a last field, 
-	// but that requires that I can detect and pass the correct number of parameters.
-	// Ah well, I'll have to piece them together later somehow.
-	// At worst it will fail that command, or it will truncate that name.
 	const char separator = ';';
 	paramlist out;
 	auto iter = in.begin();

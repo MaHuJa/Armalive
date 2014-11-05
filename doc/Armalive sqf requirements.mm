@@ -243,17 +243,29 @@
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node CREATED="1411244819430" ID="ID_1457276037" MODIFIED="1414405975888" POSITION="right" TEXT="Randomly report positions">
-<icon BUILTIN="pencil"/>
-<node CREATED="1411244848835" ID="ID_1025410739" MODIFIED="1411244856833" TEXT="More work needs to go into this"/>
-<node CREATED="1411244857250" ID="ID_362940804" MODIFIED="1411244874529" TEXT="Every 60-300 seconds, send a db report on where the player is"/>
+<node CREATED="1411244819430" ID="ID_1457276037" MODIFIED="1415042228052" POSITION="right" TEXT="Randomly report positions">
+<node CREATED="1415041776195" ID="ID_530867136" MODIFIED="1415042196584" TEXT="server.playerpos(sessionid int, when numeric, playeruid text, position text, vehicle text, status text"/>
+<node CREATED="1415041838721" ID="ID_228537817" MODIFIED="1415041892299" TEXT="status is optional">
+<node CREATED="1415041892300" ID="ID_1111924602" MODIFIED="1415041907404" TEXT="Integration with medical system -&gt; unconscious?"/>
+<node CREATED="1415041907998" ID="ID_410780591" MODIFIED="1415041912009" TEXT="Dead, waiting for respawn?"/>
+</node>
+<node CREATED="1415041546923" ID="ID_1115444975" MODIFIED="1415041753853" TEXT="After sending one message, wait for 90 to 300 seconds before sending another message for that player."/>
+<node CREATED="1415042079215" ID="ID_1932459428" MODIFIED="1415042107639" TEXT="Optionally, 90 seconds could be changed to numplayers/90 ONLY WHEN &gt;90 players."/>
+<node CREATED="1415042143564" ID="ID_1201145061" MODIFIED="1415042289648" TEXT="A mission designer will be interested in a heatmap for where players are spending their time."/>
 </node>
 <node CREATED="1411244916068" ID="ID_464897636" MODIFIED="1414405974456" POSITION="right" TEXT="Shot reports">
 <icon BUILTIN="pencil"/>
 <node CREATED="1411244921154" ID="ID_1879609824" MODIFIED="1411244938645" TEXT="Report from where and what direction a player shoots"/>
 <node CREATED="1411244941078" ID="ID_1337826126" MODIFIED="1411244967657" TEXT="Do not send further reports for 30 seconds after previous message"/>
 </node>
-<node CREATED="1411245441833" ID="ID_1051322261" MODIFIED="1411256211132" POSITION="right" TEXT="Medical/healing">
+<node CREATED="1415042504868" ID="ID_577364655" MODIFIED="1415042523961" POSITION="right" TEXT="Item names loading">
+<icon BUILTIN="pencil"/>
+<node CREATED="1415042528454" ID="ID_633310394" MODIFIED="1415042568303" TEXT="Special mission that exists only to read the game&apos;s config and upload to the db"/>
+<node CREATED="1415042571990" ID="ID_1364621973" MODIFIED="1415042599574" TEXT="No code for this should be in the regular mission runtime"/>
+<node CREATED="1415042614572" ID="ID_1077173574" MODIFIED="1415042634598" TEXT="DB access to doing this will be restricted to members of db role &quot;armalive_admin&quot;"/>
+<node CREATED="1415042648107" ID="ID_1421315635" MODIFIED="1415042685479" TEXT="Will be used to provide &quot;friendly names&quot; for weapons, rather than displaying classnames on the webpages"/>
+</node>
+<node CREATED="1411245441833" ID="ID_1051322261" MODIFIED="1415042703516" POSITION="right" TEXT="Medical/healing">
 <node CREATED="1411245482148" ID="ID_419922949" MODIFIED="1411245488412" TEXT="Will depend on medical system in use"/>
 </node>
 </node>
