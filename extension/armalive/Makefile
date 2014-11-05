@@ -1,5 +1,7 @@
-CFLAGS=-std=c++11 -fPIC -m32 -Wall -c
-LDFLAGS=
+PGLIBPATH=/usr/lib/i386-linux-gnu/
+PGINCLUDEPATH=/usr/include/postgresql/
+CFLAGS=-std=c++11 -fPIC -m32 -Wall -c -I$(PGINCLUDEPATH)
+LDFLAGS=-shared -m32 -lpq -L$(PGLIBPATH)
 CC=g++
 
 all: armalive.so
