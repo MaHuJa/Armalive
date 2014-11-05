@@ -10,15 +10,15 @@ vicpos real[] = util.position(victim_position);
 kilpos real[] = util.position(killer_position);
 distance real = util.realpoint(vicpos) <-> util.realpoint(kilpos);
 BEGIN
-IF distance == 0 THEN RAISE EXCEPTION 'Zero distance (Lazy scripter check)'; END IF;
+IF distance < 0.0000001 THEN RAISE EXCEPTION 'Zero distance (Lazy scripter check)'; END IF;
 IF distance > 20 THEN RAISE WARNING 'Too far to be a road kill. Saving it anyway.'; END IF;
 
 INSERT INTO event.deathevent(
             session, "time", how, victim, victim_position, victim_class, 
             victim_side, killer, killer_position, killer_class, killer_side, 
             killer_weapon, teamkill)
-    VALUES ($1, $2, 'roadkill', util.playeruid_to_id($3), util.position($4), $5,
-	$6, util.player_uid_to_ud($7), util.position($8), $9, $10,
+    VALUES ($1, util.seconds($2), 'roadkill', util.player_uid_to_id($3), util.position($4), $5,
+	$6, util.player_uid_to_id($7), util.position($8), $9, $10,
 	$11, $12
     );
 END
