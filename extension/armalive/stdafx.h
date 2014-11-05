@@ -20,13 +20,17 @@
 #include <stdexcept>
 #include <algorithm>
 #include <future>
+#include <cstring>
+#include <cstdlib>
 
+#ifdef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 #include <Windows.h>
+#endif
 
 #include <libpq-fe.h>
 
-
 extern std::ofstream logfile;
+
 

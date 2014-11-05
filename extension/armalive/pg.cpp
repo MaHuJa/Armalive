@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "pg.h"
 
-#include <libpq-fe.h>
-
 namespace pg {
 namespace { 
 	PGconn* connection(void* p) { return static_cast<PGconn*>(p); }
