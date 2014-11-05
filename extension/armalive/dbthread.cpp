@@ -87,7 +87,6 @@ dbthread::~dbthread() {
 }
 
 dbthread::Task dbthread::grab_cmd () {
-	bool is_empty = false;
 	do {
 		if (!running) return Task();
 		auto main = mainqueue.pop();

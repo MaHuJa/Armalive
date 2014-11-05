@@ -32,8 +32,7 @@ Result Connection::exec(std::string query) {
 		logfile << PQerrorMessage(connection(conn));
 		PQclear(result(res));
 		PQreset(connection(conn));
-		auto res = PQexec(connection(conn), query.c_str());
-		auto status = PQstatus(connection(conn));
+		res = PQexec(connection(conn), query.c_str());
 	}
 	return res;
 }

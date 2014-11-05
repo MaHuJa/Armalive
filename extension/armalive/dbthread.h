@@ -22,7 +22,7 @@ private:
 	void send_error(string msg, string input);
 	string make_query(string);
 public:
-	dbthread() : my_thread(&dbthread::run,this), running(true), sessionid(0) {}
+	dbthread() : my_thread(&dbthread::run, this), sessionid(0), running(true) {}
 	dbthread(dbthread&) = delete;
 	~dbthread();
 	bool is_online();
