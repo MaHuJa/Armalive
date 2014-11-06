@@ -3,6 +3,10 @@
 // are changed infrequently
 //
 
+#ifdef __LINUX__
+#pragma GCC visibility push(hidden)
+#endif
+
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
