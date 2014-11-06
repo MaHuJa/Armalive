@@ -1,4 +1,16 @@
 extension/loading/armalive_conninfo
 extension/loading/armalive_log
 extension/loading/armalive_dump
-doc/Armalive sqf requirements.png
+extension/linuxloader/armalive.so
+extension/linuxloader/armalive_log
+extension/linuxloader/armalive_dump
+extension/linuxloader/armalive_conninfo
+*.o
+*.so
+**/Debug/
+**/Release/
+**/ipch/
+*.tlog
+*.opensdf
+*.sdf
+
