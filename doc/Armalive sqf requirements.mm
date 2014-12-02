@@ -22,8 +22,13 @@
 <node CREATED="1412013730995" ID="ID_1817445299" MODIFIED="1412013747567" TEXT="At the idea stage">
 <icon BUILTIN="pencil"/>
 </node>
+<node CREATED="1417547526424" ID="ID_910766506" MODIFIED="1417547637113" TEXT="A future version of this spec may require this">
+<icon BUILTIN="hourglass"/>
 </node>
-<node CREATED="1411189292156" ID="ID_638219901" MODIFIED="1417426713627" POSITION="right" TEXT="Avoid duplicate messages for the same thing"/>
+</node>
+<node CREATED="1411189292156" ID="ID_724230088" MODIFIED="1417552062852" POSITION="right" TEXT="There should be one message covering an event.">
+<node CREATED="1417551656866" ID="ID_1044625380" MODIFIED="1417551674615" TEXT="As opposed to reporting &quot;I killed someone&quot; and &quot;I got killed&quot; separately"/>
+</node>
 <node CREATED="1411248645565" ID="ID_1045708319" MODIFIED="1417430401635" POSITION="right" TEXT="Common Database calls">
 <node CREATED="1411251384304" ID="ID_1658327242" MODIFIED="1417426738498" TEXT="Common parameters">
 <node CREATED="1411249546958" ID="ID_1062947714" MODIFIED="1411249739385" TEXT="When: time in seconds since mission start.">
@@ -35,14 +40,22 @@
 <node CREATED="1411260395053" ID="ID_701316146" MODIFIED="1411267840951" TEXT="victim_position, killer_position, other positions">
 <node CREATED="1411260409508" ID="ID_1256015893" MODIFIED="1411260416707" TEXT="ASL positions"/>
 </node>
+<node CREATED="1417552152805" ID="ID_1179968977" MODIFIED="1417552266247" TEXT="vehicleid">
+<node CREATED="1417552158112" ID="ID_27558964" MODIFIED="1417552342021" TEXT="Some string that uniquely identifies a vehicle">
+<node CREATED="1417552622062" ID="ID_1331227598" MODIFIED="1417552700769" TEXT="We want to know if two events refer to the same vehicle"/>
 </node>
-<node CREATED="1411248651473" ID="ID_973020385" MODIFIED="1417427746907" TEXT="infkilled1">
+<node CREATED="1417552345723" ID="ID_1615139055" MODIFIED="1417552358897" TEXT="In multiplayer, netid is a candidate"/>
+<node CREATED="1417552565908" ID="ID_1733811469" MODIFIED="1417552591276" TEXT="Redundant info should be cut away"/>
+<node CREATED="1417556577941" ID="ID_172693346" MODIFIED="1417556589180" TEXT="If the script does not (yet) support this, it may be empty"/>
+</node>
+</node>
+<node CREATED="1411248651473" ID="ID_973020385" MODIFIED="1417556070910" TEXT="infkilled1">
 <node CREATED="1411249538002" ID="ID_907165344" MODIFIED="1411249539327" TEXT="inf_killed1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text)"/>
 <node CREATED="1411250538108" ID="ID_1768384659" MODIFIED="1411250557181" TEXT="victim_class is always the unit type"/>
 <node CREATED="1411250558246" ID="ID_1179813714" MODIFIED="1411250578103" TEXT="killer_class is always the &quot;typeof vehicle _killer&quot;">
 <node CREATED="1411250582299" ID="ID_1028805907" MODIFIED="1411251665728" TEXT="meaning vehicle if he&apos;s in one"/>
 </node>
-<node CREATED="1411251461737" ID="ID_82184398" MODIFIED="1411251467151" TEXT="killer_weapon">
+<node CREATED="1411251461737" ID="ID_82184398" MODIFIED="1417552794825" TEXT="killer_weapon">
 <node CREATED="1411250603175" ID="ID_663337398" MODIFIED="1411251475887" TEXT="If by shot, a valid entry in cfgweapons (given the correct mods)"/>
 <node CREATED="1411250828883" ID="ID_1013774991" MODIFIED="1411250838858" TEXT="If by explosive, the cfgMagazines name">
 <node CREATED="1411788678255" ID="ID_103266820" MODIFIED="1411788687406" TEXT="grenade instead of throw"/>
@@ -50,7 +63,7 @@
 </node>
 <node CREATED="1411251337221" ID="ID_1936115207" MODIFIED="1411251344541" TEXT="Else, it should remain empty"/>
 </node>
-<node CREATED="1411249807394" ID="ID_1510884345" MODIFIED="1411252549359" TEXT="istk (&quot;is teamkill&quot;) must be one of">
+<node CREATED="1411249807394" ID="ID_1510884345" MODIFIED="1417552494750" TEXT="istk (&quot;is teamkill&quot;) must be one of">
 <node CREATED="1411249867204" ID="ID_317352450" MODIFIED="1411252159964" TEXT="not"/>
 <node CREATED="1411250021494" ID="ID_1493797330" MODIFIED="1411252129566" TEXT="roe_violation">
 <icon BUILTIN="closed"/>
@@ -79,33 +92,44 @@
 <node CREATED="1411257795502" ID="ID_1070986450" MODIFIED="1411257796683" TEXT="died1">
 <node CREATED="1411257797792" ID="ID_366157584" MODIFIED="1411257799009" TEXT="died1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text)"/>
 </node>
-<node CREATED="1417430422108" ID="ID_971450032" MODIFIED="1417430427789" TEXT="getin1"/>
-<node CREATED="1417430428295" ID="ID_180546225" MODIFIED="1417430432876" TEXT="getout1"/>
+<node CREATED="1417430422108" ID="ID_971450032" MODIFIED="1417430427789" TEXT="getin1">
+<node CREATED="1417555691430" ID="ID_66626019" MODIFIED="1417555989704" TEXT="getin1(sessionid integer, &quot;when&quot; numeric, playeruid text, slot text, vehicleposition text, vehicleclass text, vehicleid text)"/>
+<node CREATED="1417556490316" ID="ID_236132583" MODIFIED="1417556502297" TEXT="If a person switches position, send an extra getin1"/>
+<node CREATED="1417556634948" ID="ID_1953753175" MODIFIED="1417556663900" TEXT="Slot says where in the vehicle the player is"/>
+</node>
+<node CREATED="1417430428295" ID="ID_180546225" MODIFIED="1417430432876" TEXT="getout1">
+<node CREATED="1417555839279" ID="ID_1349950934" MODIFIED="1417556020483" TEXT="getout1(sessionid integer, &quot;when&quot; numeric, playeruid text, slot text, vehicleposition text, vehicleclass text, vehicleid text)"/>
+</node>
 </node>
 <node CREATED="1411246519253" ID="ID_107950699" MODIFIED="1417453995610" POSITION="right" TEXT="Session/Player accounting">
 <node CREATED="1411246590491" ID="ID_290973949" MODIFIED="1411246592801" TEXT="New session">
 <node CREATED="1415040818948" ID="ID_531729661" MODIFIED="1417426351863" TEXT="server.newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text)"/>
 <node CREATED="1415040862257" ID="ID_1657939095" MODIFIED="1415040876584" TEXT="missionname and worldname commands"/>
-<node CREATED="1415040877649" ID="ID_533174409" MODIFIED="1417426267991" TEXT="Duplidetect should be fairly unique "/>
+<node CREATED="1415040877649" ID="ID_567283832" MODIFIED="1415040926905" TEXT="Duplidetect should be fairly unique - and will be used to detect if maybe a dump has already been imported."/>
+<node CREATED="1417546383283" ID="ID_1126314459" MODIFIED="1417553026249" TEXT="Scriptversion should reflect what script does the stats, and its version"/>
 <node CREATED="1415040821404" ID="ID_1995566041" MODIFIED="1417427233252" TEXT="newsession1;Splendid_testing;Altis;MyStats 1.1;1554329">
 <font BOLD="true" NAME="Arial" SIZE="12"/>
 </node>
 </node>
 <node CREATED="1411246572031" ID="ID_1508408840" MODIFIED="1411249590221" TEXT="Player joined">
-<node CREATED="1411246694432" ID="ID_610564600" MODIFIED="1417430545994" TEXT="playerjoin1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[])"/>
+<node CREATED="1411246694432" ID="ID_610564600" MODIFIED="1417553345701" TEXT="playerjoin1(sessionid integer, jointime numeric, playeruid text, playerside text, VARIADIC playername_p text[])"/>
 <node CREATED="1411246799799" ID="ID_1153877399" MODIFIED="1411246891942" TEXT="playerside is assumed to be constant until leaving">
 <icon BUILTIN="messagebox_warning"/>
-<node CREATED="1411253083019" ID="ID_88266992" MODIFIED="1417426438069" TEXT="For side balancing, you&apos;d need to issue a leave and join pair."/>
+<node CREATED="1411253083019" ID="ID_88266992" MODIFIED="1417553544048" TEXT="For side balancing and similar, issue a leave and join pair."/>
 </node>
-<node CREATED="1411246900631" ID="ID_1987653379" MODIFIED="1411253050788" TEXT="playername_p shall be passed as a plain unquoted string of the players name. ">
+<node CREATED="1411246900631" ID="ID_1987653379" MODIFIED="1417553400172" TEXT="playername_p shall be passed as a plain unquoted string of the players name. ">
 <node CREATED="1411247806602" ID="ID_1570962258" MODIFIED="1411247819561" TEXT="A name containing a ; will work correctly."/>
+</node>
+<node CREATED="1411247127960" ID="ID_357791315" MODIFIED="1417553358843" TEXT="playerjoin1;0;76561197970503377;WEST;Vlad">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
 <node CREATED="1411246575541" ID="ID_1780633635" MODIFIED="1417430560411" TEXT="Player left">
-<node CREATED="1417430562327" ID="ID_1368950879" MODIFIED="1417430566975" TEXT="playerleave1()"/>
+<node CREATED="1417430562327" ID="ID_1368950879" MODIFIED="1417553324620" TEXT="playerleave1(sessionid integer, when numeric, playeruid text)"/>
 </node>
 <node CREATED="1411788484749" ID="ID_1436157511" MODIFIED="1411788489393" TEXT="Mission Events">
 <node CREATED="1411788491892" ID="ID_1940404401" MODIFIED="1411788497277" TEXT="Stuff like zone captures etc"/>
+<node CREATED="1417553419059" ID="ID_1660371594" MODIFIED="1417553447931" TEXT="The mission specifies what qualifies as an event"/>
 <node CREATED="1411788499196" ID="ID_645774660" MODIFIED="1411788517271" TEXT="missionevent1(sessionid integer, &quot;when&quot; numeric, what text, VARIADIC playerlist text[])"/>
 <node CREATED="1411788518075" ID="ID_1690524188" MODIFIED="1411788536326" TEXT="What MUST NOT contain any ; semicolons "/>
 <node CREATED="1411788545149" ID="ID_212476609" MODIFIED="1411788637827" TEXT="playerlist should be the players involved in this">
@@ -118,8 +142,8 @@
 <node CREATED="1411257448674" ID="ID_399214735" MODIFIED="1411257449549" TEXT="endsession1(sessionid integer, duration numeric, outcome text)"/>
 </node>
 </node>
-<node CREATED="1411246526682" FOLDED="true" ID="ID_1157462138" MODIFIED="1417453992583" POSITION="right" TEXT="Kill/Death registration">
-<node CREATED="1411249601144" FOLDED="true" ID="ID_627582656" MODIFIED="1417453929001" TEXT="Killed by shot">
+<node CREATED="1411246526682" ID="ID_1157462138" MODIFIED="1417554019179" POSITION="right" TEXT="Kill/Death registration">
+<node CREATED="1411249601144" ID="ID_627582656" MODIFIED="1417554264505" TEXT="Killed by shot">
 <node CREATED="1411249173058" ID="ID_1214812846" LINK="#ID_973020385" MODIFIED="1411251635776" TEXT="infkilled1"/>
 <node CREATED="1411257557771" ID="ID_1943215810" MODIFIED="1411257595555" TEXT="It may be possible to get hit by your own ricochet">
 <node CREATED="1411257576952" ID="ID_1293675892" LINK="#ID_782296840" MODIFIED="1411257586068" TEXT="suicide1"/>
@@ -137,16 +161,18 @@
 <node CREATED="1411420823339" ID="ID_674614468" MODIFIED="1411420831827" TEXT="Helicopter with door guns on each side"/>
 </node>
 </node>
-<node CREATED="1411188897898" FOLDED="true" ID="ID_1445224943" MODIFIED="1417453938685" TEXT="Killed by a bomb (vanilla)">
+<node CREATED="1411188897898" ID="ID_1445224943" MODIFIED="1417554266151" TEXT="Killed by a bomb (vanilla)">
 <node CREATED="1411249173058" ID="ID_1901952982" LINK="#ID_973020385" MODIFIED="1411251633626" TEXT="infkilled1"/>
 <node CREATED="1411242849615" ID="ID_824827446" LINK="#ID_782296840" MODIFIED="1411253341827" TEXT="suicide1"/>
-<node CREATED="1411243210127" ID="ID_1236087480" MODIFIED="1411243228751" TEXT="For req purposes grenades fall under this."/>
+<node CREATED="1411243210127" ID="ID_1236087480" MODIFIED="1417554528263" TEXT="Grenades"/>
+<node CREATED="1417554528532" ID="ID_1422602641" MODIFIED="1417554530720" TEXT="Artillery"/>
 </node>
-<node CREATED="1411188994871" FOLDED="true" ID="ID_1276141249" MODIFIED="1417453942617" TEXT="Killed by a bomb (scripted)">
+<node CREATED="1411188994871" ID="ID_1276141249" MODIFIED="1417554278324" TEXT="Killed by a bomb (scripted)">
 <node CREATED="1411249173058" ID="ID_476686163" LINK="#ID_973020385" MODIFIED="1411251633626" TEXT="infkilled1"/>
 <node CREATED="1411242849615" ID="ID_168075294" LINK="#ID_782296840" MODIFIED="1411253341827" TEXT="suicide1"/>
 <node CREATED="1411189011491" ID="ID_475136480" MODIFIED="1411189025242" TEXT="Requires support from the script"/>
 <node CREATED="1411242849615" ID="ID_1067097159" MODIFIED="1411242859632" TEXT="Suicide if you did it yourself"/>
+<node CREATED="1417554558970" ID="ID_123824757" MODIFIED="1417554640680" TEXT="If done by scripted artillery, consider it killed by ai (i.e. blank )"/>
 </node>
 <node CREATED="1411079817699" ID="ID_1266935527" MODIFIED="1411789213307" TEXT="Traffic &quot;accident&quot;">
 <node CREATED="1411788381717" ID="ID_50082741" MODIFIED="1411788410961" TEXT="Applies when a unit drives a vehicle, colliding with a unit such that it is killed"/>
@@ -156,15 +182,16 @@
 <node CREATED="1411256859476" ID="ID_1039798979" MODIFIED="1411788729081" TEXT="roadkill1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_vehicle text, istk text) "/>
 <node CREATED="1411788730736" ID="ID_641439708" MODIFIED="1411788756672" TEXT="Same parameter layout as inf_killed1 except weapon turns into killer_vehicle"/>
 </node>
-<node CREATED="1411189056930" ID="ID_968515743" MODIFIED="1411420855560" TEXT="Player dies long after injury">
-<node CREATED="1411189165221" ID="ID_599775576" MODIFIED="1411420848413" TEXT="Appropriate message needs to be sent">
-<node CREATED="1411242958453" ID="ID_860332593" MODIFIED="1411243849703" TEXT="Unless sent at the time it happened&#xa;Which is appropriate for some medic/revival scripts."/>
-</node>
+<node CREATED="1411189056930" ID="ID_968515743" MODIFIED="1417554313138" TEXT="Player dies long after injury">
+<node CREATED="1411189165221" ID="ID_599775576" MODIFIED="1411420848413" TEXT="Appropriate message needs to be sent"/>
+<node CREATED="1417554367114" ID="ID_1989211455" MODIFIED="1417554729153" TEXT="If he was shot, the data of the shooter at the time of the shot needs to be retained"/>
 <node CREATED="1411189076061" ID="ID_831501880" MODIFIED="1411189110778" TEXT="Bleeding out, revival script timeout, etc"/>
 </node>
 <node CREATED="1411243011214" ID="ID_341649347" MODIFIED="1411789287176" TEXT="Death by falling">
 <node CREATED="1411254005448" ID="ID_10833575" MODIFIED="1411254009706" TEXT="suicide1"/>
-<node CREATED="1411789101407" ID="ID_1501483264" MODIFIED="1411789230793" TEXT="If the &quot;fall&quot; results from being bumped by a vehicle, it is a roadkill/traffic accident"/>
+<node CREATED="1411789101407" ID="ID_1501483264" MODIFIED="1417554418406" TEXT="If the &quot;fall&quot; results from being bumped by a vehicle, it is a roadkill/traffic accident">
+<icon BUILTIN="help"/>
+</node>
 </node>
 <node CREATED="1411243029394" ID="ID_132054614" MODIFIED="1411257134823" TEXT="Death by car crash">
 <node CREATED="1411246102416" ID="ID_694363659" MODIFIED="1411254178150" TEXT="In essence similar to aircraft crashes">
@@ -177,14 +204,20 @@
 <node CREATED="1411274323378" ID="ID_703539744" LINK="#ID_1070986450" MODIFIED="1411274329777" TEXT="died1"/>
 </node>
 </node>
+<node CREATED="1410980086928" ID="ID_1948730664" MODIFIED="1417554436033" TEXT="Aircraft Crashes">
+<node CREATED="1411257407564" ID="ID_1272228758" MODIFIED="1411257408299" TEXT="accrash1(sessionid integer, &quot;when&quot; numeric, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text)"/>
+<node CREATED="1417554466133" ID="ID_151251054" MODIFIED="1417554487476" TEXT="May want to change to a list of passengers">
+<icon BUILTIN="hourglass"/>
+</node>
+</node>
 <node CREATED="1410980083475" ID="ID_1067078033" MODIFIED="1411243077757" TEXT="Scripted deaths">
 <node CREATED="1411254265337" ID="ID_99590567" MODIFIED="1411788930510" TEXT="died1"/>
 </node>
 <node CREATED="1411243237545" ID="ID_1045419302" MODIFIED="1411789317070" TEXT="Drowning">
 <node CREATED="1411256892075" ID="ID_1590035241" MODIFIED="1411256893080" TEXT="drowned1(sessionid integer, &quot;when&quot; numeric, victim_uid text, victim_position text, victim_class text, victim_side text)"/>
 </node>
-<node CREATED="1411081180736" ID="ID_1613880427" MODIFIED="1411254574230" TEXT="Vehicle kills">
-<node CREATED="1411267893876" ID="ID_1062147332" MODIFIED="1411267895045" TEXT="server.veh_killed1(sessionid integer, &quot;when&quot; numeric, severity text, vehicleclass text, vehicle_position text,  last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text,  killer_class text, killer_weapon text, killer_side text )"/>
+<node CREATED="1411081180736" ID="ID_1613880427" MODIFIED="1417555508199" TEXT="Vehicle kills">
+<node CREATED="1411267893876" ID="ID_1062147332" MODIFIED="1417556568818" TEXT="server.veh_killed1(sessionid integer, &quot;when&quot; numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text,  last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text,  killer_class text, killer_weapon text, killer_side text )"/>
 <node CREATED="1411267924329" ID="ID_3410161" MODIFIED="1411267927359" TEXT="Severity">
 <node CREATED="1411081419579" ID="ID_1122652404" MODIFIED="1411267962941" TEXT="Scrapped is mandatory, the rest is just a quality of implementation issue">
 <font ITALIC="true" NAME="Arial" SIZE="12"/>
@@ -217,9 +250,6 @@
 <node CREATED="1411254435833" ID="ID_998325642" MODIFIED="1411254445544" TEXT="What does the various eventhandlers give us?">
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
-</node>
-<node CREATED="1410980086928" ID="ID_1948730664" MODIFIED="1410980113866" TEXT="Aircraft Crashes">
-<node CREATED="1411257407564" ID="ID_1272228758" MODIFIED="1411257408299" TEXT="accrash1(sessionid integer, &quot;when&quot; numeric, playerid text, playerpos text, passengercount integer, vehiclename text, vehiclepos text)"/>
 </node>
 <node CREATED="1411243979107" ID="ID_1176768800" MODIFIED="1411789564817" TEXT="Damage but not kill of friendly">
 <icon BUILTIN="pencil"/>
