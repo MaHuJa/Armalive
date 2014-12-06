@@ -377,20 +377,21 @@ $$;
 
 ALTER FUNCTION server.missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) OWNER TO armalive_auto;
 
---
--- Name: newmission1(integer, text, text, numeric); Type: FUNCTION; Schema: server; Owner: armalive_auto
---
-
-CREATE FUNCTION newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) RETURNS integer
-    LANGUAGE sql SECURITY DEFINER
+CREATE FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) RETURNS integer
+    LANGUAGE plpgsql SECURITY DEFINER
     AS $_$
--- this is an opportunity to finish "cleanup" of oldsession, or schedule it.
+DECLARE
+
+BEGIN
+-- TODO Add column for scriptversion
+-- TODO this is an opportunity to finish "cleanup" of oldsession, or schedule it.
 insert into session.session (missionname, mapname,server,duplidetect) 
 values ($2, $3,
   ( select id from session.serverlist where name = session_user ),
   $4
 )
 returning id;
+END
 $_$;
 
 
