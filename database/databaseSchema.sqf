@@ -425,20 +425,25 @@ $_$;
 ALTER FUNCTION server.newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) OWNER TO mahuja;
 
 --
--- Name: playerleft1(integer, text, integer); Type: FUNCTION; Schema: server; Owner: armalive_auto
+-- Name: playerleft1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
-CREATE FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) RETURNS void
-    LANGUAGE sql SECURITY DEFINER
+CREATE FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
     AS $_$
+DECLARE
+  pid integer = util.player_uid_to_id(playerid);
+  "time" interval = util.seconds("when");
+BEGIN
 -- todo: Sanity checks - has this been called already?
 -- todo: A player can join and leave several times
-update session.sessionplayers set "left" = server.seconds($3)
-where "session" = $1 and player = util.player_uid_to_id($2);
+update session.sessionplayers set "left" = "time"
+where "session" = $1 and player = pid and "left" is null;
+END
 $_$;
 
 
-ALTER FUNCTION server.playerleft1(sessionid integer, playerid text, "when" integer) OWNER TO armalive_auto;
+ALTER FUNCTION server.playerleft1(sessionid integer, "when" numeric, playerid text) OWNER TO armalive_auto;
 
 --
 -- Name: put_atlas_addpoints1(integer, text, text, integer); Type: FUNCTION; Schema: server; Owner: armalive_auto
@@ -1581,13 +1586,14 @@ GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside t
 
 
 --
--- Name: playerleft1(integer, text, integer); Type: ACL; Schema: server; Owner: armalive_auto
+-- Name: playerleft1(integer, numeric, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
-REVOKE ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) FROM PUBLIC;
-REVOKE ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) FROM armalive_auto;
-GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) TO armalive_auto;
-GRANT ALL ON FUNCTION playerleft1(sessionid integer, playerid text, "when" integer) TO armalive_server;
+REVOKE ALL ON FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) FROM armalive_auto;
+GRANT ALL ON FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) TO armalive_auto;
+GRANT ALL ON FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) TO PUBLIC;
+GRANT ALL ON FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) TO armalive_server;
 
 
 --
