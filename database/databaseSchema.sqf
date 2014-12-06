@@ -280,7 +280,7 @@ $_$;
 ALTER FUNCTION server.get_atlas_points1(sessionid integer, playeruid text, varname text) OWNER TO armalive_auto;
 
 --
--- Name: getin1(integer, numeric, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- Name: getin1(integer, numeric, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) RETURNS void
@@ -297,10 +297,10 @@ END
 $_$;
 
 
-ALTER FUNCTION server.getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO mahuja;
+ALTER FUNCTION server.getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO armalive_auto;
 
 --
--- Name: getout1(integer, numeric, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+-- Name: getout1(integer, numeric, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) RETURNS void
@@ -317,7 +317,7 @@ END
 $_$;
 
 
-ALTER FUNCTION server.getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO mahuja;
+ALTER FUNCTION server.getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO armalive_auto;
 
 --
 -- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
@@ -354,7 +354,7 @@ $_$;
 ALTER FUNCTION server.inf_killed1(sessionid integer, "when" numeric, victim_uid text, victim_position text, victim_class text, victim_side text, killer_uid text, killer_position text, killer_class text, killer_side text, killer_weapon text, istk text) OWNER TO armalive_auto;
 
 --
--- Name: missionevent1(integer, numeric, text, text[]); Type: FUNCTION; Schema: server; Owner: mahuja
+-- Name: missionevent1(integer, numeric, text, text[]); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) RETURNS void
@@ -363,10 +363,10 @@ CREATE FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARI
 $$;
 
 
-ALTER FUNCTION server.missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) OWNER TO mahuja;
+ALTER FUNCTION server.missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) OWNER TO armalive_auto;
 
 --
--- Name: missionevent1(integer, text, numeric, text[]); Type: FUNCTION; Schema: server; Owner: armalive_auto
+-- Name: newsession1(integer, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
 CREATE FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) RETURNS void
@@ -394,7 +394,7 @@ returning id;
 $_$;
 
 
-ALTER FUNCTION server.newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) OWNER TO armalive_auto;
+ALTER FUNCTION server.newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) OWNER TO armalive_auto;
 
 --
 -- Name: newplayer1(integer, text, text, numeric, text[]); Type: FUNCTION; Schema: server; Owner: mahuja
@@ -1515,26 +1515,24 @@ GRANT ALL ON FUNCTION get_atlas_points1(sessionid integer, playeruid text, varna
 
 
 --
--- Name: getin1(integer, numeric, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
+-- Name: getin1(integer, numeric, text, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM mahuja;
-GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO mahuja;
-GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO PUBLIC;
+REVOKE ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM armalive_auto;
 GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_auto;
+GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO PUBLIC;
 GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_server;
 
 
 --
--- Name: getout1(integer, numeric, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
+-- Name: getout1(integer, numeric, text, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM mahuja;
-GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO mahuja;
-GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO PUBLIC;
+REVOKE ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM armalive_auto;
 GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_auto;
+GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO PUBLIC;
 GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_server;
 
 
@@ -1550,37 +1548,25 @@ GRANT ALL ON FUNCTION inf_killed1(sessionid integer, "when" numeric, victim_uid 
 
 
 --
--- Name: missionevent1(integer, numeric, text, text[]); Type: ACL; Schema: server; Owner: mahuja
+-- Name: missionevent1(integer, numeric, text, text[]); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
 REVOKE ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) FROM PUBLIC;
-REVOKE ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) FROM mahuja;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) TO mahuja;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) TO PUBLIC;
+REVOKE ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) FROM armalive_auto;
 GRANT ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) TO armalive_auto;
+GRANT ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) TO PUBLIC;
 GRANT ALL ON FUNCTION missionevent1(sessionid integer, "when" numeric, what text, VARIADIC playerlist text[]) TO armalive_server;
 
 
 --
--- Name: missionevent1(integer, text, numeric, text[]); Type: ACL; Schema: server; Owner: armalive_auto
+-- Name: newsession1(integer, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
-REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) FROM PUBLIC;
-REVOKE ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) FROM armalive_auto;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) TO armalive_auto;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) TO PUBLIC;
-GRANT ALL ON FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) TO armalive_server;
-
-
---
--- Name: newmission1(integer, text, text, numeric); Type: ACL; Schema: server; Owner: armalive_auto
---
-
-REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) FROM PUBLIC;
-REVOKE ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) FROM armalive_auto;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) TO armalive_auto;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) TO PUBLIC;
-GRANT ALL ON FUNCTION newmission1(oldsession integer, mission_name text, map_name text, duplidetect numeric) TO armalive_server;
+REVOKE ALL ON FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) FROM armalive_auto;
+GRANT ALL ON FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) TO armalive_auto;
+GRANT ALL ON FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) TO PUBLIC;
+GRANT ALL ON FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) TO armalive_server;
 
 
 --
