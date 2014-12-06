@@ -1,7 +1,7 @@
 <map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1410980050572" ID="ID_142879548" MODIFIED="1411257087521" TEXT="Armalive sqf requirements">
-<node CREATED="1411246710059" ID="ID_229996467" MODIFIED="1417427662398" POSITION="right" TEXT="How to read this mindmap">
+<node CREATED="1411246710059" ID="ID_229996467" MODIFIED="1417896318096" POSITION="right" TEXT="How to read this mindmap">
 <node CREATED="1411246733255" ID="ID_1525291828" MODIFIED="1411246773229" TEXT="DB function definitions include a first parameter &quot;sessionid&quot; which scripts shall pretend does not exist"/>
 <node CREATED="1417426503642" ID="ID_529498786" MODIFIED="1417426529844" TEXT="DB functions whose last parameter is &quot;variadic&quot; can take any number of parameters">
 <node CREATED="1417426539001" ID="ID_865648012" MODIFIED="1417426565125" TEXT="Often simply to handle embedded semicolons"/>
@@ -26,7 +26,7 @@
 <icon BUILTIN="hourglass"/>
 </node>
 </node>
-<node CREATED="1411189292156" ID="ID_724230088" MODIFIED="1417552062852" POSITION="right" TEXT="There should be one message covering an event.">
+<node CREATED="1411189292156" ID="ID_724230088" MODIFIED="1417896317161" POSITION="right" TEXT="There should be one message covering an event.">
 <node CREATED="1417551656866" ID="ID_1044625380" MODIFIED="1417551674615" TEXT="As opposed to reporting &quot;I killed someone&quot; and &quot;I got killed&quot; separately"/>
 </node>
 <node CREATED="1411248645565" ID="ID_1045708319" MODIFIED="1417430401635" POSITION="right" TEXT="Common Database calls">
@@ -269,16 +269,19 @@
 <node CREATED="1417454138522" ID="ID_1255301048" MODIFIED="1417454169333" TEXT="Accept json?"/>
 </node>
 </node>
-<node CREATED="1411243542252" ID="ID_737534664" MODIFIED="1413854266382" POSITION="right" TEXT="Transportation">
+<node CREATED="1411243542252" ID="ID_737534664" MODIFIED="1417864938887" POSITION="right" TEXT="Transportation">
 <icon BUILTIN="pencil"/>
-<node CREATED="1413854284235" ID="ID_82021336" MODIFIED="1413854291857" TEXT="GetIn GetOut messages">
-<node CREATED="1413854292927" ID="ID_1253693988" MODIFIED="1413854312256" TEXT="Who else was crewing?"/>
+<node CREATED="1417557912365" ID="ID_1489265990" MODIFIED="1417557939514" TEXT="I introduced vehicle IDs especially for this feature.">
+<font ITALIC="true" NAME="Arial" SIZE="12"/>
 </node>
-<node CREATED="1411243861985" ID="ID_999191678" MODIFIED="1411244142068" TEXT="Who provided the transport"/>
-<node CREATED="1411244142478" ID="ID_1049682278" MODIFIED="1411244144399" TEXT="What vehicle"/>
-<node CREATED="1411244144687" ID="ID_301443479" MODIFIED="1411244147231" TEXT="Who was transported"/>
-<node CREATED="1411247907544" ID="ID_1538023174" MODIFIED="1411247912955" TEXT="What was transported (cargo)"/>
-<node CREATED="1411255664267" ID="ID_215043465" MODIFIED="1411255671402" TEXT="Distance from destination (if applicable)"/>
+<node CREATED="1417557989131" ID="ID_1483375683" MODIFIED="1417557997994" TEXT="getin1 getout1"/>
+<node CREATED="1417558003274" ID="ID_336024760" MODIFIED="1417558027250" TEXT="Using vehicle IDs we can correlate who was where in that particular vehicle at any given time."/>
+<node CREATED="1417558072807" ID="ID_539542054" MODIFIED="1417558076097" TEXT="Not yet covered:">
+<node CREATED="1417558047371" ID="ID_635918074" MODIFIED="1417558081154" TEXT="Cargo transport"/>
+<node CREATED="1411255664267" ID="ID_215043465" MODIFIED="1411255671402" TEXT="Distance from destination (if applicable)">
+<node CREATED="1417558089376" ID="ID_904173691" MODIFIED="1417558101378" TEXT="Did the pilot land at the designated LZ?"/>
+</node>
+</node>
 <node CREATED="1411244174929" ID="ID_668636325" MODIFIED="1411244279078" TEXT="ATLAS: Ties into giving points for vehicle crew, pilots">
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
 </node>
@@ -293,20 +296,22 @@
 <node CREATED="1415042079215" ID="ID_1932459428" MODIFIED="1415042107639" TEXT="Optionally, 90 seconds could be changed to numplayers/90 ONLY WHEN &gt;90 players."/>
 <node CREATED="1415042143564" ID="ID_1201145061" MODIFIED="1415042289648" TEXT="A mission designer will be interested in a heatmap for where players are spending their time."/>
 </node>
-<node CREATED="1411244916068" ID="ID_464897636" MODIFIED="1414405974456" POSITION="right" TEXT="Shot reports">
+<node CREATED="1411244916068" ID="ID_464897636" MODIFIED="1417896323719" POSITION="right" TEXT="Shot reports">
 <icon BUILTIN="pencil"/>
 <node CREATED="1411244921154" ID="ID_1879609824" MODIFIED="1411244938645" TEXT="Report from where and what direction a player shoots"/>
 <node CREATED="1411244941078" ID="ID_1337826126" MODIFIED="1411244967657" TEXT="Do not send further reports for 30 seconds after previous message"/>
 </node>
-<node CREATED="1415042504868" ID="ID_577364655" MODIFIED="1415042523961" POSITION="right" TEXT="Item names loading">
+<node CREATED="1415042504868" ID="ID_577364655" MODIFIED="1417896322517" POSITION="right" TEXT="Item names loading">
 <icon BUILTIN="pencil"/>
 <node CREATED="1415042528454" ID="ID_633310394" MODIFIED="1415042568303" TEXT="Special mission that exists only to read the game&apos;s config and upload to the db"/>
 <node CREATED="1415042571990" ID="ID_1364621973" MODIFIED="1415042599574" TEXT="No code for this should be in the regular mission runtime"/>
 <node CREATED="1415042614572" ID="ID_1077173574" MODIFIED="1415042634598" TEXT="DB access to doing this will be restricted to members of db role &quot;armalive_admin&quot;"/>
 <node CREATED="1415042648107" ID="ID_1421315635" MODIFIED="1415042685479" TEXT="Will be used to provide &quot;friendly names&quot; for weapons, rather than displaying classnames on the webpages"/>
 </node>
-<node CREATED="1411245441833" ID="ID_1051322261" MODIFIED="1415042703516" POSITION="right" TEXT="Medical/healing">
-<node CREATED="1411245482148" ID="ID_419922949" MODIFIED="1411245488412" TEXT="Will depend on medical system in use"/>
+<node CREATED="1411245441833" ID="ID_1051322261" MODIFIED="1417864806677" POSITION="right" TEXT="Plugins">
+<node CREATED="1411245482148" ID="ID_419922949" MODIFIED="1417864832438" TEXT="The following functions need to be provided by the script"/>
+<node CREATED="1417864833223" ID="ID_652090765" MODIFIED="1417864853530" TEXT="&quot;message&quot; call armalive_send"/>
+<node CREATED="1417864854845" ID="ID_471239876" MODIFIED="1417864893616" TEXT="string = object call armalive_vehicleid"/>
 </node>
 </node>
 </map>

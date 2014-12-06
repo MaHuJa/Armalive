@@ -280,6 +280,46 @@ $_$;
 ALTER FUNCTION server.get_atlas_points1(sessionid integer, playeruid text, varname text) OWNER TO armalive_auto;
 
 --
+-- Name: getin1(integer, numeric, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+--
+
+CREATE FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+DECLARE
+  "time" interval = util.seconds("when");
+  playerid integer = util.player_uid_to_id($3);
+  vehpos real[] = util.position($5);
+BEGIN
+-- TODO
+
+END
+$_$;
+
+
+ALTER FUNCTION server.getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO mahuja;
+
+--
+-- Name: getout1(integer, numeric, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
+--
+
+CREATE FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $_$
+DECLARE
+  "time" interval = util.seconds("when");
+  playerid integer = util.player_uid_to_id($3);
+  vehpos real[] = util.position($5);
+BEGIN
+-- TODO
+  
+END
+$_$;
+
+
+ALTER FUNCTION server.getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO mahuja;
+
+--
 -- Name: inf_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
@@ -1472,6 +1512,30 @@ GRANT ALL ON FUNCTION get_atlas_points1(sessionid integer, playeruid text, varna
 GRANT ALL ON FUNCTION get_atlas_points1(sessionid integer, playeruid text, varname text) TO PUBLIC;
 GRANT ALL ON FUNCTION get_atlas_points1(sessionid integer, playeruid text, varname text) TO armalive_server;
 GRANT ALL ON FUNCTION get_atlas_points1(sessionid integer, playeruid text, varname text) TO mahuja;
+
+
+--
+-- Name: getin1(integer, numeric, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
+--
+
+REVOKE ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM mahuja;
+GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO mahuja;
+GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO PUBLIC;
+GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_auto;
+GRANT ALL ON FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_server;
+
+
+--
+-- Name: getout1(integer, numeric, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
+--
+
+REVOKE ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) FROM mahuja;
+GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO mahuja;
+GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO PUBLIC;
+GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_auto;
+GRANT ALL ON FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) TO armalive_server;
 
 
 --
