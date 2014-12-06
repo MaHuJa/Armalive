@@ -4,5 +4,5 @@ set PGHOST=master1.armalive.com
 set PGDATABASE=armalive_master
 set PGUSER=mahuja
 
-pg_dumpall -g -f databaseGlobals.sqf
+rem pg_dumpall -g -f databaseGlobals.sqf
 pg_dump -s -f databaseSchema.sqf
