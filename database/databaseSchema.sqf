@@ -390,20 +390,24 @@ $_$;
 ALTER FUNCTION server.newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) OWNER TO armalive_auto;
 
 --
--- Name: newplayer1(integer, text, text, numeric, text[]); Type: FUNCTION; Schema: server; Owner: mahuja
+-- Name: playerjoin1(integer, numeric, text, text, text[]); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
-CREATE FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) RETURNS void
+CREATE FUNCTION playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     AS $_$
 DECLARE
-	p_id integer :=  util.player_uid_to_id($2);
+	p_id integer; -- Do later :=  util.player_uid_to_id($2);
 	pname text := array_to_string(playername_p,';');
+	jointime interval = util.seconds("when");
 BEGIN
--- todo: Consider doing trigger work here
-insert into player.player(gameuid,last_name_seen) values ($2, pname);
+-- todo: Consider moving trigger work here.
+-- Upsert trigger involved in next line
+insert into player.player(gameuid,last_name_seen) values (playeruid, pname);
+
+p_id := util.player_uid_to_id(playeruid);
 insert into session.sessionplayers(session, player, side, joined, playername) values 
-  ($1, p_id, $3, util.seconds($4), pname);
+  (sessionid, p_id, playerside, jointime, pname);
 
 -- add to playername
 update player.playername set lastseen = current_timestamp where playerid=p_id and name = pname;
@@ -415,7 +419,7 @@ END
 $_$;
 
 
-ALTER FUNCTION server.newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) OWNER TO mahuja;
+ALTER FUNCTION server.playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) OWNER TO armalive_auto;
 
 --
 -- Name: playerleft1(integer, numeric, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
@@ -1568,14 +1572,14 @@ GRANT ALL ON FUNCTION newsession1(oldsession integer, mission_name text, map_nam
 
 
 --
--- Name: newplayer1(integer, text, text, numeric, text[]); Type: ACL; Schema: server; Owner: mahuja
+-- Name: playerjoin1(integer, numeric, text, text, text[]); Type: ACL; Schema: server; Owner: armalive_auto
 --
 
-REVOKE ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) FROM PUBLIC;
-REVOKE ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) FROM mahuja;
-GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) TO mahuja;
-GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) TO PUBLIC;
-GRANT ALL ON FUNCTION newplayer1(sessionid integer, playeruid text, playerside text, jointime numeric, VARIADIC playername_p text[]) TO armalive_auto;
+REVOKE ALL ON FUNCTION playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) FROM PUBLIC;
+REVOKE ALL ON FUNCTION playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) FROM armalive_auto;
+GRANT ALL ON FUNCTION playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) TO armalive_auto;
+GRANT ALL ON FUNCTION playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) TO PUBLIC;
+GRANT ALL ON FUNCTION playerjoin1(sessionid integer, "when" numeric, playeruid text, playerside text, VARIADIC playername_p text[]) TO armalive_server;
 
 
 --
