@@ -369,14 +369,6 @@ ALTER FUNCTION server.missionevent1(sessionid integer, "when" numeric, what text
 -- Name: newsession1(integer, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
 --
 
-CREATE FUNCTION missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) RETURNS void
-    LANGUAGE sql SECURITY DEFINER
-    AS $$
-$$;
-
-
-ALTER FUNCTION server.missionevent1(sessionid integer, what text, "when" numeric, VARIADIC playerlist text[]) OWNER TO armalive_auto;
-
 CREATE FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) RETURNS integer
     LANGUAGE plpgsql SECURITY DEFINER
     AS $_$
