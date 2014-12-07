@@ -406,8 +406,8 @@ BEGIN
 insert into player.player(gameuid,last_name_seen) values (playeruid, pname);
 
 p_id := util.player_uid_to_id(playeruid);
-insert into session.sessionplayers(session, player, side, joined, playername) values 
-  (sessionid, p_id, playerside, jointime, pname);
+insert into event.joinleave (sessionid, "time", playerid, joined, side, playername)
+values (session, jointime, p_id, true, playerside, pname);
 
 -- add to playername
 update player.playername set lastseen = current_timestamp where playerid=p_id and name = pname;
@@ -427,17 +427,17 @@ ALTER FUNCTION server.playerjoin1(sessionid integer, "when" numeric, playeruid t
 
 CREATE FUNCTION playerleft1(sessionid integer, "when" numeric, playerid text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    AS $_$
+    AS $$
 DECLARE
   pid integer = util.player_uid_to_id(playerid);
   "time" interval = util.seconds("when");
 BEGIN
--- todo: Sanity checks - has this been called already?
--- todo: A player can join and leave several times
-update session.sessionplayers set "left" = "time"
-where "session" = $1 and player = pid and "left" is null;
+
+insert into event.joinleave (sessionid, "time", pid, joined)
+values (session, jointime, pid, false);
+
 END
-$_$;
+$$;
 
 
 ALTER FUNCTION server.playerleft1(sessionid integer, "when" numeric, playerid text) OWNER TO armalive_auto;
@@ -707,6 +707,23 @@ CREATE TABLE deathevent (
 
 
 ALTER TABLE event.deathevent OWNER TO mahuja;
+
+--
+-- Name: joinleave; Type: TABLE; Schema: event; Owner: mahuja; Tablespace: 
+--
+
+CREATE TABLE joinleave (
+    eventid bigint DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
+    sessionid integer NOT NULL,
+    "time" interval NOT NULL,
+    playerid integer NOT NULL,
+    joined boolean NOT NULL,
+    side text,
+    playername text
+);
+
+
+ALTER TABLE event.joinleave OWNER TO mahuja;
 
 --
 -- Name: vehicledestruction; Type: TABLE; Schema: event; Owner: mahuja; Tablespace: 
@@ -1040,6 +1057,15 @@ CREATE TABLE sessionplayers (
 ALTER TABLE session.sessionplayers OWNER TO mahuja;
 
 --
+-- Name: TABLE sessionplayers; Type: COMMENT; Schema: session; Owner: mahuja
+--
+
+COMMENT ON TABLE sessionplayers IS 'This table is obsoleted. playerjoin and playerleft both used to reference this table, but no longer does so.
+
+It wasn''t immediately dropped because preserving its values could be useful practice.';
+
+
+--
 -- Name: sessionplayers_id_seq; Type: SEQUENCE; Schema: session; Owner: mahuja
 --
 
@@ -1124,6 +1150,14 @@ ALTER TABLE ONLY ac_crash
 
 ALTER TABLE ONLY deathevent
     ADD CONSTRAINT deathevent_pkey PRIMARY KEY (eventid);
+
+
+--
+-- Name: joinleave_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja; Tablespace: 
+--
+
+ALTER TABLE ONLY joinleave
+    ADD CONSTRAINT joinleave_pkey PRIMARY KEY (eventid);
 
 
 --
@@ -1301,6 +1335,14 @@ ALTER TABLE ONLY deathevent
 
 ALTER TABLE ONLY deathevent
     ADD CONSTRAINT deathevent_victim_fkey FOREIGN KEY (victim) REFERENCES player.player(id);
+
+
+--
+-- Name: joinleaveplayerid_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
+--
+
+ALTER TABLE ONLY joinleave
+    ADD CONSTRAINT joinleaveplayerid_fkey FOREIGN KEY (playerid) REFERENCES player.player(id);
 
 
 --
@@ -1716,6 +1758,17 @@ REVOKE ALL ON TABLE deathevent FROM mahuja;
 GRANT ALL ON TABLE deathevent TO mahuja;
 GRANT INSERT ON TABLE deathevent TO armalive_auto;
 GRANT SELECT ON TABLE deathevent TO armalive_reader;
+
+
+--
+-- Name: joinleave; Type: ACL; Schema: event; Owner: mahuja
+--
+
+REVOKE ALL ON TABLE joinleave FROM PUBLIC;
+REVOKE ALL ON TABLE joinleave FROM mahuja;
+GRANT ALL ON TABLE joinleave TO mahuja;
+GRANT INSERT ON TABLE joinleave TO armalive_auto;
+GRANT SELECT ON TABLE joinleave TO armalive_reader;
 
 
 --
