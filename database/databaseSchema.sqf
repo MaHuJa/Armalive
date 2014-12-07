@@ -687,7 +687,7 @@ ALTER TABLE event.ac_crash OWNER TO mahuja;
 --
 
 CREATE TABLE deathevent (
-    eventid integer DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
+    eventid bigint DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
     session integer NOT NULL,
     "time" interval,
     how character varying(8) NOT NULL,
@@ -730,7 +730,7 @@ ALTER TABLE event.joinleave OWNER TO mahuja;
 --
 
 CREATE TABLE vehicledestruction (
-    eventid integer DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
+    eventid bigint DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
     session integer NOT NULL,
     "when" interval NOT NULL,
     severity character varying(9) NOT NULL,
