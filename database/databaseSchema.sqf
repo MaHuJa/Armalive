@@ -544,10 +544,10 @@ $_$;
 ALTER FUNCTION server.uvwstats1(sessionid integer, "when" numeric, playerid text, unitclass text, vehicleclass text, weaponclass text, weapontime numeric, shotsfired integer, VARIADIC hits text[]) OWNER TO armalive_auto;
 
 --
--- Name: veh_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: armalive_auto
+-- Name: veh_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: server; Owner: mahuja
 --
 
-CREATE FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) RETURNS void
+CREATE FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) RETURNS void
     LANGUAGE sql SECURITY DEFINER
     AS $_$
 INSERT INTO event.vehicledestruction(
@@ -567,7 +567,7 @@ INSERT INTO event.vehicledestruction(
 $_$;
 
 
-ALTER FUNCTION server.veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) OWNER TO armalive_auto;
+ALTER FUNCTION server.veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) OWNER TO mahuja;
 
 SET search_path = util, pg_catalog;
 
@@ -1638,14 +1638,15 @@ GRANT ALL ON FUNCTION uvwstats1(sessionid integer, "when" numeric, playerid text
 
 
 --
--- Name: veh_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: armalive_auto
+-- Name: veh_killed1(integer, numeric, text, text, text, text, text, text, text, text, text, text, text); Type: ACL; Schema: server; Owner: mahuja
 --
 
-REVOKE ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) FROM PUBLIC;
-REVOKE ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) FROM armalive_auto;
-GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO armalive_auto;
-GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO PUBLIC;
-GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO armalive_server;
+REVOKE ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) FROM mahuja;
+GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO mahuja;
+GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO PUBLIC;
+GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO armalive_auto;
+GRANT ALL ON FUNCTION veh_killed1(sessionid integer, "when" numeric, severity text, vehicleclass text, vehicleid text, vehicle_position text, last_used_by_side text, last_used_by_player text, killer_uid text, killer_position text, killer_class text, killer_weapon text, killer_side text) TO armalive_server;
 
 
 SET search_path = util, pg_catalog;
