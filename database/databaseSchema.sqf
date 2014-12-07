@@ -285,16 +285,16 @@ ALTER FUNCTION server.get_atlas_points1(sessionid integer, playeruid text, varna
 
 CREATE FUNCTION getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    AS $_$
+    AS $$
 DECLARE
   "time" interval = util.seconds("when");
-  playerid integer = util.player_uid_to_id($3);
-  vehpos real[] = util.position($5);
+  playerid integer = util.player_uid_to_id(playeruid);
+  vehpos real[] = util.position(vehiclepos);
 BEGIN
--- TODO
-
+  insert into event.vehiclecrewing (sessionid, "time", playerid, getin, slot, vehclass, vehpos, vehid)
+  values (sessionid, "time", playerid, true, slot, vehicleclass, vehpos, vehicleid);
 END
-$_$;
+$$;
 
 
 ALTER FUNCTION server.getin1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO armalive_auto;
@@ -305,16 +305,17 @@ ALTER FUNCTION server.getin1(sessionid integer, "when" numeric, playeruid text, 
 
 CREATE FUNCTION getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
-    AS $_$
+    AS $$
 DECLARE
   "time" interval = util.seconds("when");
-  playerid integer = util.player_uid_to_id($3);
-  vehpos real[] = util.position($5);
+  playerid integer = util.player_uid_to_id(playeruid);
+  vehpos real[] = util.position(vehiclepos);
 BEGIN
--- TODO
-  
+  insert into event.vehiclecrewing (sessionid, "time", playerid, getin, slot, vehclass, vehpos, vehid)
+  values (sessionid, "time", playerid, false, slot, vehicleclass, vehpos, vehicleid);
 END
-$_$;
+
+$$;
 
 
 ALTER FUNCTION server.getout1(sessionid integer, "when" numeric, playeruid text, slot text, vehiclepos text, vehicleclass text, vehicleid text) OWNER TO armalive_auto;
@@ -724,6 +725,25 @@ CREATE TABLE joinleave (
 
 
 ALTER TABLE event.joinleave OWNER TO mahuja;
+
+--
+-- Name: vehiclecrewing; Type: TABLE; Schema: event; Owner: mahuja; Tablespace: 
+--
+
+CREATE TABLE vehiclecrewing (
+    eventid bigint DEFAULT nextval('event_id_counter'::regclass) NOT NULL,
+    sessionid integer NOT NULL,
+    "time" interval NOT NULL,
+    playerid integer NOT NULL,
+    getin boolean NOT NULL,
+    slot text NOT NULL,
+    vehclass text NOT NULL,
+    vehpos real[],
+    vehid text
+);
+
+
+ALTER TABLE event.vehiclecrewing OWNER TO mahuja;
 
 --
 -- Name: vehicledestruction; Type: TABLE; Schema: event; Owner: mahuja; Tablespace: 
@@ -1161,6 +1181,14 @@ ALTER TABLE ONLY joinleave
 
 
 --
+-- Name: vehiclecrewing_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja; Tablespace: 
+--
+
+ALTER TABLE ONLY vehiclecrewing
+    ADD CONSTRAINT vehiclecrewing_pkey PRIMARY KEY (eventid);
+
+
+--
 -- Name: vehicledestruction_pkey; Type: CONSTRAINT; Schema: event; Owner: mahuja; Tablespace: 
 --
 
@@ -1343,6 +1371,14 @@ ALTER TABLE ONLY deathevent
 
 ALTER TABLE ONLY joinleave
     ADD CONSTRAINT joinleaveplayerid_fkey FOREIGN KEY (playerid) REFERENCES player.player(id);
+
+
+--
+-- Name: vehiclecrewing_playerid_fkey; Type: FK CONSTRAINT; Schema: event; Owner: mahuja
+--
+
+ALTER TABLE ONLY vehiclecrewing
+    ADD CONSTRAINT vehiclecrewing_playerid_fkey FOREIGN KEY (playerid) REFERENCES player.player(id);
 
 
 --
@@ -1769,6 +1805,17 @@ REVOKE ALL ON TABLE joinleave FROM mahuja;
 GRANT ALL ON TABLE joinleave TO mahuja;
 GRANT INSERT ON TABLE joinleave TO armalive_auto;
 GRANT SELECT ON TABLE joinleave TO armalive_reader;
+
+
+--
+-- Name: vehiclecrewing; Type: ACL; Schema: event; Owner: mahuja
+--
+
+REVOKE ALL ON TABLE vehiclecrewing FROM PUBLIC;
+REVOKE ALL ON TABLE vehiclecrewing FROM mahuja;
+GRANT ALL ON TABLE vehiclecrewing TO mahuja;
+GRANT INSERT ON TABLE vehiclecrewing TO armalive_auto;
+GRANT SELECT ON TABLE vehiclecrewing TO armalive_reader;
 
 
 --
