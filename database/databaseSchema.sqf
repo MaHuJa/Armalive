@@ -377,9 +377,7 @@ DECLARE
 BEGIN
 -- TODO this is an opportunity to finish "cleanup" of oldsession, or schedule it.
 insert into session.session (missionname, mapname, script, duplidetect, server) 
-values (mission_name, mapname, scriptversion, duplidetect,
-  ( select id from session.serverlist where name = session_user )
-)
+values (mission_name, mapname, scriptversion, duplidetect, session_user)
 returning id;
 END
 $$;
@@ -1025,7 +1023,7 @@ CREATE TABLE session (
     id integer NOT NULL,
     missionname text NOT NULL,
     result text,
-    server integer NOT NULL,
+    server text NOT NULL,
     duration interval,
     mapname text NOT NULL,
     duplidetect numeric,
@@ -1408,14 +1406,6 @@ ALTER TABLE ONLY playername
 
 
 SET search_path = session, pg_catalog;
-
---
--- Name: session_server_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
---
-
-ALTER TABLE ONLY session
-    ADD CONSTRAINT session_server_fkey FOREIGN KEY (server) REFERENCES serverlist(id);
-
 
 --
 -- Name: sessionplayers_player_fkey; Type: FK CONSTRAINT; Schema: session; Owner: mahuja
