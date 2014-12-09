@@ -372,20 +372,17 @@ ALTER FUNCTION server.missionevent1(sessionid integer, "when" numeric, what text
 
 CREATE FUNCTION newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) RETURNS integer
     LANGUAGE plpgsql SECURITY DEFINER
-    AS $_$
+    AS $$
 DECLARE
-
 BEGIN
--- TODO Add column for scriptversion
 -- TODO this is an opportunity to finish "cleanup" of oldsession, or schedule it.
-insert into session.session (missionname, mapname,server,duplidetect) 
-values ($2, $3,
-  ( select id from session.serverlist where name = session_user ),
-  $4
+insert into session.session (missionname, mapname, script, duplidetect, server) 
+values (mission_name, mapname, scriptversion, duplidetect,
+  ( select id from session.serverlist where name = session_user )
 )
 returning id;
 END
-$_$;
+$$;
 
 
 ALTER FUNCTION server.newsession1(oldsession integer, mission_name text, map_name text, scriptversion text, duplidetect text) OWNER TO armalive_auto;
@@ -1026,13 +1023,14 @@ ALTER SEQUENCE serverlist_id_seq OWNED BY serverlist.id;
 
 CREATE TABLE session (
     id integer NOT NULL,
-    missionname text,
+    missionname text NOT NULL,
     result text,
     server integer NOT NULL,
     duration interval,
-    mapname text,
+    mapname text NOT NULL,
     duplidetect numeric,
-    session_start timestamp with time zone DEFAULT now()
+    session_start timestamp with time zone DEFAULT now(),
+    script text
 );
 
 
