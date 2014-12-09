@@ -575,8 +575,8 @@ CREATE FUNCTION checkwritable(session integer) RETURNS void
     LANGUAGE plpgsql STABLE
     AS $$
 declare
-	serverid integer = (select id from session.serverlist where name = session_user);
-	lastsession integer = (select max(id) from session.session where server = serverid);
+	-- Keep an eye on this wrt performance as session count grows
+	lastsession integer = (select max(id) from session.session where server = current_user);
 begin
 	-- todo: if session_user is member of armalive_admin then allow
 	if lastsession != session or lastsession is null then
