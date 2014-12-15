@@ -108,7 +108,7 @@ void EXPORT RVExtension(char *output, unsigned int outputSize, const char *funct
 	} else if (prefix == "put_") {
 		dbthread::Task t(std::bind(&dbthread::task_send, db, input));
 		db->mainqueue.push(move(t));
-	} else if (input.substr(0, 10) == "newmission") {
+	} else if (input.substr(0, 10) == "newsession" || input.substr(0,10)=="newmission" ) {
 		db->mainqueue.push(dbthread::Task(std::bind(&dbthread::task_newmission, db, input)));
 	} else if (input == "version") {
 		strncpy(output, versionstring, outputSize);
