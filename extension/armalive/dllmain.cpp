@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "dbthread.h"
 
-const char* versionstring = "0.6+dev";
+const char* versionstring = "0.7";
 std::ofstream logfile("armalive_log");
 std::ofstream dumpfile("armalive_dump");	// TODO: Make name dynamic based on current time
 dbthread* db = nullptr;
